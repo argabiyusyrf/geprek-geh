@@ -1,0 +1,8 @@
+/* Lenis — buttery smooth scrolling (https://github.com/darkroomengineering/lenis)
+   Vendored locally. GPU-safe: scroll driven via rAF, no layout thrash. */
+
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
