@@ -37,18 +37,17 @@ try {
         $pdo->exec("DELETE FROM `{$t}`");
     }
 
-    // Seed admin
-    $admin_pass = password_hash('admin123', PASSWORD_DEFAULT);
+    // Seed admin + customer (password dari env bila tersedia, else random)
+    $admin_pass = getenv('GEPREK_ADMIN_PASS') ?: bin2hex(random_bytes(4));
     $pdo->prepare("INSERT IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, 'admin')")
-        ->execute(['Admin Geprek Geh', 'admin@geprekgeh.com', $admin_pass]);
+        ->execute(['Admin Geprek Geh', 'admin@geprekgeh.com', password_hash($admin_pass, PASSWORD_DEFAULT)]);
 
-    // Seed customer
-    $cust_pass = password_hash('customer123', PASSWORD_DEFAULT);
+    $cust_pass = getenv('GEPREK_CUSTOMER_PASS') ?: bin2hex(random_bytes(4));
     $pdo->prepare("INSERT IGNORE INTO users (name, email, password, phone, role) VALUES (?, ?, ?, ?, 'customer')")
-        ->execute(['Budi Santoso', 'budi@email.com', $cust_pass, '081234567890']);
+        ->execute(['Budi Santoso', 'budi@email.com', password_hash($cust_pass, PASSWORD_DEFAULT), '081234567890']);
 
-    echo "✓ Akun admin: admin@geprekgeh.com / admin123\n";
-    echo "✓ Akun customer: budi@email.com / customer123\n";
+    echo "✓ Akun admin: admin@geprekgeh.com / {$admin_pass}\n";
+    echo "✓ Akun customer: budi@email.com / {$cust_pass}\n";
 
     // Seed categories
     $categories = [
