@@ -3,10 +3,12 @@
 Vanilla PHP 8.4 MVC e-commerce ("Geprek Geh"), served from `/var/www/html/geprek-geh`. No Composer, no npm, no build step, no tests.
 
 ## Setup & run
-- Install/seeds DB: `php install.php` (idempotent; recreates schema, re-seeds. On re-run clears only `cart/order_items/orders/products/categories`, not users). Seeded logins: `admin@geprekgeh.com / admin123`, `budi@email.com / customer123`.
-- DB config: `config/database.php` (live local creds, committed). Schema: `database/schema.sql`.
+- Install/seeds DB: `php install.php` (idempotent; recreates schema, re-seeds. On re-run clears only `cart/order_items/orders/products/categories`, not users). Seed account passwords come from `GEPREK_ADMIN_PASS`/`GEPREK_CUSTOMER_PASS` env or are randomly generated and printed to the terminal — never hardcoded. `install.php` refuses to run from a web request (CLI only).
+- DB config: `config/database.php` reads `GG_DB_*` env vars, falling back to a gitignored `.env` (see `.env.example`). Live local creds live ONLY in `.env`, never committed.
+- Schema: `database/schema.sql`.
 - Run: Apache docroot `/var/www/html` serves app at base path `/geprek-geh`, or `php -S localhost:8080 router.php` from project root.
 - Verify changes with `php -l file.php` + manual browse at `http://localhost/geprek-geh/` (Playwright browser available). No lint/test tooling exists.
+- Sessions are hardened via `session_set_cookie_params` at the top of `index.php` (httponly, SameSite=Lax). Don't remove; keep it before `session_start()`.
 
 ## Architecture
 - `index.php` is the ONLY entrypoint: sets up `spl_autoload` (controllers/ plus `Admin\` prefix → `controllers/admin/`) and registers **all routes** there via `$router->get/post()`. Every new URL must be added here (`{param}` patterns supported, e.g. `/products/{slug}`).
