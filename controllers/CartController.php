@@ -136,6 +136,10 @@ class CartController {
     }
 
     public function clear() {
+        if (!verify_csrf()) {
+            flash_set('error', 'Token tidak valid.');
+            redirect('/geprek-geh/cart');
+        }
         $db = Database::getInstance();
         $where_col = Auth::check() ? 'user_id' : 'session_id';
         $where_val = Auth::check() ? Auth::id() : $this->sessionId();

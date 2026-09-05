@@ -132,6 +132,7 @@ $hero_level = $categories[1] ?? null;
                         <div class="product-price"><?= rupiah($p['price']) ?></div>
                         <?php if ($p['stock'] > 0): ?>
                         <form method="POST" action="/geprek-geh/cart/add">
+                            <?= csrf_field() ?>
                             <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
                             <input type="hidden" name="quantity" value="1">
                             <button type="submit" class="btn btn-primary">Tambah
@@ -201,6 +202,7 @@ $hero_level = $categories[1] ?? null;
                         <div class="product-price"><?= rupiah($p['price']) ?></div>
                         <?php if ($p['stock'] > 0): ?>
                         <form method="POST" action="/geprek-geh/cart/add">
+                            <?= csrf_field() ?>
                             <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
                             <input type="hidden" name="quantity" value="1">
                             <button type="submit" class="btn btn-outline">Tambah
