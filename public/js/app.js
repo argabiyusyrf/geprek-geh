@@ -654,29 +654,6 @@ function changeQty(delta) {
     });
 })();
 
-/* ── AJAX add-to-cart → open drawer (fresh adds land in the tray) ── */
-(function ajaxCartOpenDrawer() {
-    const drawer = document.getElementById('cart-drawer');
-    if (!drawer) return;
-    const forms = document.querySelectorAll('form[action="/geprek-geh/cart/add"]');
-    if (!forms.length) return;
-
-    let first = true;
-    forms.forEach((form) => {
-        form.addEventListener('submit', () => {
-            if (window.gehAjaxWillOpenDrawer === false) return;
-            const wasOpen = drawer.classList.contains('is-open');
-            if (wasOpen) return;
-            setTimeout(() => {
-                if (!drawer.classList.contains('is-open') && first) {
-                    window.openCartDrawer && window.openCartDrawer();
-                }
-                first = false;
-            }, 260);
-        });
-    });
-})();
-
 /* ── Address drawer (account) ── */
 (function addressDrawer() {
     const drawer = document.getElementById('address-drawer');
