@@ -611,6 +611,72 @@ function changeQty(delta) {
     });
 })();
 
+/* ── Global cart drawer (#cart-drawer) ── */
+(function cartDrawer() {
+    const drawer = document.getElementById('cart-drawer');
+    if (!drawer) return;
+
+    const scrim = drawer.querySelector('.drawer-scrim');
+    const panel = drawer.querySelector('.drawer-panel');
+    const openers = document.querySelectorAll('[data-open-drawer]');
+    const closers = drawer.querySelectorAll('[data-close-drawer]');
+
+    function open() {
+        drawer.classList.add('is-open');
+        drawer.setAttribute('aria-hidden', 'false');
+        if (scrim) scrim.classList.add('is-open');
+        if (panel) panel.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+        if (window.__lenis) window.__lenis.stop();
+        const focusable = drawer.querySelector('button, a, input');
+        if (focusable) setTimeout(() => focusable.focus({ preventScroll: true }), 220);
+    }
+    function close() {
+        drawer.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        if (scrim) scrim.classList.remove('is-open');
+        if (panel) panel.classList.remove('is-open');
+        document.body.style.overflow = '';
+        if (window.__lenis) window.__lenis.start();
+    }
+
+    window.openCartDrawer = open;
+    window.closeCartDrawer = close;
+
+    openers.forEach((btn) => btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        open();
+    }));
+    closers.forEach((btn) => btn.addEventListener('click', close));
+    if (scrim) scrim.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('is-open')) close();
+    });
+})();
+
+/* ── AJAX add-to-cart → open drawer (fresh adds land in the tray) ── */
+(function ajaxCartOpenDrawer() {
+    const drawer = document.getElementById('cart-drawer');
+    if (!drawer) return;
+    const forms = document.querySelectorAll('form[action="/geprek-geh/cart/add"]');
+    if (!forms.length) return;
+
+    let first = true;
+    forms.forEach((form) => {
+        form.addEventListener('submit', () => {
+            if (window.gehAjaxWillOpenDrawer === false) return;
+            const wasOpen = drawer.classList.contains('is-open');
+            if (wasOpen) return;
+            setTimeout(() => {
+                if (!drawer.classList.contains('is-open') && first) {
+                    window.openCartDrawer && window.openCartDrawer();
+                }
+                first = false;
+            }, 260);
+        });
+    });
+})();
+
 /* ── Address drawer (account) ── */
 (function addressDrawer() {
     const drawer = document.getElementById('address-drawer');

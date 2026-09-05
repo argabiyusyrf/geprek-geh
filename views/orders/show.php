@@ -75,7 +75,7 @@ $wa_number = $contacts['whatsapp'] ?? '';
                             <?php if ($item['image']): ?>
                                 <img src="/geprek-geh/assets/uploads/products/<?= e($item['image']) ?>" alt="<?= e($item['name']) ?>" loading="lazy">
                             <?php else: ?>
-                                <span class="order-item-placeholder"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 11.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0z"/><path d="M11 7V3M13.5 4.5L8.5 6.5M15 7.5l-6 1.5"/></svg></span>
+                                <span class="order-item-placeholder"><?= product_art($item['name'], $item['category_name'] ?? '', '', 90) ?></span>
                             <?php endif; ?>
                             <span class="order-item-qty"><?= $item['quantity'] ?></span>
                         </div>
