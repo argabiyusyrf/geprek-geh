@@ -22,6 +22,15 @@ class CartController {
     }
 
     public function add() {
+        if (!verify_csrf()) {
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                header('Content-Type: application/json');
+                echo json_encode(['ok' => false, 'message' => 'Token tidak valid.']);
+                exit;
+            }
+            flash_set('error', 'Token tidak valid.');
+            redirect('/geprek-geh/products');
+        }
         $db = Database::getInstance();
         $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
         $respond = function (bool $ok, string $msg, array $extra = []) use ($isAjax) {
@@ -85,6 +94,10 @@ class CartController {
     }
 
     public function update() {
+        if (!verify_csrf()) {
+            flash_set('error', 'Token tidak valid.');
+            redirect('/geprek-geh/cart');
+        }
         $db = Database::getInstance();
         $cart_id = (int)($_POST['cart_id'] ?? 0);
         $qty = max(1, (int)($_POST['quantity'] ?? 1));
@@ -108,6 +121,10 @@ class CartController {
     }
 
     public function remove() {
+        if (!verify_csrf()) {
+            flash_set('error', 'Token tidak valid.');
+            redirect('/geprek-geh/cart');
+        }
         $db = Database::getInstance();
         $cart_id = (int)($_POST['cart_id'] ?? 0);
         $where_col = Auth::check() ? 'user_id' : 'session_id';
