@@ -31,6 +31,6 @@
 </footer>
 
 <script src="/geprek-geh/vendor/lenis/lenis.min.js"></script>
-<script src="/geprek-geh/public/js/app.js?v=20261001"></script>
+<script src="/geprek-geh/public/js/app.js?v=20260905"></script>
 </body>
 </html>

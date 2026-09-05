@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e($page_title ?? 'Geprek Geh') ?> — Geprek Geh</title>
+    <link rel="icon" type="image/svg+xml" href="/geprek-geh/public/favicon.svg">
     <link rel="stylesheet" href="/geprek-geh/public/fonts/fonts.css">
     <link rel="stylesheet" href="/geprek-geh/vendor/css/lenis.css">
-    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20261001">
+    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260905">
 </head>
 <body>
 
@@ -19,10 +20,10 @@
 
         <div class="nav-inline">
             <a href="/geprek-geh/products">Menu</a>
-            <a href="/geprek-geh/cart" class="cart-link">
+            <button type="button" class="cart-link cart-trigger" data-open-drawer aria-label="Buka keranjang">
                 Keranjang
                 <span class="cart-count" data-cart-count="<?= CartController::count() ?>"><?= CartController::count() ?></span>
-            </a>
+            </button>
             <?php if (Auth::check()): ?>
                 <!-- account items live in the dropdown (nav-actions) -->
             <?php else: ?>
@@ -119,7 +120,7 @@
         </div>
         <nav class="overlay-links" role="navigation">
             <a class="overlay-link" href="/geprek-geh/products"><small>01</small> Menu</a>
-            <a class="overlay-link cart-link" href="/geprek-geh/cart"><small>02</small> Keranjang<span class="cart-count" data-cart-count="<?= CartController::count() ?>"><?= CartController::count() ?></span></a>
+            <a class="overlay-link cart-link" href="/geprek-geh/cart" data-open-drawer><small>02</small> Keranjang<span class="cart-count" data-cart-count="<?= CartController::count() ?>"><?= CartController::count() ?></span></a>
             <?php if (!Auth::check()): ?>
                 <a class="overlay-link" href="/geprek-geh/auth/login"><small>03</small> Masuk</a>
                 <a class="overlay-link" href="/geprek-geh/auth/register"><small>04</small> Daftar</a>
