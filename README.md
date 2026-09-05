@@ -28,14 +28,14 @@ Toko online ayam geprek berbasis **PHP 8.4 MVC** murni (tanpa Composer, tanpa fr
 
 ## Setup
 
-1. Siapkan MySQL, isi kredensial di `config/database.php`.
+1. Salin `.env.example` → `.env`, isi kredensial MySQL (`GG_DB_HOST`, `GG_DB_NAME`, `GG_DB_USER`, `GG_DB_PASS`). File `.env` di-gitignore — jangan ikut tercommit.
 2. Jalankan installer (membuat schema + seed data):
 
    ```bash
    php install.php
    ```
 
-   `install.php` bersifat idempotent — jalankan ulang kapan pun untuk reset data seed (hanya menghapus `cart/order_items/orders/products/categories`, akun pengguna tetap).
+   `install.php` bersifat idempotent — jalankan ulang kapan pun untuk reset data seed (hanya menghapus `cart/order_items/orders/products/categories`, akun pengguna tetap). Password admin/customer dipakai dari env `GEPREK_ADMIN_PASS` / `GEPREK_CUSTOMER_PASS` (bila kosong, digenerate acak) dan dicetak di output terminal.
 
 3. Jalankan server:
 
@@ -49,10 +49,7 @@ Toko online ayam geprek berbasis **PHP 8.4 MVC** murni (tanpa Composer, tanpa fr
 
 ## Akun seed
 
-| Role     | Email                 | Password     |
-| -------- | --------------------- | ------------ |
-| Admin    | admin@geprekgeh.com   | admin123     |
-| Customer | budi@email.com        | customer123  |
+Login admin & customer dibuat oleh `php install.php` — password dari env `GEPREK_ADMIN_PASS` / `GEPREK_CUSTOMER_PASS` atau digenerate acak (tercetak di terminal). Setelah login pertama, ganti password via menu akun.
 
 ## Fitur
 
@@ -75,4 +72,4 @@ Semua route didaftarkan di `index.php` via `$router->get()/post()` — pola `{pa
 
 ## Menghubungi
 
-WhatsApp: 0887-4267-4141 · Buka Setiap hari 09.00–21.00 WIB
+Buka Setiap hari 09.00–21.00 WIB

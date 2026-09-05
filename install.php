@@ -7,6 +7,11 @@
 require_once __DIR__ . '/config/database.php';
 $config = require __DIR__ . '/config/database.php';
 
+if (PHP_SAPI !== 'cli') {
+    http_response_code(403);
+    exit('Installer hanya bisa dijalankan dari CLI: php install.php');
+}
+
 echo "🍗 Geprek Geh — Installer\n";
 echo str_repeat('─', 40) . "\n";
 
@@ -132,8 +137,8 @@ try {
     echo "\n" . str_repeat('─', 40) . "\n";
     echo "✅ Instalasi selesai!\n";
     echo "🌐 Buka: http://localhost/geprek-geh/\n";
-    echo "🔑 Admin: admin@geprekgeh.com / admin123\n";
-    echo "👤 Customer: budi@email.com / customer123\n";
+    echo "🔑 Admin: admin@geprekgeh.com / {$admin_pass}\n";
+    echo "👤 Customer: budi@email.com / {$cust_pass}\n";
 
 } catch (PDOException $e) {
     echo "✗ Error: " . $e->getMessage() . "\n";

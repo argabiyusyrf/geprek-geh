@@ -34,6 +34,11 @@ if (empty($_GET['url']) && isset($_SERVER['REQUEST_URI'])) {
     $_GET['url'] = trim($__u, '/');
 }
 
+session_set_cookie_params([
+    'httponly' => true,
+    'samesite' => 'Lax',
+    'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+]);
 session_start();
 
 require_once __DIR__ . '/core/Database.php';
