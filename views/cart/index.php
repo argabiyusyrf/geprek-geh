@@ -50,6 +50,7 @@
         <div class="cart-list-head">
             <span class="cart-list-title">Item Pesanan</span>
             <form method="POST" action="/geprek-geh/cart/clear" class="cart-clear-form" data-confirm="Semua item di keranjang akan dihapus. Lanjutkan?">
+                <?= csrf_field() ?>
                 <button type="submit" class="btn btn-sm btn-ghost btn-dangerghost">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
                     Kosongkan
@@ -65,7 +66,7 @@
                 <?php if ($item['image']): ?>
                     <img src="/geprek-geh/assets/uploads/products/<?= e($item['image']) ?>" alt="<?= e($item['name']) ?>" loading="lazy">
                 <?php else: ?>
-                    <span class="cart-item-placeholder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 11.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0z"/><path d="M11 7V3M13.5 4.5L8.5 6.5M15 7.5l-6 1.5"/><path d="M6 1l-1 3M9 2L7.5 4"/></svg></span>
+                    <span class="cart-item-placeholder"><?= product_art($item['name'], $item['category_name'] ?? '', '', 160) ?></span>
                 <?php endif; ?>
             </a>
 
@@ -83,6 +84,7 @@
 
                 <div class="cart-item-actions">
                     <form method="POST" action="/geprek-geh/cart/update" class="cart-qty-form">
+                        <?= csrf_field() ?>
                         <input type="hidden" name="cart_id" value="<?= $item['id'] ?>">
                         <div class="cart-stepper" <?= $out || $item['stock'] === 1 ? 'data-disabled' : '' ?>>
                             <button type="button" class="cart-step-btn" data-qty-step="-1" aria-label="Kurangi">&minus;</button>
@@ -97,6 +99,7 @@
                     </div>
 
                     <form method="POST" action="/geprek-geh/cart/remove" class="cart-remove-form">
+                        <?= csrf_field() ?>
                         <input type="hidden" name="cart_id" value="<?= $item['id'] ?>">
                         <button type="submit" class="cart-remove-btn" title="Hapus item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></svg>
