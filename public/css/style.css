@@ -23,6 +23,8 @@
     --hairline:    rgba(29, 26, 21, 0.10);
     --hairline-s:  rgba(29, 26, 21, 0.06);
     --hairline-w:  rgba(255, 253, 249, 0.14);
+    --paper:       #fffdf9;
+    --surface:     #f7f0e2;
 
     --font-display: 'Fraunces', 'Georgia', serif;
     --font-sans:    'Plus Jakarta Sans', system-ui, sans-serif;
@@ -2549,8 +2551,8 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .twofa-badge { width: 56px; height: 56px; margin: 0 auto 14px; display: grid; place-items: center; border-radius: 17px; background: rgba(232,75,35,0.1); color: var(--accent); }
 
 /* form row (2 cols) */
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width: 520px) { .form-row { grid-template-columns: 1fr; } }
+.twofa-card .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 520px) { .twofa-card .form-row { grid-template-columns: 1fr; } }
 
 /* checkbox */
 .checkbox { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--ink-2); margin: 4px 0 6px; }
