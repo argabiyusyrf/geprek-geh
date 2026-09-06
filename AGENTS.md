@@ -5,7 +5,7 @@ Vanilla PHP 8.4 MVC e-commerce ("Geprek Geh"), served from `/var/www/html/geprek
 ## Setup & run
 - Install/seeds DB: `php install.php` (idempotent; recreates schema, re-seeds. On re-run clears only `cart/order_items/orders/products/categories`, not users). Seed account passwords come from `GEPREK_ADMIN_PASS`/`GEPREK_CUSTOMER_PASS` env or are randomly generated and printed to the terminal — never hardcoded. `install.php` refuses to run from a web request (CLI only).
 - DB config: `config/database.php` reads `GG_DB_*` env vars, falling back to a gitignored `.env` (see `.env.example`). Live local creds live ONLY in `.env`, never committed.
-- Schema: `database/schema.sql`.
+- Schema: `database/schema.sql` is **STALE/incomplete** — see Gotchas. The live MySQL DB is the real source of truth.
 - Run: Apache docroot `/var/www/html` serves app at base path `/geprek-geh`, or `php -S localhost:8080 router.php` from project root.
 - Verify changes with `php -l file.php` + manual browse at `http://localhost/geprek-geh/` (Playwright browser available). No lint/test tooling exists.
 - Sessions are hardened via `session_set_cookie_params` at the top of `index.php` (httponly, SameSite=Lax). Don't remove; keep it before `session_start()`.
