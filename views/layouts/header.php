@@ -7,7 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="/geprek-geh/public/favicon.svg">
     <link rel="stylesheet" href="/geprek-geh/public/fonts/fonts.css">
     <link rel="stylesheet" href="/geprek-geh/vendor/css/lenis.css">
-    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260905">
+    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260906">
 </head>
 <body>
 
@@ -124,6 +124,15 @@
             <?php if (!Auth::check()): ?>
                 <a class="overlay-link" href="/geprek-geh/auth/login"><small>03</small> Masuk</a>
                 <a class="overlay-link" href="/geprek-geh/auth/register"><small>04</small> Daftar</a>
+            <?php else: ?>
+                <a class="overlay-link" href="/geprek-geh/account"><small>03</small> Profil Saya</a>
+                <a class="overlay-link" href="/geprek-geh/orders"><small>04</small> Pesanan Saya</a>
+                <?php if (Auth::admin()): ?>
+                    <a class="overlay-link" href="/geprek-geh/admin"><small>05</small> Admin Panel</a>
+                    <a class="overlay-link" href="/geprek-geh/auth/logout"><small>06</small> Keluar</a>
+                <?php else: ?>
+                    <a class="overlay-link" href="/geprek-geh/auth/logout"><small>05</small> Keluar</a>
+                <?php endif; ?>
             <?php endif; ?>
         </nav>
         <div class="overlay-cta">

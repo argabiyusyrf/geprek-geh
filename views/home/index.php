@@ -114,7 +114,7 @@ $hero_level = $categories[1] ?? null;
     </div>
     <div class="menu-bento">
         <?php foreach ($featured as $i => $p): ?>
-            <article class="product-card <?= $i === 0 ? 'feat-a' : '' ?>" data-reveal>
+            <article class="product-card <?= $i < 2 ? 'feat-a' : '' ?>" data-reveal>
                 <div class="product-card-inner">
                     <a href="/geprek-geh/products/<?= e($p['slug']) ?>" class="product-img">
                         <?php if ($p['image']): ?>
@@ -153,7 +153,7 @@ $hero_level = $categories[1] ?? null;
     <div class="about-strip" data-reveal>
         <div>
             <span class="eyebrow">Kenapa Geprek Geh?</span>
-            <h2>Pedas itu <em>seni</em>,<br>dan kami <span class="g">menghantammya</span> setiap hari</h2>
+            <h2>Pedas itu <em>seni</em>,<br>dan kami <span class="g">menghantamnya</span> setiap hari</h2>
             <p>Dimasak langsung saat pesanan masuk. Jasuke crispy di-smashed dengan sambal bawang segar yang digiling setiap pagi — bukan hari kemarin.</p>
         </div>
         <div class="about-list">
