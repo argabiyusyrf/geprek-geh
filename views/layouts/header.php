@@ -96,6 +96,10 @@
                     </div>
                 </div>
             <?php endif; ?>
+            <?php if (!Auth::check()): ?>
+                <a href="/geprek-geh/auth/login" class="btn btn-sm btn-ghost">Masuk</a>
+                <a href="/geprek-geh/auth/register" class="btn btn-sm btn-primary">Daftar</a>
+            <?php endif; ?>
             <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
                 <span></span><span></span>
             </button>
