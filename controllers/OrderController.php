@@ -281,6 +281,17 @@ class OrderController {
             'Dikonsumsi pembeli. Pesanan selesai.',
             "/geprek-geh/admin/orders/{$id}"
         );
+
+        try {
+            $customer = Auth::user();
+            if (!empty($customer['email']) && (int)($customer['notify_email'] ?? 1) === 1) {
+                Mail::orderStatusChanged($customer['email'], $customer['name'], $order['invoice_no'], 'Selesai',
+                    'Terima kasih sudah berbelanja di Geprek Geh!');
+            }
+        } catch (Exception $e) {
+            error_log('[OrderController] receive email failed: ' . $e->getMessage());
+        }
+
         flash_set('success', 'Terima kasih! Pesanan ditandai selesai.');
         redirect('/geprek-geh/orders/' . $id);
     }
