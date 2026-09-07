@@ -98,6 +98,100 @@ $out_stock = $product['stock'] <= 0;
     </div>
 </div>
 
+<!-- ── Reviews ──────────────────────────────────────── -->
+<section class="section">
+    <div class="section-head">
+        <div>
+            <span class="eyebrow" data-reveal>Ulasan</span>
+            <h2 class="section-title" data-reveal>Yang bilang<br>apa</h2>
+        </div>
+        <?php if ($review_stats['review_count'] > 0): ?>
+        <div class="review-summary" data-reveal>
+            <div class="review-stars">
+                <?php for ($s = 1; $s <= 5; $s++): ?>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="<?= $s <= round($review_stats['avg_rating']) ? '#D43E1B' : 'none' ?>" stroke="#D43E1B" stroke-width="1.8"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
+                <?php endfor; ?>
+            </div>
+            <span><?= number_format($review_stats['avg_rating'], 1) ?> / 5 &middot; <?= $review_stats['review_count'] ?> ulasan</span>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <?php if (Auth::check()): ?>
+    <div class="review-form-wrap" data-reveal>
+        <div class="review-form-head">
+            <span class="review-form-avatar"><?= e(mb_strtoupper(mb_substr($_SESSION['user_name'], 0, 1))) ?></span>
+            <div>
+                <strong>Tulis Ulasan</strong>
+                <?php if ($my_review): ?>
+                    <span class="review-form-note">Kamu sudah review — update di bawah.</span>
+                <?php endif; ?>
+            </div>
+        </div>
+        <form method="POST" action="/geprek-geh/reviews" class="review-form">
+            <?= csrf_field() ?>
+            <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+            <div class="review-rating-input" data-rating-input>
+                <?php for ($r = 1; $r <= 5; $r++): ?>
+                    <button type="button" class="review-star-btn <?= ($my_review && $r <= $my_review['rating']) || (!$my_review && $r <= 4) ? 'is-active' : '' ?>"
+                            data-star="<?= $r ?>" aria-label="<?= $r ?> bintang">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
+                    </button>
+                <?php endfor; ?>
+                <input type="hidden" name="rating" value="<?= $my_review ? $my_review['rating'] : 4 ?>">
+            </div>
+            <textarea name="comment" class="input review-textarea" rows="3" placeholder="Ceritakan pengalamanmu... (opsional)"><?= e($my_review['comment'] ?? '') ?></textarea>
+            <button type="submit" class="btn btn-primary">
+                <?= $my_review ? 'Update Review' : 'Kirim Review' ?>
+                <span class="btn-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+            </button>
+        </form>
+    </div>
+    <?php else: ?>
+    <div class="review-login-hint" data-reveal>
+        <a href="/geprek-geh/auth/login">Masuk</a> untuk menulis ulasan.
+    </div>
+    <?php endif; ?>
+
+    <?php if (empty($reviews)): ?>
+        <div class="empty-state" style="padding:40px 0;">
+            <span class="ghost">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </span>
+            <h3>Belum ada ulasan</h3>
+            <p>Jadikan yang pertama berbagi pengalaman!</p>
+        </div>
+    <?php else: ?>
+        <div class="review-list" data-reveal-stagger>
+            <?php foreach ($reviews as $rv): ?>
+                <div class="review-card" data-reveal>
+                    <div class="review-card-head">
+                        <span class="review-avatar"><?= e(mb_strtoupper(mb_substr($rv['user_name'], 0, 1))) ?></span>
+                        <div>
+                            <strong><?= e($rv['user_name']) ?></strong>
+                            <span class="review-date"><?= time_ago($rv['created_at']) ?></span>
+                        </div>
+                        <div class="review-stars">
+                            <?php for ($s = 1; $s <= 5; $s++): ?>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="<?= $s <= $rv['rating'] ? '#D43E1B' : 'none' ?>" stroke="#D43E1B" stroke-width="1.8"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
+                            <?php endfor; ?>
+                        </div>
+                    </div>
+                    <?php if ($rv['comment']): ?>
+                        <p class="review-body"><?= e($rv['comment']) ?></p>
+                    <?php endif; ?>
+                    <?php if (Auth::id() === $rv['user_id']): ?>
+                        <form method="POST" action="/geprek-geh/reviews/<?= $rv['id'] ?>/delete" class="review-delete" data-confirm="Hapus ulasan ini?">
+                            <?= csrf_field() ?>
+                            <button type="submit" class="btn btn-sm btn-ghost btn-dangerghost">Hapus</button>
+                        </form>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</section>
+
 <?php if (!empty($related)): ?>
 <section class="section">
     <div class="section-head">
