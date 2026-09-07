@@ -68,6 +68,9 @@ $router = new Router();
 $router->get('/',                          ['HomeController', 'index']);
 $router->get('/products',                  ['ProductController', 'index']);
 $router->get('/products/{slug}',           ['ProductController', 'show']);
+$router->get('/search',                    ['SearchController', 'suggest']);
+$router->get('/sitemap.xml',               ['SeoController', 'sitemap']);
+$router->get('/robots.txt',                ['SeoController', 'robots']);
 
 // ─── Auth ─────────────────────────────────────────
 $router->get('/auth/login',                ['AuthController', 'loginForm']);
