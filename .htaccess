@@ -11,11 +11,9 @@ RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
     Header always set X-Frame-Options "SAMEORIGIN"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
     Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
-    # HSTS only when served over HTTPS — guard with env to avoid breaking dev
     <If "%{HTTPS} == 'on'">
         Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
     </If>
-    # CSP — adjust as needed when adding third-party embeds (maps, analytics)
     Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
 </IfModule>
 
@@ -28,9 +26,10 @@ Options -Indexes
 </FilesMatch>
 
 # ─── Upload hardening: never execute scripts inside uploads/ ───
-<DirectoryMatch "assets/uploads">
-    <FilesMatch "\.(php|phtml|phar|pl|py|jsp|asp|sh|cgi)$">
-        Require all denied
-    </FilesMatch>
+# (per-File match — <DirectoryMatch> is not allowed in .htaccess context)
+<FilesMatch "^assets/uploads/.*\.(php|phtml|phar|pl|py|jsp|asp|sh|cgi)$">
+    Require all denied
+</FilesMatch>
+<IfModule mod_php.c>
     php_flag engine off
-</DirectoryMatch>
+</IfModule>
