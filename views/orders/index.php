@@ -33,9 +33,12 @@
 
 <?php if (empty($orders)): ?>
     <div class="empty-state">
-        <span class="ghost"><svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
-        <p><?= $status !== '' ? 'Belum ada pesanan dengan status ini.' : 'Belum ada pesanan. Yuk mulai belanja menu favoritmu.' ?></p>
-        <a href="/geprek-geh/products" class="btn btn-primary">Mulai Belanja
+        <span class="ghost">
+            <svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        </span>
+        <h3><?= $status !== '' ? 'Belum ada pesanan di kategori ini.' : 'Belum ada cerita pedas di sini.' ?></h3>
+        <p><?= $status !== '' ? 'Coba pilih kategori lain, atau mulai pesan menu favoritmu sekarang.' : 'Saatnya menulis cerita pertama — pesan geprek andalanmu, kami antar panas.' ?></p>
+        <a href="/geprek-geh/products" class="btn btn-primary">Mulai Pesan
             <span class="btn-icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </span>
@@ -45,17 +48,29 @@
     <div class="order-list">
         <?php foreach ($orders as $o):
             [$status_label, $badge_class] = format_status($o['status']);
+            $can_reorder = in_array($o['status'], ['delivered', 'cancelled'], true);
         ?>
-            <a href="/geprek-geh/orders/<?= $o['id'] ?>" class="order-card" data-reveal>
-                <div class="order-card-header">
-                    <span class="invoice"><?= e($o['invoice_no']) ?></span>
-                    <span class="badge <?= $badge_class ?>"><?= $status_label ?></span>
-                </div>
-                <div class="order-card-body">
-                    <span class="order-date"><?= date('d M Y, H:i', strtotime($o['created_at'])) ?></span>
-                    <span class="order-total"><?= rupiah($o['grand_total']) ?></span>
-                </div>
-            </a>
+            <div class="order-card-row">
+                <a href="/geprek-geh/orders/<?= $o['id'] ?>" class="order-card" data-reveal>
+                    <div class="order-card-header">
+                        <span class="invoice"><?= e($o['invoice_no']) ?></span>
+                        <span class="badge <?= $badge_class ?>"><?= $status_label ?></span>
+                    </div>
+                    <div class="order-card-body">
+                        <span class="order-date"><?= date('d M Y, H:i', strtotime($o['created_at'])) ?></span>
+                        <span class="order-total"><?= rupiah($o['grand_total']) ?></span>
+                    </div>
+                </a>
+                <?php if ($can_reorder): ?>
+                    <form method="POST" action="/geprek-geh/orders/<?= $o['id'] ?>/reorder" class="order-card-action">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-ghost btn-sm" title="Pesan ulang">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.64-6.36M3 3v6h6"/></svg>
+                            Beli Lagi
+                        </button>
+                    </form>
+                <?php endif; ?>
+            </div>
         <?php endforeach; ?>
     </div>
 

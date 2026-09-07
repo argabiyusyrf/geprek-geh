@@ -16,14 +16,13 @@
 </section>
 
 <?php if (empty($items)): ?>
-    <div class="cart-empty">
-        <div class="cart-empty-icon">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.5"/><circle cx="19" cy="21" r="1.5"/><path d="M2.5 3h2l2.6 12.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L22.5 7H6"/></svg>
-        </div>
-        <h3>Keranjang masih kosong</h3>
-        <p>Yuk pilih menu favoritmu — geprek orisinal sampai level super, semua fresh dan siap diantar hangat.</p>
-        <a href="/geprek-geh/products" class="btn btn-primary">
-            Lihat Menu
+    <div class="empty-state">
+        <span class="ghost">
+            <svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.5"/><circle cx="19" cy="21" r="1.5"/><path d="M2.5 3h2l2.6 12.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L22.5 7H6"/></svg>
+        </span>
+        <h3>Keranjangmu masih kosong — untuk saat ini.</h3>
+        <p>Yuk isi dengan geprek renyah dan sambal level sesuai seleramu. Kami masak per pesanan, jadi selalu hangat sampai depan pintu.</p>
+        <a href="/geprek-geh/products" class="btn btn-primary">Lihat Menu
             <span class="btn-icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </span>
