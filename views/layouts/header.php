@@ -120,14 +120,15 @@
             </button>
         </div>
         <nav class="overlay-links" role="navigation">
-            <a class="overlay-link" href="/geprek-geh/products"><small>01</small> Menu</a>
+            <?php $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
+            <a class="overlay-link <?= $uri === '/geprek-geh/products' || str_starts_with($uri, '/geprek-geh/products/') ? 'is-active' : '' ?>" href="/geprek-geh/products"><small>01</small> Menu</a>
             <a class="overlay-link cart-link" href="/geprek-geh/cart" data-open-drawer><small>02</small> Keranjang<span class="cart-count" data-cart-count="<?= CartController::count() ?>"><?= CartController::count() ?></span></a>
             <?php if (!Auth::check()): ?>
-                <a class="overlay-link" href="/geprek-geh/auth/login"><small>03</small> Masuk</a>
-                <a class="overlay-link" href="/geprek-geh/auth/register"><small>04</small> Daftar</a>
+                <a class="overlay-link <?= $uri === '/geprek-geh/auth/login' ? 'is-active' : '' ?>" href="/geprek-geh/auth/login"><small>03</small> Masuk</a>
+                <a class="overlay-link <?= $uri === '/geprek-geh/auth/register' ? 'is-active' : '' ?>" href="/geprek-geh/auth/register"><small>04</small> Daftar</a>
             <?php else: ?>
-                <a class="overlay-link" href="/geprek-geh/account"><small>03</small> Profil Saya</a>
-                <a class="overlay-link" href="/geprek-geh/orders"><small>04</small> Pesanan Saya</a>
+                <a class="overlay-link <?= $uri === '/geprek-geh/account' ? 'is-active' : '' ?>" href="/geprek-geh/account"><small>03</small> Profil Saya</a>
+                <a class="overlay-link <?= $uri === '/geprek-geh/orders' || str_starts_with($uri, '/geprek-geh/orders/') ? 'is-active' : '' ?>" href="/geprek-geh/orders"><small>04</small> Pesanan Saya</a>
                 <?php if (Auth::admin()): ?>
                     <a class="overlay-link" href="/geprek-geh/admin"><small>05</small> Admin Panel</a>
                     <a class="overlay-link" href="/geprek-geh/auth/logout"><small>06</small> Keluar</a>
