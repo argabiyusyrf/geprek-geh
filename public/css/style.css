@@ -3269,11 +3269,12 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .section-link { font-size: 13px; }
 
     /* ── Bento category ── */
-    .bento, .product-grid, .menu-bento { grid-template-columns: 1fr; }
-    .category-card, .category-card:nth-child(1), .category-card:nth-child(3),
-    .category-card:nth-child(4), .category-card:nth-child(5),
-    .product-card, .product-card.feat-a, .product-card.feat-b,
-    .menu-card, .menu-card--feat { grid-column: span 1; }
+    .bento, .product-grid, .menu-bento { grid-template-columns: 1fr !important; }
+    .bento .category-card,
+    .category-card:nth-child(1), .category-card:nth-child(2), .category-card:nth-child(3),
+    .category-card:nth-child(4), .category-card:nth-child(5), .category-card:nth-child(6),
+    .product-grid .product-card, .product-card, .product-card.feat-a, .product-card.feat-b,
+    .menu-bento .menu-card, .menu-card, .menu-card--feat { grid-column: span 1 !important; }
     .category-card-core { padding: 24px 20px 22px; }
     .category-card h3 { font-size: 1.3rem; }
     .category-emoji svg { width: 44px; }
