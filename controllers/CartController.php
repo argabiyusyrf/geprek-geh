@@ -14,7 +14,17 @@ class CartController {
         $app = require __DIR__ . '/../config/app.php';
         $tax = (int)($subtotal * $app['tax_rate']);
         $shipping = $app['shipping'];
-        $grand_total = $subtotal + $tax + $shipping;
+
+        $promo = $_SESSION['promo'] ?? null;
+        $discount = 0;
+        $promo_label = '';
+        if ($promo && $subtotal > 0) {
+            $d = PromoController::calcDiscount($promo, $subtotal);
+            $discount = $d['discount'];
+            $promo_label = $d['label'];
+        }
+
+        $grand_total = max(0, $subtotal - $discount + $tax + $shipping);
 
         require __DIR__ . '/../views/layouts/header.php';
         require __DIR__ . '/../views/cart/index.php';
