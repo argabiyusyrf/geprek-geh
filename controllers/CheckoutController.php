@@ -161,6 +161,18 @@ class CheckoutController {
             "/geprek-geh/admin/orders/{$order_id}"
         );
 
+        // Transactional email — order created (best-effort, never blocks order success)
+        try {
+            if (!empty($customer['email']) && (int)($customer['notify_email'] ?? 1) === 1) {
+                Mail::orderCreated($customer['email'], $customer['name'], [
+                    'invoice_no'  => $invoice,
+                    'grand_total' => $grand_total,
+                ], $items);
+            }
+        } catch (Exception $e) {
+            error_log('[Checkout] order email failed: ' . $e->getMessage());
+        }
+
         flash_set('success', "Pesanan {$invoice} berhasil dibuat!");
         header("Location: /geprek-geh/orders/{$order_id}");
         exit;
