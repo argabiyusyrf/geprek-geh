@@ -219,6 +219,17 @@ class OrderController {
             'Oleh ' . ($_SESSION['user_name'] ?? 'Pelanggan') . '. Stok dikembalikan.' . $refund_note,
             "/geprek-geh/admin/orders/{$id}"
         );
+
+        try {
+            $customer = Auth::user();
+            if (!empty($customer['email']) && (int)($customer['notify_email'] ?? 1) === 1) {
+                Mail::orderStatusChanged($customer['email'], $customer['name'], $order['invoice_no'], 'Dibatalkan',
+                    'Pesanan dibatalkan. Stok dikembalikan.' . $refund_note);
+            }
+        } catch (Exception $e) {
+            error_log('[OrderController] cancel email failed: ' . $e->getMessage());
+        }
+
         flash_set('success', 'Pesanan berhasil dibatalkan.'
             . ($order['payment_status'] === 'paid' ? ' Pembayaran akan di-refund.' : ' Stok telah dikembalikan.'));
         redirect('/geprek-geh/orders/' . $id);
