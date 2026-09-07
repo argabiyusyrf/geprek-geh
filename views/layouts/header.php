@@ -18,22 +18,14 @@
             <span class="brand-word">Geprek Geh</span>
         </a>
 
-        <div class="nav-inline">
-            <?php $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
-            <a href="/geprek-geh/products" class="<?= $uri === '/geprek-geh/products' || str_starts_with($uri, '/geprek-geh/products/') ? 'is-active' : '' ?>">Menu</a>
+        <?php $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
+        <a href="/geprek-geh/products" class="nav-center-link <?= $uri === '/geprek-geh/products' || str_starts_with($uri, '/geprek-geh/products/') ? 'is-active' : '' ?>">Menu</a>
+
+        <div class="nav-actions">
             <button type="button" class="cart-link cart-trigger icon-trigger" data-open-drawer aria-label="Keranjang">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                 <span class="notif-dot" data-cart-count="<?= CartController::count() ?>" <?= CartController::count() > 0 ? '' : 'style="display:none"' ?>><?= CartController::count() ?></span>
             </button>
-            <?php if (Auth::check()): ?>
-                <!-- account items live in the dropdown (nav-actions) -->
-            <?php else: ?>
-                <a href="/geprek-geh/auth/login" class="btn btn-sm btn-ghost">Masuk</a>
-                <a href="/geprek-geh/auth/register" class="btn btn-sm btn-primary">Daftar</a>
-            <?php endif; ?>
-        </div>
-
-        <div class="nav-actions">
             <?php if (Auth::check()): ?>
                 <?php $notifs = NotificationController::fetchAll(8); $unread = NotificationController::unreadCount(); ?>
                 <div class="notif" data-notif>
