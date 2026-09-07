@@ -524,6 +524,8 @@ section[id] { scroll-margin-top: 110px; }
     }
     .account-menu {
         min-width: 220px;
+        max-height: calc(100dvh - 80px);
+        overflow-y: auto;
         right: -8px;
     }
     .icon-trigger { width: 40px; height: 40px; }
