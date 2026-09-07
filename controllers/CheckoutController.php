@@ -155,6 +155,9 @@ class CheckoutController {
         }
         unset($_SESSION['promo']);
 
+        $db->update('users', ['phone' => $phone], 'id = ?', [Auth::id()]);
+        unset($_SESSION['checkout_old']);
+
         foreach ($items as $item) {
             $db->insert('order_items', [
                 'order_id'   => $order_id,
