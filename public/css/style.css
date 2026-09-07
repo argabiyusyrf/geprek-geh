@@ -510,8 +510,6 @@ section[id] { scroll-margin-top: 110px; }
 
 @media (max-width: 768px) {
     .account-name-hide-mobile, .account-chevron { display: none; }
-    .account-trigger { padding: 5px; }
-    .account-menu { min-width: 220px; }
     .icon-trigger { width: 40px; height: 40px; }
     .admin-topbar-right { gap: 6px; }
     .admin-user .account-name { display: none; }
@@ -3188,6 +3186,8 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .checkout-grid { grid-template-columns: 1fr; }
     .order-summary.sticky { position: static; }
     .order-detail-layout { grid-template-columns: 1fr; }
+    .cart-layout { grid-template-columns: 1fr; }
+    .cart-summary-card { position: static; }
     .footer-inner { grid-template-columns: 1fr 1fr; }
 }
 
@@ -3208,6 +3208,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .nav-center-link { display: none; }
     .nav-burger { display: block; }
     .nav-user { display: none; }
+    .notif, .account { display: none; }
     .island-nav { top: 14px; }
 
     .hero {
