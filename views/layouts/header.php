@@ -28,7 +28,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="/geprek-geh/public/fonts/fonts.css">
     <link rel="stylesheet" href="/geprek-geh/vendor/css/lenis.css">
-    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260907g">
+    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260907h">
 
     <?= SeoController::organizationJsonLd() ?>
     <?= $page_jsonld ?? '' ?>
