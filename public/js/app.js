@@ -27,25 +27,37 @@ function prefersReduced() {
 
 /* ── Scroll reveal (IntersectionObserver — never 'scroll' listeners) ── */
 (function reveal() {
-    const els = document.querySelectorAll('[data-reveal], .card, .product-card, .category-card, .order-card, .stat-card, .about-item');
+    const base = document.querySelectorAll('[data-reveal], .card, .product-card, .category-card, .order-card, .stat-card, .about-item');
     if (!('IntersectionObserver' in window) || prefersReduced()) {
-        els.forEach((el) => el.classList.add('in'));
+        base.forEach((el) => el.classList.add('in'));
         return;
     }
+
+    // Auto-stagger children of any [data-reveal-stagger] container.
+    const staggers = document.querySelectorAll('[data-reveal-stagger]');
+    staggers.forEach((host) => {
+        Array.from(host.children).forEach((child, i) => {
+            child.dataset.reveal = '';
+            child.dataset.stagger = i;
+        });
+    });
+
     const io = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
                 const el = entry.target;
-                el.style.transitionDelay = Math.min((el.dataset.stagger || 0) * 70, 350) + 'ms';
+                const explicit = parseInt(el.dataset.revealDelay || '0', 10);
+                const stagger = parseInt(el.dataset.stagger || '0', 10);
+                const delay = explicit ? explicit * 70 : Math.min(stagger * 70, 350);
+                el.style.transitionDelay = delay + 'ms';
                 el.classList.add('in');
                 io.unobserve(el);
             }
         });
     }, { threshold: 0.12, rootMargin: '0px 0px -48px 0px' });
 
-    els.forEach((el, i) => {
-        el.dataset.reveal = '';
-        el.dataset.stagger = i % 12;
+    base.forEach((el, i) => {
+        if (!el.dataset.stagger) el.dataset.stagger = i % 12;
         io.observe(el);
     });
 })();
