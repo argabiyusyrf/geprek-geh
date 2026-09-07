@@ -3319,6 +3319,18 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .alert { top: 76px; }
 }
 
+/* ─── Ultra small (≤400px) ────────────────────────────────── */
+@media (max-width: 400px) {
+    .hero-title { font-size: 2rem; }
+    .hero-stats { gap: 14px; }
+    .hero-stat b { font-size: 1.5rem; }
+    .category-card-core { padding: 20px 16px 18px; }
+    .about-strip { padding: 24px 20px; }
+    .about-item { flex-direction: column; gap: 8px; }
+    .footer-inner { gap: 24px; }
+    .brand-mark { width: 34px; height: 34px; font-size: 15px; }
+}
+
 /* ─── Order lifecycle (payment flow, logs, resi) ────────── */
 .order-help {
     text-decoration: none;
