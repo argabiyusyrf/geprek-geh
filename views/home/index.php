@@ -77,7 +77,7 @@ $hero_level = $categories[1] ?? null;
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
         </a>
     </div>
-    <div class="bento">
+    <div class="bento" data-reveal-stagger>
         <?php
         $cat_icons = [
             'Geprek Original' => '<path d="M15.5 11.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0z"/><path d="M11 7V3M13.5 4.5L8.5 6.5M15 7.5l-6 1.5"/><path d="M6 1l-1 3M9 2L7.5 4"/>',
@@ -89,7 +89,7 @@ $hero_level = $categories[1] ?? null;
         ];
         ?>
         <?php foreach ($categories as $cat): ?>
-            <a href="/geprek-geh/products?category=<?= e($cat['slug']) ?>" class="category-card">
+            <a href="/geprek-geh/products?category=<?= e($cat['slug']) ?>" class="category-card" data-reveal>
                 <div class="category-card-core">
                     <span class="category-emoji"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><?= $cat_icons[$cat['name']] ?? '<path d="M12 3v10M8 8l4 4 4-4"/>' ?></svg></span>
                     <h3><?= e($cat['name']) ?></h3>
@@ -112,7 +112,7 @@ $hero_level = $categories[1] ?? null;
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
         </a>
     </div>
-    <div class="menu-bento">
+    <div class="menu-bento" data-reveal-stagger>
         <?php foreach ($featured as $i => $p): ?>
             <article class="product-card <?= $i < 2 ? 'feat-a' : '' ?>" data-reveal>
                 <div class="product-card-inner">
