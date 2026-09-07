@@ -125,6 +125,12 @@
                     <span>Subtotal (<?= count($items) ?> item)</span>
                     <span><?= rupiah($subtotal) ?></span>
                 </div>
+                <?php if ($discount > 0): ?>
+                <div class="cart-sum-line cart-sum-discount">
+                    <span>Diskon (<?= e($promo_label) ?>)</span>
+                    <span>-<?= rupiah($discount) ?></span>
+                </div>
+                <?php endif; ?>
                 <div class="cart-sum-line">
                     <span>Ongkir</span>
                     <span>Rp<?= number_format($shipping, 0, ',', '.') ?></span>
