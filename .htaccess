@@ -24,12 +24,3 @@ Options -Indexes
 <FilesMatch "^\.">
     Require all denied
 </FilesMatch>
-
-# ─── Upload hardening: never execute scripts inside uploads/ ───
-# (per-File match — <DirectoryMatch> is not allowed in .htaccess context)
-<FilesMatch "^assets/uploads/.*\.(php|phtml|phar|pl|py|jsp|asp|sh|cgi)$">
-    Require all denied
-</FilesMatch>
-<IfModule mod_php.c>
-    php_flag engine off
-</IfModule>
