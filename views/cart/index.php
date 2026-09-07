@@ -146,6 +146,24 @@
             </div>
 
             <?php if (Auth::check()): ?>
+                <?php if ($promo): ?>
+                    <div class="promo-applied">
+                        <span class="promo-applied-code"><?= e($promo['code']) ?></span>
+                        <form method="POST" action="/geprek-geh/promo/remove" style="display:inline">
+                            <?= csrf_field() ?>
+                            <button type="submit" class="promo-remove-btn" aria-label="Hapus promo">&times;</button>
+                        </form>
+                    </div>
+                <?php else: ?>
+                    <form method="POST" action="/geprek-geh/promo/apply" class="promo-form">
+                        <?= csrf_field() ?>
+                        <div class="promo-input-row">
+                            <input type="text" name="promo_code" class="input promo-input" placeholder="Kode promo" autocomplete="off" maxlength="32">
+                            <button type="submit" class="btn btn-sm btn-ghost">Pakai</button>
+                        </div>
+                    </form>
+                <?php endif; ?>
+
                 <a href="/geprek-geh/checkout" class="btn btn-primary btn-lg btn-block">
                     Checkout Sekarang
                     <span class="btn-icon">
