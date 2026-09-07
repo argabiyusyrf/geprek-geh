@@ -127,6 +127,13 @@
                     <span>Pajak (11%)</span>
                     <span><?= rupiah($tax) ?></span>
                 </div>
+
+                <?php if ($discount > 0 && $promo): ?>
+                <div class="cart-sum-line cart-discount-line">
+                    <span>Diskon (<?= e($promo_label) ?>)</span>
+                    <span class="is-discount">−<?= rupiah($discount) ?></span>
+                </div>
+                <?php endif; ?>
             </div>
             <div class="cart-sum-total">
                 <span>Total</span>
