@@ -28,9 +28,15 @@ class ProductController {
         $total_pages = max(1, ceil($total / $per_page));
 
         $products = $db->fetchAll(
-            "SELECT p.*, c.name AS category_name, c.slug AS category_slug
-             FROM products p JOIN categories c ON p.category_id = c.id
-             WHERE {$where} ORDER BY p.is_featured DESC, p.created_at DESC LIMIT {$per_page} OFFSET {$offset}",
+            "SELECT p.*, c.name AS category_name, c.slug AS category_slug,
+              COALESCE(r.review_count, 0) AS review_count,
+              COALESCE(r.avg_rating, 0) AS avg_rating
+              FROM products p JOIN categories c ON p.category_id = c.id
+              LEFT JOIN (
+                SELECT product_id, COUNT(*) AS review_count, AVG(rating) AS avg_rating
+                FROM product_reviews GROUP BY product_id
+              ) r ON r.product_id = p.id
+              WHERE {$where} ORDER BY p.is_featured DESC, p.created_at DESC LIMIT {$per_page} OFFSET {$offset}",
             $params
         );
         $categories = $db->fetchAll("SELECT c.*, (SELECT COUNT(*) FROM products WHERE category_id = c.id AND is_active = 1) AS product_count FROM categories c ORDER BY c.sort_order, c.name");

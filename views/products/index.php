@@ -113,9 +113,17 @@
 
                     <div class="menu-card-body">
                         <span class="menu-card-cat"><?= e($p['category_name']) ?></span>
-                        <h3 class="menu-card-title">
-                            <a href="/geprek-geh/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a>
-                        </h3>
+                         <h3 class="menu-card-title">
+                             <a href="/geprek-geh/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a>
+                         </h3>
+                         <?php if ($p['review_count'] > 0): ?>
+                         <div class="menu-card-rating">
+                             <?php for ($s = 1; $s <= 5; $s++): ?>
+                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="<?= $s <= round($p['avg_rating']) ? '#D43E1B' : 'none' ?>" stroke="#D43E1B" stroke-width="1.8"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
+                             <?php endfor; ?>
+                             <span class="menu-card-rating-count">(<?= $p['review_count'] ?>)</span>
+                         </div>
+                         <?php endif; ?>
                         <?php if ($p['description']): ?>
                             <p class="menu-card-desc"><?= e(mb_strimwidth($p['description'], 0, 90, '...')) ?></p>
                         <?php endif; ?>
