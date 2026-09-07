@@ -868,3 +868,36 @@ function changeQty(delta) {
         });
     });
 })();
+
+/* ── Review star rating input ── */
+(function reviewStars() {
+    const wrap = document.querySelector('[data-rating-input]');
+    if (!wrap) return;
+    const input = wrap.querySelector('input[name="rating"]');
+    const stars = wrap.querySelectorAll('.review-star-btn');
+
+    function update(val) {
+        input.value = val;
+        stars.forEach((s) => {
+            const v = parseInt(s.dataset.star);
+            s.classList.toggle('is-active', v <= val);
+            const path = s.querySelector('svg path');
+            if (path) path.setAttribute('fill', v <= val ? '#D43E1B' : 'none');
+        });
+    }
+
+    stars.forEach((s) => {
+        s.addEventListener('click', () => update(parseInt(s.dataset.star)));
+        s.addEventListener('mouseenter', () => {
+            const v = parseInt(s.dataset.star);
+            stars.forEach((x) => {
+                const sv = parseInt(x.dataset.star);
+                const p = x.querySelector('svg path');
+                if (p) p.setAttribute('fill', sv <= v ? '#D43E1B' : 'none');
+            });
+        });
+    });
+
+    wrap.addEventListener('mouseleave', () => update(parseInt(input.value) || 0));
+    update(parseInt(input.value) || 0);
+})();
