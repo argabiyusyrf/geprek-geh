@@ -146,6 +146,23 @@ class OrderController {
             redirect('/geprek-geh/orders/' . $order['id']);
         }
 
+        // Tertiary check: actually try to decode the image. This catches
+        // polyglot files (e.g. PHP disguised as JPG) that pass mime sniffers.
+        $imageInfo = @getimagesize($file['tmp_name']);
+        $allowed_image_types = [IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_WEBP];
+        if (!$imageInfo || !in_array($imageInfo[2], $allowed_image_types, true)) {
+            flash_set('error', 'File yang diunggah bukan gambar yang valid.');
+            redirect('/geprek-geh/orders/' . $order['id']);
+        }
+
+        // Verify declared extension matches detected image type
+        $typeToExt = [IMAGETYPE_PNG => 'png', IMAGETYPE_JPEG => 'jpg', IMAGETYPE_WEBP => 'webp'];
+        $realExt = $typeToExt[$imageInfo[2]] ?? null;
+        if (!$realExt || !in_array($ext, [$realExt, $realExt === 'jpg' ? 'jpeg' : $realExt], true)) {
+            flash_set('error', 'Ekstensi file tidak cocok dengan isi gambar.');
+            redirect('/geprek-geh/orders/' . $order['id']);
+        }
+
         $filename = 'proof_' . $order['id'] . '_' . time() . '.' . $ext;
         $upload_dir = __DIR__ . '/../assets/uploads/payments/';
         if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);

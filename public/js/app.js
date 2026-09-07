@@ -62,6 +62,93 @@ function prefersReduced() {
     });
 })();
 
+/* ── Global search overlay ── */
+(function searchOverlay() {
+    const overlay = document.getElementById('searchOverlay');
+    const input = document.getElementById('searchInput');
+    const results = document.getElementById('searchResults');
+    const triggers = document.querySelectorAll('[data-search-trigger]');
+    if (!overlay || !input) return;
+
+    let lastQ = '';
+    let debounceTimer = null;
+
+    function open() {
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        if (window.__lenis) window.__lenis.stop();
+        setTimeout(() => input.focus({ preventScroll: true }), 60);
+    }
+    function close() {
+        overlay.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (window.__lenis) window.__lenis.start();
+        input.value = '';
+        results.innerHTML = '<div class="search-empty">Ketik minimal 2 karakter untuk mencari.</div>';
+    }
+    window.closeSearch = close;
+
+    function escape(s) { return (s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+    function renderEmpty(msg) {
+        results.innerHTML = '<div class="search-empty">' + escape(msg) + '</div>';
+    }
+    function renderItems(items, total, viewAllHref) {
+        if (!items.length) { renderEmpty('Tidak ada hasil yang cocok.'); return; }
+        const list = items.map((it) => (
+            '<a class="search-item" href="' + escape(it.href) + '">' +
+            '<span class="search-thumb">' + (it.image ? '<img src="' + escape(it.image) + '" alt="" loading="lazy">' : '') + '</span>' +
+            '<span class="search-meta"><small>' + escape(it.category) + '</small><b>' + escape(it.name) + '</b></span>' +
+            '<span class="search-price">Rp ' + Number(it.price).toLocaleString('id-ID') + '</span>' +
+            '</a>'
+        )).join('');
+        const more = total > items.length
+            ? '<a class="search-view-all" href="' + escape(viewAllHref) + '">Lihat semua ' + total + ' hasil &rarr;</a>'
+            : '';
+        results.innerHTML = list + more;
+    }
+
+    function fetchSuggest(q) {
+        if (q === lastQ) return;
+        lastQ = q;
+        fetch('/geprek-geh/search?q=' + encodeURIComponent(q) + '&_=' + Date.now(), {
+            headers: { 'Accept': 'application/json' },
+            credentials: 'same-origin',
+        })
+        .then((r) => r.json())
+        .then((data) => { if (data && data.ok) renderItems(data.items || [], data.total || 0, data.view_all_href || ''); })
+        .catch(() => renderEmpty('Koneksi bermasalah.'));
+    }
+
+    input.addEventListener('input', () => {
+        const q = input.value.trim();
+        clearTimeout(debounceTimer);
+        if (q.length < 2) { results.innerHTML = '<div class="search-empty">Ketik minimal 2 karakter untuk mencari.</div>'; return; }
+        debounceTimer = setTimeout(() => fetchSuggest(q), 180);
+    });
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+        if (e.key === 'Enter') {
+            const q = input.value.trim();
+            if (q.length >= 1) window.location.href = '/geprek-geh/products?q=' + encodeURIComponent(q);
+        }
+    });
+
+    triggers.forEach((t) => t.addEventListener('click', open));
+    overlay.querySelectorAll('[data-close-search]').forEach((b) => b.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('is-open')) close();
+        if ((e.key === '/' || (e.metaKey && e.key === 'k')) && !overlay.classList.contains('is-open') &&
+            !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
+            e.preventDefault();
+            open();
+        }
+    });
+})();
+
 /* ── Fluid Island nav: scroll state ── */
 const navPill = document.querySelector('.nav-pill');
 if (navPill) {
