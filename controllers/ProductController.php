@@ -59,6 +59,23 @@ class ProductController {
             [$product['category_id'], $product['id']]
         );
 
+        // Reviews
+        $reviews = $db->fetchAll(
+            "SELECT pr.*, u.name AS user_name FROM product_reviews pr
+             JOIN users u ON pr.user_id = u.id
+             WHERE pr.product_id = ? ORDER BY pr.created_at DESC",
+            [$product['id']]
+        );
+        $review_stats = $db->fetchOne(
+            "SELECT COUNT(*) AS review_count, COALESCE(AVG(rating), 0) AS avg_rating
+             FROM product_reviews WHERE product_id = ?",
+            [$product['id']]
+        );
+        $my_review = Auth::check() ? $db->fetchOne(
+            "SELECT * FROM product_reviews WHERE product_id = ? AND user_id = ?",
+            [$product['id'], Auth::id()]
+        ) : null;
+
         require __DIR__ . '/../views/layouts/header.php';
         require __DIR__ . '/../views/products/show.php';
         require __DIR__ . '/../views/layouts/footer.php';
