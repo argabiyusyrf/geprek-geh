@@ -10,13 +10,18 @@ class SeoController {
             $urls[] = ['loc' => $base . $path, 'priority' => $pri, 'changefreq' => 'daily'];
         }
 
-        // Categories
-        foreach ($db->fetchAll("SELECT slug, updated_at FROM categories ORDER BY id") as $c) {
+        // Categories (only include column if it exists)
+        try {
+            $cols = $db->fetchAll("SHOW COLUMNS FROM categories LIKE 'updated_at'");
+            $catHasUpdated = !empty($cols);
+        } catch (Exception $e) { $catHasUpdated = false; }
+
+        foreach ($db->fetchAll("SELECT slug" . ($catHasUpdated ? ", updated_at" : "") . " FROM categories ORDER BY id") as $c) {
             $urls[] = [
                 'loc'        => $base . '/products?category=' . urlencode($c['slug']),
                 'priority'   => '0.7',
                 'changefreq' => 'weekly',
-                'lastmod'    => $c['updated_at'] ?? null,
+                'lastmod'    => $catHasUpdated ? ($c['updated_at'] ?? null) : null,
             ];
         }
 
