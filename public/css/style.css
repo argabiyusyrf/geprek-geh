@@ -5,19 +5,21 @@
    ═══════════════════════════════════════════════════════════ */
 
 :root {
-    /* ─── Elite Palette (Editorial Luxury) ─── */
-    --bg:          #FAF6EF; /* Cream Ivory */
-    --bg-soft:     #F1EADC;
-    --card:        #FFFDF9;
-    --card-muted:  #F7F0E2;
-    --ink:         #1D1A15; /* Deep Obsidian */
-    --ink-2:       #3A342B;
-    --muted:       #7A7062;
-    --accent:      #E84B23; /* Chili Red */
-    --accent-deep: #C23A14;
-    --accent-soft: rgba(232, 75, 35, 0.08);
-    --chili:       #FF5A1F;
-    --sambal:      #F2B01D;
+    /* ─── Elite Palette · Editorial Luxury (cream / espresso / chili) ─── */
+    --bg:          #F4ECDC; /* Warm cream ivory */
+    --bg-soft:     #EADFC8;
+    --paper:       #F8F1E2;
+    --card:        #FBF5E7;
+    --card-muted:  #F2E8D2;
+    --ink:         #14110C; /* Espresso black */
+    --ink-2:       #322A20;
+    --ink-3:       #5A4D3D;
+    --muted:       #8A7A65;
+    --accent:      #D43E1B; /* Chili */
+    --accent-deep: #A82A0E;
+    --accent-soft: rgba(212, 62, 27, 0.08);
+    --chili:       #F2561F;
+    --sambal:      #E8A21A;
 
     /* ─── Semantic Tones ─── */
     --good:        #2C6E3F;
@@ -26,9 +28,9 @@
     --warn:        #A16207;
 
     /* ─── Hairlines & Bezels ─── */
-    --hairline:    rgba(29, 26, 21, 0.10);
-    --hairline-s:  rgba(29, 26, 21, 0.06);
-    --hairline-w:  rgba(255, 253, 249, 0.14);
+    --hairline:    rgba(20, 17, 12, 0.10);
+    --hairline-s:  rgba(20, 17, 12, 0.06);
+    --hairline-w:  rgba(251, 245, 231, 0.14);
     --bezel:       rgba(255, 255, 255, 0.6);
 
     /* ─── Typography ─── */
@@ -38,19 +40,26 @@
 
     /* ─── Haptic Motion (Spring Physics) ─── */
     --ease-spring:  cubic-bezier(0.32, 0.72, 0, 1);
-    --ease-soft:    cubic-bezier(0.25, 0.5, 0.2, 1);
+    --ease-soft:    cubic-bezier(0.25, 0.5, 0.25, 1);
     --ease-expo:    cubic-bezier(0.19, 1, 0.22, 1);
-    --transition-p: 0.7s var(--ease-spring); /* Premium transition */
+    --ease-in-out-soft: cubic-bezier(0.6, 0.05, 0.35, 1);
+    --transition-p: 0.7s var(--ease-spring);
 
-    /* ─── Radius (Concentric Architecture) ─── */
-    --r-outer: 2rem;
-    --r-inner: calc(2rem - 0.5rem);
-    --r-pill:  999px;
+    /* ─── Radius · concentric Double-Bezel architecture ─── */
+    --r-outer:    2rem;
+    --r-inner:    calc(2rem - 0.5rem);
+    --r-xl:       1.5rem;
+    --r-lg:       1.125rem;
+    --r-md:       0.875rem;
+    --r-sm:       0.625rem;
+    --r-pill:     999px;
 
-    /* ─── Shadow (Ambient Occlusion) ─── */
-    --shadow-soft: 0 1px 2px rgba(29,26,21,0.05), 0 20px 50px -24px rgba(29,26,21,0.16);
-    --shadow-float: 0 2px 6px rgba(29,26,21,0.05), 0 30px 70px -30px rgba(29,26,21,0.24);
-    --shadow-inner: inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    /* ─── Shadow (ambient occlusion) ─── */
+    --shadow-soft:  0 1px 2px rgba(20,17,12,0.04), 0 18px 48px -26px rgba(20,17,12,0.18);
+    --shadow-float: 0 2px 6px rgba(20,17,12,0.04), 0 28px 70px -34px rgba(20,17,12,0.28);
+    --shadow-pop:   0 2px 8px rgba(20,17,12,0.06), 0 36px 90px -34px rgba(20,17,12,0.34);
+    --shadow-inner: inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    --shadow-inner-warm: inset 0 1px 0 rgba(255, 245, 225, 0.6);
 }
 
 /* ─── Reset & Base ─────────────────────────────────────────── */
@@ -727,7 +736,7 @@ section[id] { scroll-margin-top: 110px; }
 .btn-lg { padding: 18px 30px; font-size: 16px; }
 .btn-block { display: flex; width: 100%; }
 .btn:disabled, .btn[disabled] { opacity: 0.5; cursor: not-allowed; }
-.btn.is-loading, .menu-add-btn.is-loading { animation: btn-pulse 0.9s ease-in-out infinite; }
+.btn.is-loading, .menu-add-btn.is-loading { animation: btn-pulse 0.9s var(--ease-in-out-soft) infinite; }
 @keyframes btn-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 
 /* ─── Reveal choreography ──────────────────────────────────── */
@@ -3348,7 +3357,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 .order-help {
     text-decoration: none;
     border-radius: 12px;
-    transition: background .18s ease;
+    transition: background .4s var(--ease-soft);
 }
 .order-help:hover { background: rgba(29,26,21,0.04); }
 
@@ -3410,7 +3419,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     line-height: 1.5;
     color: var(--muted);
 }
-.pay-info.is-visible { display: block; animation: fadeUp .25s ease; }
+.pay-info.is-visible { display: block; animation: fadeUp .35s var(--ease-spring); }
 .pay-info-label { display: block; color: var(--ink-2); font-weight: 600; margin-bottom: 2px; }
 .pay-info-detail strong { color: var(--ink); }
 
