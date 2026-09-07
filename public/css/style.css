@@ -120,16 +120,6 @@ section[id] { scroll-margin-top: 110px; }
     backdrop-filter: blur(12px);
     box-shadow: var(--shadow-inner);
 }
-    border-radius: 999px;
-    border: 1px solid var(--hairline);
-    background: rgba(255, 253, 249, 0.6);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--accent-deep);
-    backdrop-filter: blur(8px);
-}
 
 /* ─── Fluid Island Navbar ──────────────────────────────────── */
 .island-nav {
