@@ -45,6 +45,7 @@ require_once __DIR__ . '/core/Database.php';
 require_once __DIR__ . '/core/Router.php';
 require_once __DIR__ . '/core/Auth.php';
 require_once __DIR__ . '/core/Totp.php';
+require_once __DIR__ . '/core/Mail.php';
 require_once __DIR__ . '/core/helpers.php';
 
 spl_autoload_register(function ($class) {
@@ -73,6 +74,10 @@ $router->get('/auth/login',                ['AuthController', 'loginForm']);
 $router->post('/auth/login',               ['AuthController', 'login']);
 $router->get('/auth/register',             ['AuthController', 'registerForm']);
 $router->post('/auth/register',            ['AuthController', 'register']);
+$router->get('/auth/forgot',               ['PasswordResetController', 'requestForm']);
+$router->post('/auth/forgot',              ['PasswordResetController', 'request']);
+$router->get('/auth/reset',                ['PasswordResetController', 'resetForm']);
+$router->post('/auth/reset',               ['PasswordResetController', 'reset']);
 $router->get('/auth/logout',               ['AuthController', 'logout']);
 $router->get('/auth/2fa',                  ['AuthController', 'twoFactorForm']);
 $router->post('/auth/2fa',                 ['AuthController', 'twoFactorSubmit']);
