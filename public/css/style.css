@@ -2043,6 +2043,31 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 }
 .cart-summary-note svg { flex: none; color: var(--accent); }
 
+/* Promo */
+.cart-promo-section { margin: 20px 0; }
+.promo-applied-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--accent-soft);
+    border-radius: var(--r-md);
+    margin-bottom: 12px;
+    font-size: 13.5px;
+}
+.promo-applied-bar strong { color: var(--accent-deep); }
+.promo-input-row {
+    display: flex;
+    gap: 6px;
+}
+.promo-input {
+    flex: 1;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.cart-discount-line .is-discount { color: #2da632; }
+
 /* ─── Checkout ─────────────────────────────────────────────── */
 .saved-addresses {
     display: flex;

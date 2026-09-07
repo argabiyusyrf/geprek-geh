@@ -141,7 +141,24 @@
             </div>
 
             <?php if (Auth::check()): ?>
-                <a href="/geprek-geh/checkout" class="btn btn-primary btn-lg btn-block">
+            <div class="cart-promo-section">
+                <?php if ($promo): ?>
+                <div class="promo-applied-bar">
+                    <span>Kode promo <strong><?= e($promo['code']) ?></strong> diterapkan</span>
+                    <form method="POST" action="/geprek-geh/promo/remove" style="display:inline">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-ghost btn-sm btn-dangerghost">Hapus</button>
+                    </form>
+                </div>
+                <?php endif; ?>
+                <form method="POST" action="/geprek-geh/promo/apply" class="promo-input-row">
+                    <?= csrf_field() ?>
+                    <input type="text" name="promo_code" placeholder="Masukkan kode promo..." value="<?= e($promo['code'] ?? '') ?>" maxlength="32" class="input promo-input">
+                    <button type="submit" class="btn btn-ghost btn-sm">Terapkan</button>
+                </form>
+            </div>
+
+            <a href="/geprek-geh/checkout" class="btn btn-primary btn-lg btn-block">
                     Checkout Sekarang
                     <span class="btn-icon">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
