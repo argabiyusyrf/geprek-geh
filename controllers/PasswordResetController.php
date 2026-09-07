@@ -36,13 +36,13 @@ class PasswordResetController {
             // Invalidate prior outstanding tokens for this user
             $db->query("UPDATE password_resets SET used_at = NOW() WHERE user_id = ? AND used_at IS NULL", [$user['id']]);
 
-            $db->insert('password_resets', [
+            $newId = $db->insert('password_resets', [
                 'user_id'    => $user['id'],
                 'selector'   => $selector,
                 'token_hash' => $hash,
             ]);
             // Set expiry using MySQL clock to avoid PHP/MySQL tz drift
-            $db->query("UPDATE password_resets SET expires_at = DATE_ADD(NOW(), INTERVAL ? MINUTE) WHERE id = ?", [self::TTL_MINUTES, $db->insertId()]);
+            $db->query("UPDATE password_resets SET expires_at = DATE_ADD(NOW(), INTERVAL ? MINUTE) WHERE id = ?", [self::TTL_MINUTES, $newId]);
 
             $app = require __DIR__ . '/../config/app.php';
             $base = rtrim($app['url'], '/');
