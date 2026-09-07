@@ -46,6 +46,9 @@
         <a href="/geprek-geh/products" class="nav-center-link <?= $uri === '/geprek-geh/products' || str_starts_with($uri, '/geprek-geh/products/') ? 'is-active' : '' ?>">Menu</a>
 
         <div class="nav-actions">
+            <button type="button" class="icon-trigger search-trigger" data-search-trigger aria-label="Cari menu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </button>
             <button type="button" class="cart-link cart-trigger icon-trigger" data-open-drawer aria-label="Keranjang">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                 <span class="notif-dot" data-cart-count="<?= CartController::count() ?>" <?= CartController::count() > 0 ? '' : 'style="display:none"' ?>><?= CartController::count() ?></span>
@@ -130,6 +133,22 @@
         </div>
     </div>
 </nav>
+
+<div class="search-overlay" id="searchOverlay" aria-hidden="true">
+    <div class="search-scrim" data-close-search></div>
+    <div class="search-panel">
+        <div class="search-input-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="search" id="searchInput" placeholder="Cari geprek favoritmu…" autocomplete="off" autofocus>
+            <button type="button" class="search-close" data-close-search aria-label="Tutup">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="search-results" id="searchResults">
+            <div class="search-empty">Ketik minimal 2 karakter untuk mencari.</div>
+        </div>
+    </div>
+</div>
 
 <div class="nav-overlay" id="navOverlay" aria-hidden="true">
     <div class="overlay-inner">

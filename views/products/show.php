@@ -1,5 +1,13 @@
-<?php $page_title = $product['name']; ?>
-<?php $out_stock = $product['stock'] <= 0; ?>
+<?php
+$page_title = $product['name'];
+$page_description = mb_substr(strip_tags($product['description'] ?? ''), 0, 160);
+if (!empty($product['image'])) {
+    $og_image = 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/geprek-geh/assets/uploads/products/' . $product['image'];
+}
+$og_type = 'product';
+$page_jsonld = SeoController::productJsonLd($product);
+$out_stock = $product['stock'] <= 0;
+?>
 
 <div class="pd-wrap">
     <nav class="pd-crumb" aria-label="Breadcrumb">
