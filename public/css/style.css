@@ -510,6 +510,22 @@ section[id] { scroll-margin-top: 110px; }
 
 @media (max-width: 768px) {
     .account-name-hide-mobile, .account-chevron { display: none; }
+    .account-trigger {
+        padding: 4px;
+        gap: 0;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+    }
+    .account-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+    .account-menu {
+        min-width: 220px;
+        right: -8px;
+    }
     .icon-trigger { width: 40px; height: 40px; }
     .admin-topbar-right { gap: 6px; }
     .admin-user .account-name { display: none; }
@@ -3208,7 +3224,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .nav-center-link { display: none; }
     .nav-burger { display: block; }
     .nav-user { display: none; }
-    .notif, .account { display: none; }
+    .notif { display: none; }
     .island-nav { top: 14px; }
 
     .hero {
