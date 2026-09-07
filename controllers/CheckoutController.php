@@ -21,7 +21,17 @@ class CheckoutController {
         $app = require __DIR__ . '/../config/app.php';
         $tax = (int)($subtotal * $app['tax_rate']);
         $shipping = $app['shipping'];
-        $grand_total = $subtotal + $tax + $shipping;
+
+        $promo = $_SESSION['promo'] ?? null;
+        $discount = 0;
+        $promo_label = '';
+        if ($promo && $subtotal > 0) {
+            $d = PromoController::calcDiscount($promo, $subtotal);
+            $discount = $d['discount'];
+            $promo_label = $d['label'];
+        }
+
+        $grand_total = max(0, $subtotal - $discount + $tax + $shipping);
 
         $payment_options = [
             'transfer' => ['label' => 'Transfer Bank', 'icon' => 'bank', 'desc' => 'Verifikasi manual oleh admin 1×24 jam'],
