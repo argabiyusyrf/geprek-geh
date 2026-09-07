@@ -89,7 +89,7 @@ $hero_level = $categories[1] ?? null;
         ];
         ?>
         <?php foreach ($categories as $cat): ?>
-            <a href="/geprek-geh/products?category=<?= e($cat['slug']) ?>" class="category-card" data-reveal>
+            <a href="/geprek-geh/products?category=<?= e($cat['slug']) ?>" class="category-card">
                 <div class="category-card-core">
                     <span class="category-emoji"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><?= $cat_icons[$cat['name']] ?? '<path d="M12 3v10M8 8l4 4 4-4"/>' ?></svg></span>
                     <h3><?= e($cat['name']) ?></h3>

@@ -321,6 +321,8 @@ function changeQty(delta) {
         const onEsc = (e) => { if (e.key === 'Escape') { close(false); document.removeEventListener('keydown', onEsc); } };
         document.addEventListener('keydown', onEsc);
 
+        // Esc handler is intentionally not removed when the user clicks OK/Cancel,
+        // because the backdrop itself is removed before the listener fires.
         return promise;
     };
     window.gehConfirm = window.gehAlert;
