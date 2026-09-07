@@ -1,4 +1,7 @@
--- Migration: password reset tokens (Fase 1)
+-- Migration: password reset tokens (Fase 1) — idempotent
+-- Re-running is safe: ALTER TABLE uses IF NOT EXISTS-style guard
+-- (information_schema check) below; see install.php runner.
+
 CREATE TABLE IF NOT EXISTS `password_resets` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `user_id` INT UNSIGNED NOT NULL,
@@ -12,6 +15,3 @@ CREATE TABLE IF NOT EXISTS `password_resets` (
     KEY `idx_user` (`user_id`),
     KEY `idx_expires` (`expires_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-ALTER TABLE `password_resets`
-    ADD CONSTRAINT `fk_pwreset_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
