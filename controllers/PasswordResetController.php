@@ -61,10 +61,14 @@ class PasswordResetController {
         $selector = $_GET['selector'] ?? '';
         $token    = $_GET['token'] ?? '';
         $page_title = 'Reset Password';
-        $valid = self::validateToken($selector, $token);
+        $valid = self::validateToken($selector, $token) !== false;
         require __DIR__ . '/../views/layouts/header.php';
         require __DIR__ . '/../views/auth/reset.php';
         require __DIR__ . '/../views/layouts/footer.php';
+    }
+
+    public function isValidLink(string $selector, string $token): bool {
+        return self::validateToken($selector, $token) !== false;
     }
 
     public function reset() {
