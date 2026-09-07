@@ -3339,7 +3339,6 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 
 /* ─── Cart trigger ────────────────────────────────────── */
 .cart-trigger { cursor: pointer; }
-.cart-link { position: relative; }
 .cart-count {
     position: absolute; top: -6px; right: -8px; min-width: 18px; height: 18px;
     padding: 0 4px; border-radius: 999px;
