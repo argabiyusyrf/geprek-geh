@@ -3228,15 +3228,19 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .nav-user { display: none; }
     .notif { display: none; }
     .island-nav { top: 14px; }
+    .nav-pill { gap: 6px; padding: 8px 10px; }
+    .brand-word { display: none; }
 
     .hero {
         grid-template-columns: 1fr;
-        gap: 64px;
-        padding: 150px 0 64px;
+        gap: 40px;
+        padding: 110px 0 48px;
         min-height: auto;
     }
     .hero-visual { max-width: 460px; margin-inline: auto; width: 100%; }
     .hero-card-float { left: 4px; bottom: -28px; }
+
+    .section { padding-block: clamp(56px, 8vh, 90px); }
 
     .bento, .product-grid, .menu-bento { grid-template-columns: 1fr; }
     .category-card, .category-card:nth-child(1), .category-card:nth-child(3),
@@ -3249,24 +3253,29 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .cart-layout { grid-template-columns: 1fr; }
     .cart-summary-card { position: static; }
     .cart-item { flex-wrap: wrap; }
-    .cart-item-img { width: 92px; height: 92px; }
+    .cart-item-img { width: 80px; height: 80px; }
     .cart-item-actions { flex-wrap: wrap; }
     .product-detail { grid-template-columns: 1fr; }
     .product-detail-img { position: static; }
+    .pd { grid-template-columns: 1fr; }
+    .pd-info { position: static; }
     .order-detail-grid, .order-detail-layout, .admin-grid-2 { grid-template-columns: 1fr; }
     .about-strip { grid-template-columns: 1fr; }
     .footer-inner { grid-template-columns: 1fr; gap: 32px; }
 
     .admin-mobile-nav { display: flex; }
-    .sidebar {
-        display: none;
-    }
+    .sidebar { display: none; }
     .admin-main { margin-left: 0; padding: 76px 16px 48px; }
     .admin-topbar { padding-top: 8px; }
     .stats-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
     .section-head { flex-direction: column; align-items: flex-start; }
 
-    .alert { top: 84px; }
+    .page-top { padding-top: clamp(100px, 12vh, 140px); }
+    .menu-hero { padding-top: clamp(100px, 12vh, 140px); }
+    .cart-hero { padding-top: clamp(100px, 12vh, 140px); }
+    .auth-page { padding-top: clamp(100px, 12vh, 140px); }
+
+    .alert { top: 76px; }
 }
 
 /* ─── Order lifecycle (payment flow, logs, resi) ────────── */
