@@ -3231,23 +3231,64 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .nav-pill { gap: 6px; padding: 8px 10px; }
     .brand-word { display: none; }
 
+    /* ── Homepage Hero ── */
     .hero {
         grid-template-columns: 1fr;
         gap: 40px;
         padding: 110px 0 48px;
         min-height: auto;
     }
+    .hero-title { font-size: clamp(2.2rem, 10vw, 3.6rem); margin: 18px 0 16px; }
+    .hero-sub { font-size: 0.95rem; margin-bottom: 24px; }
+    .hero-cta { gap: 12px; margin-bottom: 32px; }
     .hero-visual { max-width: 460px; margin-inline: auto; width: 100%; }
-    .hero-card-float { left: 4px; bottom: -28px; }
+    .hero-plate-core { min-height: 300px; }
+    .hero-dish-meta { padding: 14px 16px 16px; }
+    .hero-dish-meta h3 { font-size: 1.1rem; }
+    .hero-dish-meta b { font-size: 1.2rem; }
+    .hero-card-float {
+        position: relative;
+        bottom: auto; left: auto;
+        max-width: 100%;
+        margin-top: 12px;
+        transform: none;
+    }
+    .hero-chip {
+        position: relative;
+        top: auto; right: auto;
+        display: inline-flex;
+        margin-top: 12px;
+        transform: none;
+    }
+    .hero-plate { transform: none; }
 
-    .section { padding-block: clamp(56px, 8vh, 90px); }
+    /* ── Sections ── */
+    .section { padding-block: clamp(48px, 6vh, 80px); }
+    .section-head { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .section-head h2, .section-title { font-size: clamp(1.8rem, 6vw, 2.6rem); }
+    .section-link { font-size: 13px; }
 
+    /* ── Bento category ── */
     .bento, .product-grid, .menu-bento { grid-template-columns: 1fr; }
     .category-card, .category-card:nth-child(1), .category-card:nth-child(3),
+    .category-card:nth-child(4), .category-card:nth-child(5),
     .product-card, .product-card.feat-a, .product-card.feat-b,
     .menu-card, .menu-card--feat { grid-column: span 1; }
-    .hero-card-float, .hero-plate { transform: none; }
+    .category-card-core { padding: 24px 20px 22px; }
+    .category-card h3 { font-size: 1.3rem; }
+    .category-emoji svg { width: 44px; }
 
+    /* ── Product cards ── */
+    .product-img { min-height: 180px; }
+    .product-card.feat-a .product-img { min-height: 220px; }
+
+    /* ── About strip ── */
+    .about-strip { grid-template-columns: 1fr; padding: clamp(28px, 5vw, 48px); }
+    .about-strip h2 { font-size: clamp(1.6rem, 5vw, 2.2rem); }
+    .about-item { padding: 12px 14px; gap: 12px; }
+    .about-item .sig { width: 38px; height: 38px; }
+
+    /* ── Other pages ── */
     .menu-hero-inner { flex-direction: column; }
     .menu-hero-deco { display: none; }
     .cart-layout { grid-template-columns: 1fr; }
@@ -3260,16 +3301,16 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .pd { grid-template-columns: 1fr; }
     .pd-info { position: static; }
     .order-detail-grid, .order-detail-layout, .admin-grid-2 { grid-template-columns: 1fr; }
-    .about-strip { grid-template-columns: 1fr; }
     .footer-inner { grid-template-columns: 1fr; gap: 32px; }
 
+    /* ── Admin ── */
     .admin-mobile-nav { display: flex; }
     .sidebar { display: none; }
     .admin-main { margin-left: 0; padding: 76px 16px 48px; }
     .admin-topbar { padding-top: 8px; }
     .stats-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-    .section-head { flex-direction: column; align-items: flex-start; }
 
+    /* ── Page tops ── */
     .page-top { padding-top: clamp(100px, 12vh, 140px); }
     .menu-hero { padding-top: clamp(100px, 12vh, 140px); }
     .cart-hero { padding-top: clamp(100px, 12vh, 140px); }
