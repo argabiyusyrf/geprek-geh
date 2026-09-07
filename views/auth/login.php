@@ -45,6 +45,7 @@
                     </form>
 
                     <p class="auth-link">Belum punya akun? <a href="/geprek-geh/auth/register">Daftar di sini</a></p>
+                    <p class="auth-link" style="margin-top:-12px;font-size:13px;"><a href="/geprek-geh/auth/forgot">Lupa password?</a></p>
                 </div>
             </div>
         </div>
