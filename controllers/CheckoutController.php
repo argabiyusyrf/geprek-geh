@@ -123,13 +123,23 @@ class CheckoutController {
 
         $tax = (int)($subtotal * $app['tax_rate']);
         $shipping = $app['shipping'];
-        $grand_total = $subtotal + $tax + $shipping;
+
+        $promo = $_SESSION['promo'] ?? null;
+        $discount = 0;
+        if ($promo && $subtotal > 0) {
+            $d = PromoController::calcDiscount($promo, $subtotal);
+            $discount = $d['discount'];
+        }
+
+        $grand_total = max(0, $subtotal - $discount + $tax + $shipping);
 
         $invoice = generate_invoice();
         $order_id = $db->insert('orders', [
             'user_id'          => Auth::id(),
             'invoice_no'       => $invoice,
             'total'            => $subtotal,
+            'discount'         => $discount,
+            'promo_code'       => $promo['code'] ?? null,
             'shipping_cost'    => $shipping,
             'tax'              => $tax,
             'grand_total'      => $grand_total,
@@ -139,8 +149,11 @@ class CheckoutController {
             'notes'            => $notes,
         ]);
 
-        $db->update('users', ['phone' => $phone], 'id = ?', [Auth::id()]);
-        unset($_SESSION['checkout_old']);
+        // Increment promo usage
+        if ($promo && $discount > 0) {
+            $db->query("UPDATE promo_codes SET used_count = used_count + 1 WHERE id = ?", [$promo['id']]);
+        }
+        unset($_SESSION['promo']);
 
         foreach ($items as $item) {
             $db->insert('order_items', [
