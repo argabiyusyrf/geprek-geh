@@ -19,7 +19,8 @@
         </a>
 
         <div class="nav-inline">
-            <a href="/geprek-geh/products">Menu</a>
+            <?php $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
+            <a href="/geprek-geh/products" class="<?= $uri === '/geprek-geh/products' || str_starts_with($uri, '/geprek-geh/products/') ? 'is-active' : '' ?>">Menu</a>
             <button type="button" class="cart-link cart-trigger" data-open-drawer aria-label="Buka keranjang">
                 Keranjang
                 <span class="cart-count" data-cart-count="<?= CartController::count() ?>"><?= CartController::count() ?></span>
