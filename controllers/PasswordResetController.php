@@ -29,7 +29,9 @@ class PasswordResetController {
             $selector = bin2hex(random_bytes(16));           // public, in URL
             $token    = bin2hex(random_bytes(32));           // secret
             $hash     = hash('sha256', $token);
-            $expires  = gmdate('Y-m-d H:i:s', time() + self::TTL_MINUTES * 60);
+            // Expire 60 min from now — stored via MySQL DATE_ADD so PHP and MySQL share the same clock,
+            // avoiding tz drift between getTimezone() and NOW().
+            $expires  = null;
 
             // Invalidate prior outstanding tokens for this user
             $db->query("UPDATE password_resets SET used_at = NOW() WHERE user_id = ? AND used_at IS NULL", [$user['id']]);
@@ -38,8 +40,9 @@ class PasswordResetController {
                 'user_id'    => $user['id'],
                 'selector'   => $selector,
                 'token_hash' => $hash,
-                'expires_at' => $expires,
             ]);
+            // Set expiry using MySQL clock to avoid PHP/MySQL tz drift
+            $db->query("UPDATE password_resets SET expires_at = DATE_ADD(NOW(), INTERVAL ? MINUTE) WHERE id = ?", [self::TTL_MINUTES, $db->insertId()]);
 
             $app = require __DIR__ . '/../config/app.php';
             $base = rtrim($app['url'], '/');
