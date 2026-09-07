@@ -29,7 +29,7 @@ class PasswordResetController {
             $selector = bin2hex(random_bytes(16));           // public, in URL
             $token    = bin2hex(random_bytes(32));           // secret
             $hash     = hash('sha256', $token);
-            $expires  = date('Y-m-d H:i:s', time() + self::TTL_MINUTES * 60);
+            $expires  = gmdate('Y-m-d H:i:s', time() + self::TTL_MINUTES * 60);
 
             // Invalidate prior outstanding tokens for this user
             $db->query("UPDATE password_resets SET used_at = NOW() WHERE user_id = ? AND used_at IS NULL", [$user['id']]);
