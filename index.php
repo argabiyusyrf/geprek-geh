@@ -115,6 +115,10 @@ $router->post('/cart/clear',               ['CartController', 'clear']);
 $router->post('/reviews',                     ['ReviewController', 'store']);
 $router->post('/reviews/{id}/delete',         ['ReviewController', 'delete']);
 
+// ─── Promo ──────────────────────────────────────────
+$router->post('/promo/apply',                 ['PromoController', 'apply']);
+$router->post('/promo/remove',                ['PromoController', 'remove']);
+
 // ─── Checkout & Orders ───────────────────────────
 $router->get('/checkout',                  ['CheckoutController', 'index']);
 $router->post('/checkout',                 ['CheckoutController', 'process']);
