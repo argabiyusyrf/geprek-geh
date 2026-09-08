@@ -54,6 +54,7 @@ require_once __DIR__ . '/core/Router.php';
 require_once __DIR__ . '/core/Auth.php';
 require_once __DIR__ . '/core/Totp.php';
 require_once __DIR__ . '/core/Mail.php';
+require_once __DIR__ . '/core/RateLimiter.php';
 require_once __DIR__ . '/core/helpers.php';
 
 spl_autoload_register(function ($class) {

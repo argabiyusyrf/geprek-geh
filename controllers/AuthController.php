@@ -11,6 +11,12 @@ class AuthController {
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
+        if (!RateLimiter::attempt('login:' . $email, 5, 300)) {
+            flash_set('error', 'Terlalu banyak percobaan. Coba lagi dalam 5 menit.');
+            header('Location: /geprek-geh/auth/login');
+            exit;
+        }
+
         $user = Auth::login($email, $password);
         if (!$user) {
             flash_set('error', 'Email atau password salah.');
@@ -60,6 +66,12 @@ class AuthController {
         }
 
         $code = trim($_POST['code'] ?? '');
+
+        if (!RateLimiter::attempt('2fa:' . ($_SESSION['twofa_uid'] ?? 'x'), 5, 300)) {
+            flash_set('error', 'Terlalu banyak percobaan 2FA. Coba lagi dalam 5 menit.');
+            header('Location: /geprek-geh/auth/2fa');
+            exit;
+        }
 
         // Kode TOTP dari aplikasi authenticator
         if (Totp::verify($user['totp_secret'], $code)) {

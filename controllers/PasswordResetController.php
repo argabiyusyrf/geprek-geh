@@ -16,6 +16,12 @@ class PasswordResetController {
             header('Location: /geprek-geh/auth/forgot'); exit;
         }
         $email = strtolower(trim($_POST['email'] ?? ''));
+
+        if (!RateLimiter::attempt('reset:' . $email, 3, 3600)) {
+            flash_set('error', 'Terlalu banyak permintaan reset. Coba lagi dalam 1 jam.');
+            header('Location: /geprek-geh/auth/forgot'); exit;
+        }
+
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             flash_set('error', 'Email tidak valid.');
             header('Location: /geprek-geh/auth/forgot'); exit;

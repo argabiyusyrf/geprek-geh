@@ -4415,3 +4415,30 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 .empty-state--compact { padding: 40px 0; }
 .text-center { text-align: center; }
 .btn-warn.btn-success { margin-top: 8px; }
+
+/* ── Account menu logout form button ── */
+.overlay-link-btn {
+    display: flex; align-items: center; gap: 12px; width: 100%;
+    padding: 14px 18px; border: none; background: none;
+    font-family: var(--font-body); font-size: .95rem; color: inherit;
+    text-decoration: none; cursor: pointer; text-align: left;
+}
+.overlay-link-btn:hover { opacity: .8; }
+.account-menu form { margin: 0; }
+.account-menu [role="menuitem"].danger {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    padding: 10px 16px; border: none; background: none;
+    font: inherit; color: var(--c-danger); cursor: pointer; text-align: left;
+    text-decoration: none; border-radius: var(--r-sm);
+}
+.account-menu [role="menuitem"].danger:hover { background: rgba(212,62,27,.08); }
+
+/* ── Form submit loading state ── */
+.btn.is-loading { pointer-events: none; opacity: .65; position: relative; }
+.btn.is-loading::after {
+    content: ''; position: absolute; inset: 0;
+    border: 2px solid transparent; border-top-color: currentColor;
+    border-radius: inherit; animation: btn-spin .6s linear infinite;
+}
+@keyframes btn-spin { to { transform: rotate(360deg); } }
+button:disabled, a:disabled { opacity: .5; pointer-events: none; }
