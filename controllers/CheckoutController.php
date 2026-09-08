@@ -167,7 +167,14 @@ class CheckoutController {
                 'quantity'   => $item['quantity'],
                 'price'      => $item['price'],
             ]);
-            $db->update('products', ['stock' => $item['stock'] - $item['quantity']], 'id = ?', [$item['product_id']]);
+            $result = $db->query(
+                "UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?",
+                [$item['quantity'], $item['product_id'], $item['quantity']]
+            );
+            if ($result->rowCount() === 0) {
+                flash_set('error', "Stok {$item['name']} habis saat checkout. Silakan periksa kembali.");
+                redirect('/geprek-geh/cart');
+            }
         }
 
         $db->delete('cart', 'user_id = ?', [Auth::id()]);

@@ -6,25 +6,18 @@ class CartController {
         }
         return $_SESSION['cart_session'];
     }
-
-    public function index() {
         $db = Database::getInstance();
-        $items = $this->getItems($db);
-        $subtotal = array_sum(array_map(fn($i) => $i['price'] * $i['quantity'], $items));
-        $app = require __DIR__ . '/../config/app.php';
-        $tax = (int)($subtotal * $app['tax_rate']);
-        $shipping = $app['shipping'];
-
+        [$whereCol, $whereVal] = cart_where();
+        $items = $db->fetchAll(
+            "SELECT ct.*, p.name, p.slug, p.price, p.image, p.stock, c.name AS category_name
+             FROM cart ct JOIN products p ON ct.product_id = p.id
+             JOIN categories c ON p.category_id = c.id
+             WHERE ct.{$whereCol} = ? ORDER BY ct.created_at",
+            [$whereVal]
+        );
         $promo = $_SESSION['promo'] ?? null;
-        $discount = 0;
-        $promo_label = '';
-        if ($promo && $subtotal > 0) {
-            $d = PromoController::calcDiscount($promo, $subtotal);
-            $discount = $d['discount'];
-            $promo_label = $d['label'];
-        }
-
-        $grand_total = max(0, $subtotal - $discount + $tax + $shipping);
+        $summary = calculateOrderSummary($items, $promo);
+        extract($summary);
 
         require __DIR__ . '/../views/layouts/header.php';
         require __DIR__ . '/../views/cart/index.php';
@@ -73,12 +66,11 @@ class CartController {
             exit;
         }
 
-        $where_col = Auth::check() ? 'user_id' : 'session_id';
-        $where_val = Auth::check() ? Auth::id() : $this->sessionId();
+        [$whereCol, $whereVal] = cart_where();
 
         $existing = $db->fetchOne(
-            "SELECT * FROM cart WHERE {$where_col} = ? AND product_id = ?",
-            [$where_val, $product_id]
+            "SELECT * FROM cart WHERE {$whereCol} = ? AND product_id = ?",
+            [$whereVal, $product_id]
         );
 
         if ($existing) {
@@ -112,11 +104,10 @@ class CartController {
         $cart_id = (int)($_POST['cart_id'] ?? 0);
         $qty = max(1, (int)($_POST['quantity'] ?? 1));
 
-        $where_col = Auth::check() ? 'user_id' : 'session_id';
-        $where_val = Auth::check() ? Auth::id() : $this->sessionId();
+        [$whereCol, $whereVal] = cart_where();
         $row = $db->fetchOne(
-            "SELECT ct.*, p.stock FROM cart ct JOIN products p ON ct.product_id = p.id WHERE ct.id = ? AND ct.{$where_col} = ?",
-            [$cart_id, $where_val]
+            "SELECT ct.*, p.stock FROM cart ct JOIN products p ON ct.product_id = p.id WHERE ct.id = ? AND ct.{$whereCol} = ?",
+            [$cart_id, $whereVal]
         );
         if ($row) {
             if ($qty > $row['stock']) {
@@ -137,9 +128,8 @@ class CartController {
         }
         $db = Database::getInstance();
         $cart_id = (int)($_POST['cart_id'] ?? 0);
-        $where_col = Auth::check() ? 'user_id' : 'session_id';
-        $where_val = Auth::check() ? Auth::id() : $this->sessionId();
-        $db->delete('cart', 'id = ? AND ' . $where_col . ' = ?', [$cart_id, $where_val]);
+        [$whereCol, $whereVal] = cart_where();
+        $db->delete('cart', 'id = ? AND ' . $whereCol . ' = ?', [$cart_id, $whereVal]);
         flash_set('success', 'Produk dihapus dari keranjang.');
         header('Location: /geprek-geh/cart');
         exit;
@@ -151,9 +141,8 @@ class CartController {
             redirect('/geprek-geh/cart');
         }
         $db = Database::getInstance();
-        $where_col = Auth::check() ? 'user_id' : 'session_id';
-        $where_val = Auth::check() ? Auth::id() : $this->sessionId();
-        $db->delete('cart', $where_col . ' = ?', [$where_val]);
+        [$whereCol, $whereVal] = cart_where();
+        $db->delete('cart', $whereCol . ' = ?', [$whereVal]);
         flash_set('success', 'Keranjang telah dikosongkan.');
         header('Location: /geprek-geh/cart');
         exit;
@@ -173,11 +162,10 @@ class CartController {
 
     public static function count() {
         $db = Database::getInstance();
-        $where_col = Auth::check() ? 'user_id' : 'session_id';
-        $where_val = Auth::check() ? Auth::id() : session_id();
+        [$whereCol, $whereVal] = cart_where();
         return (int) $db->fetchColumn(
-            "SELECT COALESCE(SUM(quantity),0) FROM cart WHERE {$where_col} = ?",
-            [$where_val]
+            "SELECT COALESCE(SUM(quantity),0) FROM cart WHERE {$whereCol} = ?",
+            [$whereVal]
         );
     }
 }

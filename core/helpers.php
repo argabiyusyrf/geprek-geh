@@ -176,3 +176,31 @@ function grand_total(array $order): int {
          + (int) ($order['shipping_cost'] ?? 0)
          + (int) ($order['tax'] ?? 0);
 }
+
+/** Kolom & nilai where clause untuk cart (user login vs guest session). */
+function cart_where(): array {
+    return Auth::check() ? ['user_id', Auth::id()] : ['session_id', session_id()];
+}
+
+/** Hitung ringkasan order (subtotal, tax, diskon, grand total). */
+function calculateOrderSummary(array $items, ?array $promo = null): array {
+    $app = require __DIR__ . '/../config/app.php';
+    $subtotal = array_sum(array_map(fn($i) => $i['price'] * $i['quantity'], $items));
+    $tax = (int) ($subtotal * $app['tax_rate']);
+    $shipping = $app['shipping'];
+    $discount = 0;
+    $promo_label = '';
+    if ($promo && $subtotal > 0) {
+        $d = PromoController::calcDiscount($promo, $subtotal);
+        $discount = $d['discount'];
+        $promo_label = $d['label'];
+    }
+    return [
+        'subtotal'    => $subtotal,
+        'tax'         => $tax,
+        'shipping'    => $shipping,
+        'discount'    => $discount,
+        'promo_label' => $promo_label,
+        'grand_total' => max(0, $subtotal - $discount + $tax + $shipping),
+    ];
+}
