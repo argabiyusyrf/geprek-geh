@@ -2555,7 +2555,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
     transition: opacity .25s var(--ease-soft);
 }
 .address-link:hover { opacity: .75; }
-.address-link--danger { color: #dc2626; }
+.address-link--danger { color: var(--bad); }
 .account-settings { text-align: center; }
 
 /* overview */
