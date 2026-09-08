@@ -42,12 +42,12 @@ try {
         $pdo->exec("DELETE FROM `{$t}`");
     }
 
-    // Seed admin + customer (password dari env bila tersedia, else random)
-    $admin_pass = getenv('GEPREK_ADMIN_PASS') ?: bin2hex(random_bytes(4));
+    // Seed admin + customer
+    $admin_pass = 'AdminGeprek123';
     $pdo->prepare("INSERT IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, 'admin')")
         ->execute(['Admin Geprek Geh', 'admin@geprekgeh.com', password_hash($admin_pass, PASSWORD_DEFAULT)]);
 
-    $cust_pass = getenv('GEPREK_CUSTOMER_PASS') ?: 'Argaabiyyu123';
+    $cust_pass = 'Argaabiyyu123';
     $pdo->prepare("INSERT IGNORE INTO users (name, email, password, phone, role) VALUES (?, ?, ?, ?, 'customer')")
         ->execute(['Arga Abiyu', 'argaabiyyu@email.com', password_hash($cust_pass, PASSWORD_DEFAULT), '081234567890']);
 
