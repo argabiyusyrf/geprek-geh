@@ -155,11 +155,11 @@ $wa_number = $contacts['whatsapp'] ?? '';
                 </div>
                 <?php if ($order['payment_method'] === 'transfer'): ?>
                     <p class="pay-instructions-line">Transfer ke rekening kami:</p>
-                    <p class="pay-instructions-detail"><strong><?= e($bank_details['name']) ?></strong> • <?= e($bank_details['number']) ?> a.n. <?= e($bank_details['holder']) ?></p>
+                    <p class="pay-instructions-detail"><strong><?= e($bank_details['name']) ?></strong> • <span class="pay-copy-target"><?= e($bank_details['number']) ?></span> <button type="button" class="btn-copy" data-copy="<?= e($bank_details['number']) ?>" title="Salin nomor rekening"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button> a.n. <?= e($bank_details['holder']) ?></p>
                     <p class="pay-instructions-note">Konfirmasi dengan mengunggah bukti di bawah. Verifikasi manual oleh admin 1×24 jam.</p>
                 <?php else: ?>
                     <p class="pay-instructions-line">Bayar via e-wallet:</p>
-                    <p class="pay-instructions-detail"><strong><?= e($ewallet_details['name']) ?></strong> • <?= e($ewallet_details['number']) ?> a.n. <?= e($ewallet_details['holder']) ?></p>
+                    <p class="pay-instructions-detail"><strong><?= e($ewallet_details['name']) ?></strong> • <span class="pay-copy-target"><?= e($ewallet_details['number']) ?></span> <button type="button" class="btn-copy" data-copy="<?= e($ewallet_details['number']) ?>" title="Salin nomor e-wallet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button> a.n. <?= e($ewallet_details['holder']) ?></p>
                     <p class="pay-instructions-note">Kirim bukti transfer/kode bayar di bawah agar diperiksa admin.</p>
                 <?php endif; ?>
             </div>
