@@ -659,7 +659,7 @@ function changeQty(delta) {
                 ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`
                 : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4M12 16h.01"/></svg>`) +
             `</span><span class="toast-message">${message}</span>` +
-            (action ? `<a class="toast-action" href="/geprek-geh/cart">${action}</a>` : '');
+            (action ? `<a class="toast-action" href="#" onclick="event.preventDefault();window.openCartDrawer && window.openCartDrawer();">${action}</a>` : '');
         container.appendChild(toast);
 
         requestAnimationFrame(() => {
@@ -677,6 +677,9 @@ function changeQty(delta) {
         document.querySelectorAll('[data-cart-count]').forEach((el) => {
             el.textContent = count;
             el.setAttribute('data-cart-count', count);
+            if (el.classList.contains('notif-dot')) {
+                el.style.display = count > 0 ? '' : 'none';
+            }
         });
     }
 
@@ -697,6 +700,13 @@ function changeQty(delta) {
                     if (data && data.ok) {
                         updateCartCount(data.count);
                         showToast('success', data.message, 'Lihat Keranjang');
+                        if (typeof window.refreshCartDrawer === 'function') {
+                            window.refreshCartDrawer().then(() => {
+                                setTimeout(() => {
+                                    if (typeof window.openCartDrawer === 'function') window.openCartDrawer();
+                                }, 600);
+                            });
+                        }
                     } else {
                         showToast('error', (data && data.message) || 'Gagal menambahkan produk.');
                     }
@@ -718,7 +728,7 @@ function changeQty(delta) {
     if (!drawer) return;
 
     const scrim = drawer.querySelector('.drawer-scrim');
-    const panel = drawer.querySelector('.drawer-panel');
+    const panel = drawer.querySelector('.drawer-panel') || drawer.querySelector('aside');
     const openers = document.querySelectorAll('[data-open-drawer]');
     const closers = drawer.querySelectorAll('[data-close-drawer]');
 
@@ -741,18 +751,45 @@ function changeQty(delta) {
         if (window.__lenis) window.__lenis.start();
     }
 
+    openers.forEach((el) => el.addEventListener('click', (e) => { e.preventDefault(); open(); }));
+    closers.forEach((el) => el.addEventListener('click', close));
+    if (scrim) scrim.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('is-open')) close(); });
+
     window.openCartDrawer = open;
     window.closeCartDrawer = close;
 
-    openers.forEach((btn) => btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        open();
-    }));
-    closers.forEach((btn) => btn.addEventListener('click', close));
-    if (scrim) scrim.addEventListener('click', close);
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && drawer.classList.contains('is-open')) close();
-    });
+    window.refreshCartDrawer = function () {
+        return fetch('/geprek-geh/cart/drawer', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            credentials: 'same-origin',
+        })
+            .then((r) => r.text())
+            .then((html) => {
+                const target = drawer.querySelector('.drawer-panel') || drawer.querySelector('aside');
+                if (target) target.innerHTML = html;
+
+                target.querySelectorAll('[data-close-drawer]').forEach((el) => {
+                    el.addEventListener('click', close);
+                });
+
+                updateCartCountFromDrawer();
+            });
+    };
+
+    function updateCartCountFromDrawer() {
+        const title = drawer.querySelector('.drawer-title em');
+        if (!title) return;
+        const match = title.textContent.match(/\((\d+)\)/);
+        const count = match ? parseInt(match[1], 10) : 0;
+        document.querySelectorAll('[data-cart-count]').forEach((el) => {
+            el.textContent = count;
+            el.setAttribute('data-cart-count', count);
+            if (el.classList.contains('notif-dot')) {
+                el.style.display = count > 0 ? '' : 'none';
+            }
+        });
+    }
 })();
 
 /* ── Address drawer (account) ── */
