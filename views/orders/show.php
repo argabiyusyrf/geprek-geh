@@ -149,6 +149,10 @@ $wa_number = $contacts['whatsapp'] ?? '';
         <div class="card order-card">
             <div class="card-body pay-instructions">
                 <h3>Instruksi Pembayaran</h3>
+                <div class="pay-amount-banner">
+                    <span class="pay-amount-label">Yang harus dibayar</span>
+                    <span class="pay-amount-value"><?= rupiah(grand_total($order)) ?></span>
+                </div>
                 <?php if ($order['payment_method'] === 'transfer'): ?>
                     <p class="pay-instructions-line">Transfer ke rekening kami:</p>
                     <p class="pay-instructions-detail"><strong><?= e($bank_details['name']) ?></strong> • <?= e($bank_details['number']) ?> a.n. <?= e($bank_details['holder']) ?></p>
