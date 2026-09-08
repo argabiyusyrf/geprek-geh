@@ -3137,6 +3137,17 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .proof-ok { font-size: 13.5px; font-weight: 600; color: var(--good); display: flex; align-items: center; gap: 6px; }
 .proof-img { max-width: 100%; border-radius: 16px; margin: 14px 0; border: 1px solid var(--hairline); }
 .proof-done .proof-img { max-width: 200px; }
+.proof-fields-grid { display: grid; gap: 12px; margin-bottom: 16px; }
+.proof-fields-grid .form-group { margin-bottom: 0; }
+.proof-fields-grid select.input,
+.proof-fields-grid input.input {
+    width: 100%;
+    font-size: 13.5px;
+    padding: 10px 14px;
+}
+.proof-saved-details { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 8px 0 12px; }
+.proof-saved-item { font-size: 13px; color: var(--muted); }
+.proof-saved-item strong { color: var(--ink); font-weight: 600; }
 
 .proof-form { margin-top: 4px; }
 .proof-field [hidden] { display: none !important; }
