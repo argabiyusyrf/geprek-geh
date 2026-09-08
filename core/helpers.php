@@ -178,7 +178,15 @@ function grand_total(array $order): int {
 
 /** Kolom & nilai where clause untuk cart (user login vs guest session). */
 function cart_where(): array {
-    return Auth::check() ? ['user_id', Auth::id()] : ['session_id', session_id()];
+    if (Auth::check()) {
+        $db = Database::getInstance();
+        $valid = $db->fetchOne("SELECT id FROM users WHERE id = ?", [Auth::id()]);
+        if ($valid) {
+            return ['user_id', Auth::id()];
+        }
+        unset($_SESSION['user_id'], $_SESSION['role'], $_SESSION['user_name'], $_SESSION['user_email']);
+    }
+    return ['session_id', session_id()];
 }
 
 /** Hitung ringkasan order (subtotal, tax, diskon, grand total). */
