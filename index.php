@@ -147,4 +147,9 @@ $router->post('/admin/orders/{id}/status', ['Admin\OrderController', 'updateStat
 $router->post('/admin/orders/{id}/verify-payment', ['Admin\OrderController', 'verifyPayment']);
 $router->get('/admin/users',               ['Admin\UserController', 'index']);
 
+$router->get('/admin/promos',              ['Admin\PromoController', 'index']);
+$router->post('/admin/promos',             ['Admin\PromoController', 'store']);
+$router->post('/admin/promos/{id}/toggle', ['Admin\PromoController', 'toggle']);
+$router->post('/admin/promos/{id}/delete', ['Admin\PromoController', 'delete']);
+
 $router->dispatch();
