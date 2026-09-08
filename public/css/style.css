@@ -4103,6 +4103,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .auth-brand-art { display: none; }
     .auth-brand-points { display: none; }
     .admin-grid-2 { grid-template-columns: 1fr; }
+    .reg-divider { margin: 18px 0 14px; }
 }
 @media (max-width: 640px) {
     .pd-wrap { padding: 0 18px; }
@@ -4113,6 +4114,8 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .auth-brand-tag { font-size: 1.25rem; }
     .auth-panel { padding: 28px 18px; }
     .auth-card-core { padding: 24px 20px; }
+    .reg-terms-text { font-size: 12px; }
+    .reg-login-alt { font-size: 13px; }
 }
 
 /* ═══════════════════════════════════════════════════════════
