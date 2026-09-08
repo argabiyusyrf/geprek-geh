@@ -181,10 +181,10 @@ $wa_number = $contacts['whatsapp'] ?? '';
 
                     <div class="proof-fields-grid">
                         <div class="form-group">
-                            <label>Bank / E-Wallet *</label>
+                            <label><?= $order['payment_method'] === 'ewallet' ? 'E-Wallet' : 'Bank' ?> *</label>
                             <select name="payment_bank" class="input" required>
                                 <option value="">Pilih...</option>
-                                <optgroup label="Transfer Bank">
+                                <?php if ($order['payment_method'] === 'transfer'): ?>
                                     <option value="BCA">BCA</option>
                                     <option value="BNI">BNI</option>
                                     <option value="BRI">BRI</option>
@@ -193,20 +193,19 @@ $wa_number = $contacts['whatsapp'] ?? '';
                                     <option value="BSI">BSI</option>
                                     <option value="Danamon">Danamon</option>
                                     <option value="Permata">Permata</option>
-                                </optgroup>
-                                <optgroup label="E-Wallet">
+                                <?php else: ?>
                                     <option value="ShopeePay">ShopeePay</option>
                                     <option value="GoPay">GoPay</option>
                                     <option value="OVO">OVO</option>
                                     <option value="DANA">DANA</option>
                                     <option value="LinkAja">LinkAja</option>
                                     <option value="QRIS">QRIS</option>
-                                </optgroup>
+                                <?php endif; ?>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>No. Rekening / E-Wallet *</label>
-                            <input type="text" name="payment_account_no" class="input" placeholder="08xxxxxxxxxx / 1234567890" required>
+                            <input type="text" name="payment_account_no" class="input" placeholder="<?= $order['payment_method'] === 'ewallet' ? '08xxxxxxxxxx' : '1234567890' ?>" required>
                         </div>
                         <div class="form-group">
                             <label>Nama Pemilik Rekening *</label>
