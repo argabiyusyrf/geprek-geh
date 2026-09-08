@@ -939,17 +939,15 @@ function changeQty(delta) {
     update(parseInt(input.value) || 0);
 })();
 
-/* ── Global form submit loading state (all forms except AJAX cart) ── */
+/* ── Global form submit loading state (all forms except AJAX cart & reg-submit) ── */
 (function formLoading() {
     document.addEventListener('submit', (e) => {
         const form = e.target;
         if (form.matches('form[action="/geprek-geh/cart/add"]')) return;
         if (form.hasAttribute('data-no-loading')) return;
         const btn = form.querySelector('[type="submit"]');
-        if (btn && !btn.disabled) {
+        if (btn && !btn.disabled && !btn.classList.contains('reg-submit')) {
             btn.disabled = true;
-            btn.dataset.originalText = btn.textContent;
-            btn.textContent = 'Memproses…';
             btn.classList.add('is-loading');
         }
     });
