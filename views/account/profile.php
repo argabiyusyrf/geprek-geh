@@ -132,7 +132,7 @@
         $address = $address ?? '';
         $completeness = 0;
         if ($name) $completeness += 1;
-        if ($phone && preg_match('/^08\d{8,11}$/', $phone)) $completeness += 1;
+        if ($phone && preg_match('/^08\d{8,11}$/', preg_replace('/\D/', '', $phone))) $completeness += 1;
         if ($address) $completeness += 1;
         $completeness = (int) round(($completeness / 3) * 100);
     ?>
