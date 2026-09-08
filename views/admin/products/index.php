@@ -43,7 +43,7 @@
                 </td>
                 <td>
                     <a href="/geprek-geh/admin/products/<?= $p['id'] ?>/edit" class="btn btn-sm btn-outline">Edit</a>
-                    <form method="POST" action="/geprek-geh/admin/products/<?= $p['id'] ?>/delete" class="inline-form" style="display:inline" data-confirm="Hapus produk ini? Tindakan ini tidak bisa dibatalkan.">
+                    <form method="POST" action="/geprek-geh/admin/products/<?= $p['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus produk ini? Tindakan ini tidak bisa dibatalkan.">
                         <button class="btn btn-sm btn-danger">Hapus</button>
                     </form>
                 </td>

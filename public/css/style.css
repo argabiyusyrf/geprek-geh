@@ -4320,3 +4320,13 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 .order-card-row { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
 .order-card-row .order-card-action { flex: none; }
 @media (max-width: 640px) { .order-card-row { grid-template-columns: 1fr; } }
+/* ─── Utility cleanup classes ────────────────────────────── */
+.inline-form--compact { display: inline; }
+.btn-warn { margin-top: 8px; }
+.form-group--wide { flex: 2; }
+.form-group--slim { flex: 1; }
+.auth-link--compact { margin-top: -12px; font-size: 13px; }
+.promo-code-input { text-transform: uppercase; letter-spacing: 0.06em; }
+.empty-state--compact { padding: 40px 0; }
+.text-center { text-align: center; }
+.btn-warn.btn-success { margin-top: 8px; }

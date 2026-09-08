@@ -145,7 +145,7 @@
                 <?php if ($promo): ?>
                 <div class="promo-applied-bar">
                     <span>Kode promo <strong><?= e($promo['code']) ?></strong> diterapkan</span>
-                    <form method="POST" action="/geprek-geh/promo/remove" style="display:inline">
+                    <form method="POST" action="/geprek-geh/promo/remove" class="inline-form inline-form--compact">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-ghost btn-sm btn-dangerghost">Hapus</button>
                     </form>
