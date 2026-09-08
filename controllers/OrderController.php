@@ -107,7 +107,7 @@ class OrderController {
             redirect('/geprek-geh/orders');
         }
 
-        if ($order['status'] !== 'pending' || $order['payment_status'] !== 'unpaid') {
+        if (!in_array($order['status'], ['pending', 'processing'], true) || $order['payment_status'] !== 'unpaid') {
             flash_set('error', 'Bukti hanya bisa diupload untuk pesanan menunggu yang belum dibayar.');
             redirect('/geprek-geh/orders/' . $order['id']);
         }

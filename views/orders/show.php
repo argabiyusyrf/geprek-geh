@@ -162,7 +162,7 @@ $wa_number = $contacts['whatsapp'] ?? '';
         </div>
         <?php endif; ?>
 
-        <?php if ($need_proof && $order['payment_status'] === 'unpaid' && $order['status'] === 'pending'): ?>
+        <?php if ($need_proof && $order['payment_status'] === 'unpaid' && in_array($order['status'], ['pending', 'processing'], true)): ?>
         <div class="card order-card">
             <div class="card-body proof-section">
                 <h3><?= $order['payment_proof'] ? 'Bukti Bayar' : 'Upload Bukti Bayar' ?></h3>
