@@ -5,11 +5,11 @@
 <div class="card">
     <form method="POST" action="/geprek-geh/admin/products/<?= $product['id'] ?>" enctype="multipart/form-data">
         <div class="form-row">
-            <div class="form-group" style="flex:2">
+            <div class="form-group form-group--wide">
                 <label>Nama Produk</label>
                 <input type="text" name="name" class="input" value="<?= e($product['name']) ?>" required>
             </div>
-            <div class="form-group" style="flex:1">
+            <div class="form-group form-group--slim">
                 <label>Kategori</label>
                 <select name="category_id" class="input" required>
                     <?php foreach ($categories as $c): ?>

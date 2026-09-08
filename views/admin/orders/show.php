@@ -64,7 +64,7 @@ $bank = $payment_details['bank'] ?? ['name' => '-', 'number' => '-', 'holder' =>
         <?php if ($can_verify): ?>
         <form method="POST" action="/geprek-geh/admin/orders/<?= $order['id'] ?>/verify-payment" data-confirm="Tandai pembayaran pesanan ini LUNAS? Status akan otomatis lanjut ke 'Diproses' bila masih menunggu.">
             <?= csrf_field() ?>
-            <button type="submit" class="btn btn-success" style="margin-top:8px">
+            <button type="submit" class="btn btn-success btn-warn">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
                 Tandai Lunas (Verifikasi)
             </button>
@@ -108,7 +108,7 @@ $bank = $payment_details['bank'] ?? ['name' => '-', 'number' => '-', 'holder' =>
                 <textarea name="cancel_reason" class="input" rows="2" placeholder="Wajib diisi — alasan ini terlihat oleh pelanggan" maxlength="255"></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="margin-top:12px">
+            <button type="submit" class="btn btn-primary btn-warn">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
                 Simpan Status
             </button>

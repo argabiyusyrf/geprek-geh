@@ -31,7 +31,7 @@ $filter_status = $_GET['status'] ?? '';
         </thead>
         <tbody>
             <?php if (empty($orders)): ?>
-                <tr><td colspan="7" class="text-muted" style="text-align:center">Tidak ada pesanan.</td></tr>
+                <tr><td colspan="7" class="text-muted text-center">Tidak ada pesanan.</td></tr>
             <?php else: ?>
             <?php foreach ($orders as $o):
                 [$sl, $bc] = format_status($o['status']);
