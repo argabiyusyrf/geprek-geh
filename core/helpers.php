@@ -147,14 +147,13 @@ function product_art(string $name, string $category = '', string $class = '', in
 /** Isi keranjang global (drawer/warna badge navigasi). */
 function cart_summary(): array {
     $db = Database::getInstance();
-    $where = Auth::check() ? 'user_id' : 'session_id';
-    $val   = Auth::check() ? Auth::id() : session_id();
+    [$whereCol, $whereVal] = cart_where();
     $items = $db->fetchAll(
         "SELECT ct.id, ct.quantity, p.name, p.slug, p.price, p.image, p.stock, c.name AS category_name
          FROM cart ct JOIN products p ON ct.product_id = p.id
          JOIN categories c ON p.category_id = c.id
-         WHERE ct.{$where} = ? ORDER BY ct.created_at",
-        [$val]
+         WHERE ct.{$whereCol} = ? ORDER BY ct.created_at",
+        [$whereVal]
     );
     $app = require __DIR__ . '/../config/app.php';
     $subtotal = array_sum(array_map(fn($i) => $i['price'] * $i['quantity'], $items));

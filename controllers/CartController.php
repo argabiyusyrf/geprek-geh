@@ -6,6 +6,8 @@ class CartController {
         }
         return $_SESSION['cart_session'];
     }
+
+    public function index() {
         $db = Database::getInstance();
         [$whereCol, $whereVal] = cart_where();
         $items = $db->fetchAll(
@@ -146,18 +148,6 @@ class CartController {
         flash_set('success', 'Keranjang telah dikosongkan.');
         header('Location: /geprek-geh/cart');
         exit;
-    }
-
-    private function getItems($db) {
-        $where_col = Auth::check() ? 'user_id' : 'session_id';
-        $where_val = Auth::check() ? Auth::id() : $this->sessionId();
-        return $db->fetchAll(
-            "SELECT ct.*, p.name, p.slug, p.price, p.image, p.stock, c.name AS category_name
-             FROM cart ct JOIN products p ON ct.product_id = p.id
-             JOIN categories c ON p.category_id = c.id
-             WHERE ct.{$where_col} = ? ORDER BY ct.created_at",
-            [$where_val]
-        );
     }
 
     public static function count() {
