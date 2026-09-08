@@ -455,12 +455,16 @@ function changeQty(delta) {
 
     const userName = nameInput && nameInput.defaultValue || '';
     const userPhone = phoneInput && phoneInput.defaultValue || '';
-    const userAddress = addressInput && addressInput.defaultValue || '';
 
-    function fillFields(recipient, phone, address) {
-        if (nameInput) nameInput.value = recipient || '';
-        if (phoneInput) phoneInput.value = phone || '';
-        if (addressInput) addressInput.value = address || '';
+    function fillFields(d) {
+        if (nameInput) nameInput.value = d.recipient || '';
+        if (phoneInput) phoneInput.value = d.phone || '';
+        if (addressInput) addressInput.value = d.address || '';
+        if (provinceInput) provinceInput.value = d.province || '';
+        if (cityInput) cityInput.value = d.city || '';
+        if (districtInput) districtInput.value = d.district || '';
+        if (villageInput) villageInput.value = d.village || '';
+        if (postalInput) postalInput.value = d.postal || '';
     }
 
     function collapseFields() {
@@ -477,7 +481,16 @@ function changeQty(delta) {
 
     savedCards.forEach((card) => {
         card.addEventListener('click', () => {
-            fillFields(card.dataset.recipient, card.dataset.phone, card.dataset.address);
+            fillFields({
+                recipient: card.dataset.recipient,
+                phone: card.dataset.phone,
+                address: card.dataset.address,
+                province: card.dataset.province,
+                city: card.dataset.city,
+                district: card.dataset.district,
+                village: card.dataset.village,
+                postal: card.dataset.postal,
+            });
             if (addressIdInput) addressIdInput.value = card.dataset.id || '';
             setActive(card);
             collapseFields();
@@ -486,7 +499,7 @@ function changeQty(delta) {
 
     if (manualCard) {
         manualCard.addEventListener('click', () => {
-            fillFields(userName, userPhone, userAddress);
+            fillFields({ recipient: userName, phone: userPhone, address: '', province: '', city: '', district: '', village: '', postal: '' });
             if (addressIdInput) addressIdInput.value = '';
             setActive(manualCard);
             expandFields();
@@ -497,7 +510,16 @@ function changeQty(delta) {
     const defaultCard = wrap.querySelector('.sa-radio-card.is-active[data-saved-address]');
     const gotErrors = form.querySelector('.field-error') !== null;
     if (!gotErrors && defaultCard) {
-        fillFields(defaultCard.dataset.recipient, defaultCard.dataset.phone, defaultCard.dataset.address);
+        fillFields({
+            recipient: defaultCard.dataset.recipient,
+            phone: defaultCard.dataset.phone,
+            address: defaultCard.dataset.address,
+            province: defaultCard.dataset.province,
+            city: defaultCard.dataset.city,
+            district: defaultCard.dataset.district,
+            village: defaultCard.dataset.village,
+            postal: defaultCard.dataset.postal,
+        });
         if (addressIdInput) addressIdInput.value = defaultCard.dataset.id || '';
         collapseFields();
     } else if (gotErrors) {
