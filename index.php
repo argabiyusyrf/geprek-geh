@@ -58,6 +58,15 @@ set_exception_handler(function (Throwable $e) {
     exit;
 });
 
+register_shutdown_function(function () {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        $msg = '[SHUTDOWN] ' . $error['message'] . ' in ' . $error['file'] . ':' . $error['line'];
+        error_log($msg);
+        @file_put_contents(__DIR__ . '/logs/error.log', date('Y-m-d H:i:s') . ' ' . $msg . "\n", FILE_APPEND);
+    }
+});
+
 require_once __DIR__ . '/core/Database.php';
 require_once __DIR__ . '/core/Router.php';
 require_once __DIR__ . '/core/Auth.php';

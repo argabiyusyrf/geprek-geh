@@ -85,7 +85,13 @@ class CartController {
                 'quantity'   => $qty,
             ];
             if (Auth::check()) {
-                $data['user_id'] = Auth::id();
+                $valid_user = $db->fetchOne("SELECT id FROM users WHERE id = ?", [Auth::id()]);
+                if ($valid_user) {
+                    $data['user_id'] = Auth::id();
+                } else {
+                    unset($_SESSION['user_id'], $_SESSION['role'], $_SESSION['user_name'], $_SESSION['user_email']);
+                    $data['session_id'] = $this->sessionId();
+                }
             } else {
                 $data['session_id'] = $this->sessionId();
             }
