@@ -82,3 +82,19 @@ CREATE TABLE IF NOT EXISTS `settings` (
     `key_name` VARCHAR(100) NOT NULL UNIQUE,
     `value` TEXT DEFAULT NULL
 ) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `sessions` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED NOT NULL,
+    `session_id` VARCHAR(128) NOT NULL,
+    `user_agent` VARCHAR(512) DEFAULT NULL,
+    `ip_address` VARCHAR(45) DEFAULT NULL,
+    `device_type` VARCHAR(20) DEFAULT NULL,
+    `browser` VARCHAR(80) DEFAULT NULL,
+    `os` VARCHAR(80) DEFAULT NULL,
+    `is_current` TINYINT(1) DEFAULT 0,
+    `last_activity` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    INDEX `idx_user_session` (`user_id`, `session_id`)
+) ENGINE=InnoDB;
