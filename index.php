@@ -158,6 +158,7 @@ $router->post('/promo/remove',                ['PromoController', 'remove']);
 // ─── Checkout & Orders ───────────────────────────
 $router->get('/checkout',                  ['CheckoutController', 'index']);
 $router->post('/checkout',                 ['CheckoutController', 'process']);
+$router->post('/checkout/address',         ['CheckoutController', 'addAddress']);
 $router->get('/orders',                    ['OrderController', 'index']);
 $router->get('/orders/{id}',               ['OrderController', 'show']);
 $router->get('/orders/{id}/invoice',       ['InvoiceController', 'show']);

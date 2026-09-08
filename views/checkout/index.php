@@ -240,3 +240,41 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
         </div>
     </div>
 </form>
+
+<!-- ── Address add drawer ───────────────────────────── -->
+<div class="drawer-overlay" id="checkout-addr-overlay" data-drawer-overlay></div>
+<aside class="drawer" id="checkout-addr-drawer" aria-hidden="true">
+    <div class="drawer-head">
+        <h4>Tambah Alamat Baru</h4>
+        <button type="button" class="drawer-close" data-close-checkout-addr aria-label="Tutup">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+    </div>
+    <form method="POST" action="/geprek-geh/checkout/address" class="drawer-body" id="checkoutAddrForm">
+        <?= csrf_field() ?>
+        <div class="form-group">
+            <label>Label <span class="label-optional">(opsional)</span></label>
+            <input type="text" name="label" class="input" placeholder="Rumah, Kantor, dll.">
+        </div>
+        <div class="form-group">
+            <label>Nama Penerima *</label>
+            <input type="text" name="recipient_name" class="input" placeholder="Nama lengkap" required>
+        </div>
+        <div class="form-group">
+            <label>No. Telepon *</label>
+            <input type="tel" name="phone" class="input" placeholder="08xxxxxxxxxx" inputmode="numeric" required>
+        </div>
+        <div class="form-group">
+            <label>Alamat Lengkap *</label>
+            <textarea name="address" class="input" rows="3" placeholder="Jalan, No, RT/RW, Kelurahan, Kecamatan, Kota, Kode Pos" required></textarea>
+        </div>
+        <label class="checkbox">
+            <input type="checkbox" name="is_default" value="1">
+            <span>Jadikan alamat utama</span>
+        </label>
+        <div class="drawer-foot">
+            <button type="button" class="btn btn-ghost" data-close-checkout-addr>Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Alamat</button>
+        </div>
+    </form>
+</aside>
