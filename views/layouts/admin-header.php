@@ -34,6 +34,10 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             Pesanan
         </a>
+        <a href="/geprek-geh/admin/promos" class="<?= strpos($_SERVER['REQUEST_URI'], 'promos') !== false ? 'active' : '' ?>">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
+            Kode Promo
+        </a>
         <a href="/geprek-geh/admin/users" class="<?= strpos($_SERVER['REQUEST_URI'], 'users') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             Pengguna
@@ -55,6 +59,7 @@
     <a href="/geprek-geh/admin/products" class="<?= strpos($_SERVER['REQUEST_URI'], 'products') !== false ? 'active' : '' ?>">Produk</a>
     <a href="/geprek-geh/admin/categories" class="<?= strpos($_SERVER['REQUEST_URI'], 'categories') !== false ? 'active' : '' ?>">Kategori</a>
     <a href="/geprek-geh/admin/orders" class="<?= strpos($_SERVER['REQUEST_URI'], 'orders') !== false ? 'active' : '' ?>">Pesanan</a>
+    <a href="/geprek-geh/admin/promos" class="<?= strpos($_SERVER['REQUEST_URI'], 'promos') !== false ? 'active' : '' ?>">Promo</a>
     <a href="/geprek-geh/admin/users" class="<?= strpos($_SERVER['REQUEST_URI'], 'users') !== false ? 'active' : '' ?>">Pengguna</a>
 </nav>
 
@@ -88,6 +93,10 @@
                     <a href="/geprek-geh/admin/orders" role="menuitem">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                         Daftar Pesanan
+                    </a>
+                    <a href="/geprek-geh/admin/promos" role="menuitem">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
+                        Kode Promo
                     </a>
                     <div class="account-menu-sep"></div>
                     <a href="/geprek-geh/" role="menuitem" target="_blank">
