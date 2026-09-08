@@ -738,8 +738,6 @@ section[id] { scroll-margin-top: 110px; }
 .btn-lg { padding: 18px 30px; font-size: 16px; }
 .btn-block { display: flex; width: 100%; }
 .btn:disabled, .btn[disabled] { opacity: 0.5; cursor: not-allowed; }
-.btn.is-loading, .menu-add-btn.is-loading { animation: btn-pulse 0.9s var(--ease-in-out-soft) infinite; }
-@keyframes btn-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 
 /* ─── Reveal choreography ──────────────────────────────────── */
 [data-reveal] {
@@ -4622,6 +4620,11 @@ body.auth-body { margin: 0; overflow-x: hidden; }
 .btn.btn-ghost.is-loading::after {
     border-color: transparent;
     border-top-color: var(--clr-espresso, #2c1810);
+}
+.btn-sm.is-loading::before,
+.btn-sm.is-loading::after {
+    width: 14px; height: 14px;
+    margin: -7px 0 0 -7px;
 }
 @keyframes btn-spin { to { transform: rotate(360deg); } }
 button:disabled, a:disabled { opacity: .5; pointer-events: none; }
