@@ -2990,11 +2990,11 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .order-grand-total { font-family: var(--font-display); font-size: 1.2rem; margin-top: 14px; color: var(--accent-deep); }
 
 /* ─── Order detail (success page) ──────────────────────────── */
-.order-hero { text-align: center; }
-.order-hero .sub { margin: 14px auto 0; max-width: 58ch; }
+.order-hero { text-align: center; padding-bottom: 4px; }
+.order-hero .sub { margin: 12px auto 0; max-width: 58ch; color: var(--muted); font-size: 14px; line-height: 1.6; }
 .order-hero-badge {
     width: 64px; height: 64px;
-    margin: 0 auto 20px;
+    margin: 0 auto 16px;
     display: grid;
     place-items: center;
     border-radius: 20px;
@@ -3002,15 +3002,15 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
     background: rgba(232,75,35,0.09);
     border: 1px solid rgba(232,75,35,0.16);
 }
-.order-hero-pill { margin-top: 22px; font-size: 13px; padding: 9px 18px; }
+.order-hero-pill { margin-top: 18px; font-size: 13px; padding: 9px 18px; }
 
 /* Status timeline */
 .order-timeline {
     display: flex;
     align-items: flex-start;
     gap: 0;
-    padding: 30px 8px;
-    margin-bottom: 6px;
+    padding: 26px 12px;
+    margin-bottom: 10px;
     background: rgba(255,253,249,0.5);
     border: 1px solid var(--hairline);
     border-radius: var(--r-2xl);
@@ -3071,11 +3071,11 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .order-detail-layout {
     display: grid;
     grid-template-columns: 1.45fr 1fr;
-    gap: 28px;
+    gap: 22px;
     align-items: start;
-    margin-top: 6px;
+    margin-top: 2px;
 }
-.order-detail-main, .order-detail-side { display: flex; flex-direction: column; gap: 24px; }
+.order-detail-main, .order-detail-side { display: flex; flex-direction: column; gap: 18px; }
 .order-card { border-radius: var(--r-2xl); overflow: hidden; }
 .order-card-title { margin-bottom: 14px; }
 .order-card h3 {
