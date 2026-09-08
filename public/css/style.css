@@ -4027,6 +4027,18 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 }
 .reg-login-alt { font-size: 14px; font-weight: 600; gap: 10px; }
 
+/* ─── Login extras: remember + forgot row ─────────────────── */
+.login-extras {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: -4px 0 22px;
+}
+.login-remember { margin: 0; }
+.login-forgot {
+    font-size: 13px; font-weight: 600; color: var(--accent-deep);
+    text-decoration: none; transition: color .3s;
+}
+.login-forgot:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+
 /* ─── Admin dashboard extras ─────────────────────────────── */
 .admin-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 22px; border-bottom: 1px solid var(--hairline); margin-bottom: 0; }
 .admin-title.min h3 { font-family: var(--font-display); font-weight: 560; font-size: 1.25rem; letter-spacing: -0.01em; }
