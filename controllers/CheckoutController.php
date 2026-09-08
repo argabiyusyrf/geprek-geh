@@ -100,8 +100,13 @@ class CheckoutController {
         }
         if (empty($phone)) {
             $errors['phone'] = 'Nomor telepon wajib diisi.';
-        } elseif (!preg_match('/^08\d{8,11}$/', $phone)) {
-            $errors['phone'] = 'Format nomor tidak valid. Contoh: 081234567890.';
+        } else {
+            $phone_digits = preg_replace('/\D/', '', $phone);
+            if (str_starts_with($phone_digits, '62')) $phone_digits = '0' . substr($phone_digits, 2);
+            $phone = $phone_digits;
+            if (!preg_match('/^08\d{8,11}$/', $phone_digits)) {
+                $errors['phone'] = 'Format nomor tidak valid. Contoh: 081234567890.';
+            }
         }
         if (empty($address)) {
             $errors['address'] = 'Alamat pengiriman wajib diisi.';
