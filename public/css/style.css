@@ -1991,8 +1991,19 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
     place-items: center;
     cursor: pointer;
     transition: all .3s var(--ease-soft);
+    position: relative;
 }
 .cart-remove-btn:hover { border-color: var(--bad); color: var(--bad); background: rgba(179,38,30,0.06); }
+.cart-remove-btn.is-loading { pointer-events: none; color: transparent; border-color: var(--bad); }
+.cart-remove-btn.is-loading svg { opacity: 0; }
+.cart-remove-btn.is-loading::after {
+    content: ''; position: absolute;
+    width: 16px; height: 16px; top: 50%; left: 50%;
+    margin: -8px 0 0 -8px; border-radius: 50%;
+    border: 2px solid var(--bad);
+    border-top-color: transparent;
+    animation: btn-spin .6s linear infinite;
+}
 
 .cart-actions-row { display: flex; margin-top: 6px; }
 
