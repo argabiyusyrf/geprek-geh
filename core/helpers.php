@@ -168,3 +168,11 @@ function cart_summary(): array {
         'grand_total' => $subtotal + $tax + $app['shipping'],
     ];
 }
+
+/** Hitung grand_total dari data order (3NF — tidak ada kolom grand_total). */
+function grand_total(array $order): int {
+    return (int) ($order['total'] ?? 0)
+         - (int) ($order['discount'] ?? 0)
+         + (int) ($order['shipping_cost'] ?? 0)
+         + (int) ($order['tax'] ?? 0);
+}

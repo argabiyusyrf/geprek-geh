@@ -151,7 +151,7 @@ class Mail {
             <p style=\"margin:0 0 18px 0;\">Halo <strong>" . htmlspecialchars($name) . "</strong>,</p>
             <p style=\"margin:0 0 18px 0;\">Pesanan kamu telah kami terima dan sedang disiapkan. Invoice: <strong>" . htmlspecialchars($order['invoice_no']) . "</strong></p>
             <table style=\"width:100%;border-collapse:collapse;margin:18px 0;\">{$rows}</table>
-            <p style=\"margin:18px 0;text-align:right;font-size:18px;\"><strong>Total: Rp " . number_format($order['grand_total'], 0, ',', '.') . "</strong></p>
+            <p style=\"margin:18px 0;text-align:right;font-size:18px;\"><strong>Total: Rp " . number_format(grand_total($order), 0, ',', '.') . "</strong></p>
             <p style=\"margin:24px 0 0 0;color:#8A7A65;font-size:13px;\">Pantau status pesanan di halaman Pesanan Saya.</p>
         ");
         return self::send($email, $subject, $html);

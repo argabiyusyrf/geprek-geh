@@ -570,10 +570,33 @@
             </div>
             <div class="settings-item">
                 <div class="settings-item-info">
+                    <b>Notifikasi Email</b>
+                    <span><?= (int) ($user['notify_email'] ?? 0) === 1 ? 'Aktif' : 'Nonaktif' ?></span>
+                </div>
+                <form method="POST" action="/geprek-geh/account/notifications/toggle" class="settings-toggle-form">
+                    <?= csrf_field() ?>
+                    <label class="switch">
+                        <input type="submit" class="switch-input" style="display:none">
+                        <span class="switch-slider" data-switch="<?= (int) ($user['notify_email'] ?? 0) === 1 ? 'on' : 'off' ?>"></span>
+                    </label>
+                </form>
+            </div>
+            <div class="settings-item">
+                <div class="settings-item-info">
                     <b>Autentikasi 2 Langkah</b>
                     <span><?= (int) ($user['totp_enabled'] ?? 0) === 1 ? 'Aktif' : 'Nonaktif' ?></span>
                 </div>
                 <a href="/geprek-geh/account?tab=security" class="btn btn-ghost btn-sm">Kelola</a>
+            </div>
+            <div class="settings-item settings-item--danger">
+                <div class="settings-item-info">
+                    <b>Hapus Akun</b>
+                    <span class="text-muted">Non-aktifkan akun dan hapus semua data pribadi.</span>
+                </div>
+                <form method="POST" action="/geprek-geh/account/delete" class="inline-form" data-confirm="Yakin ingin menghapus akun? Semua data pesanan dan alamat akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-danger btn-sm">Hapus Akun</button>
+                </form>
             </div>
         </div>
     </section>
