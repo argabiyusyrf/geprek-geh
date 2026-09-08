@@ -108,6 +108,10 @@ $router->post('/account/addresses/{id}/delete',      ['ProfileController', 'dele
 $router->post('/account/sessions/{id}/revoke',  ['ProfileController', 'revokeSession']);
 $router->post('/account/sessions/revoke-all',   ['ProfileController', 'revokeAllSessions']);
 
+// Account — notifications toggle + delete
+$router->post('/account/notifications/toggle', ['ProfileController', 'toggleNotifications']);
+$router->post('/account/delete',               ['ProfileController', 'deleteAccount']);
+
 // ─── Cart ─────────────────────────────────────────
 $router->get('/cart',                      ['CartController', 'index']);
 $router->post('/cart/add',                 ['CartController', 'add']);

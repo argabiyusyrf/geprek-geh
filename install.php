@@ -114,7 +114,7 @@ try {
 
     // Seed sample orders
     $insert_order = function ($args) use ($pdo) {
-        $pdo->prepare("INSERT INTO orders (user_id, invoice_no, total, shipping_cost, tax, grand_total, status, payment_method, shipping_address, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+        $pdo->prepare("INSERT INTO orders (user_id, invoice_no, total, shipping_cost, tax, status, payment_method, shipping_address, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
             ->execute($args);
         return (int) $pdo->lastInsertId();
     };
@@ -123,12 +123,12 @@ try {
             ->execute([$order_id, $product_ids[$product_slug], $qty, $price]);
     };
 
-    $order1 = $insert_order([2, 'GG-20260901-A1B2C3', 55000, 10000, 6050, 71050, 'processing', 'transfer', 'Jl. Merdeka No. 10, Jakarta Selatan', 'Level pedas sedang']);
+    $order1 = $insert_order([2, 'GG-20260901-A1B2C3', 55000, 10000, 6050, 'processing', 'transfer', 'Jl. Merdeka No. 10, Jakarta Selatan', 'Level pedas sedang']);
     $insert_item($order1, 'nasi-geprek-spesial', 1, 30000);
     $insert_item($order1, 'geprek-setan', 1, 22000);
     $insert_item($order1, 'es-teh-manis', 1, 5000);
 
-    $order2 = $insert_order([2, 'GG-20260901-D4E5F6', 44000, 10000, 4840, 58840, 'delivered', 'cod', 'Jl. Sudirman No. 5, Bandung', null]);
+    $order2 = $insert_order([2, 'GG-20260901-D4E5F6', 44000, 10000, 4840, 'delivered', 'cod', 'Jl. Sudirman No. 5, Bandung', null]);
     $insert_item($order2, 'nasi-geprek-ayam', 1, 25000);
     $insert_item($order2, 'geprek-level-2', 1, 19000);
 
