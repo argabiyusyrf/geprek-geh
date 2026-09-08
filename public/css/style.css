@@ -3993,9 +3993,11 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .pd { grid-template-columns: 1fr; }
     .pd-info { position: static; }
     .auth-shell { grid-template-columns: 1fr; }
-    .auth-brand { padding: 56px 32px 48px; display: block; }
+    .auth-brand { padding: 40px 32px 36px; display: block; }
     .auth-brand-inner { max-width: 520px; }
-    .auth-brand-tag { font-size: 1.7rem; }
+    .auth-brand-tag { font-size: 1.5rem; }
+    .auth-brand-art { display: none; }
+    .auth-brand-points { display: none; }
     .admin-grid-2 { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
@@ -4003,7 +4005,10 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .pd-crumb { margin: 22px 0 18px; font-size: 11.5px; }
     .queue-item { grid-template-columns: auto 1fr auto; }
     .queue-total { display: none; }
-    .auth-panel { padding: 40px 18px; }
+    .auth-brand { padding: 28px 20px 24px; }
+    .auth-brand-tag { font-size: 1.25rem; }
+    .auth-panel { padding: 28px 18px; }
+    .auth-card-core { padding: 24px 20px; }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -4013,9 +4018,13 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
    ═══════════════════════════════════════════════════════════ */
 
 /* Hero & page-hero: enforce 100dvh and macro padding */
-.hero, .page-hero, .auth-page, .menu-hero, .cart-hero, .order-hero, .pd-wrap {
+.hero, .page-hero, .menu-hero, .cart-hero, .order-hero, .pd-wrap {
     min-height: auto;
 }
+
+/* Auth pages: fullscreen split, no nav offset */
+body.auth-body { margin: 0; overflow-x: hidden; }
+.auth-page { min-height: 100dvh; }
 
 /* Strengthen the macro-whitespace scale across sections */
 .section { padding: clamp(64px, 8vw, 120px) 0; }
