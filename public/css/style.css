@@ -2990,7 +2990,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .order-grand-total { font-family: var(--font-display); font-size: 1.2rem; margin-top: 14px; color: var(--accent-deep); }
 
 /* ─── Order detail (success page) ──────────────────────────── */
-.order-hero { text-align: center; padding-bottom: 4px; }
+.order-hero { text-align: center; padding-bottom: 0; margin-bottom: 0; }
 .order-hero .sub { margin: 12px auto 0; max-width: 58ch; color: var(--muted); font-size: 14px; line-height: 1.6; }
 .order-hero-badge {
     width: 64px; height: 64px;
@@ -3130,7 +3130,9 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 
 /* Aside summary */
 .order-summary-card { border-radius: var(--r-2xl); overflow: hidden; box-shadow: var(--shadow-float); }
-.order-summary-card .order-totals { margin-top: 8px; }
+.order-summary-card .card-body { padding: clamp(18px, 2.5vw, 26px); }
+.order-summary-card h3 { font-size: 1.1rem; margin-bottom: 4px; }
+.order-summary-card .order-totals { margin-top: 6px; }
 
 /* Proof upload (unified zone + preview) */
 .proof-hint { font-size: 13px; color: var(--muted); margin: 4px 0 14px; line-height: 1.55; }
@@ -3727,7 +3729,8 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 }
 .pay-instructions-note { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
 
-.order-logs .card-body > h3 { margin-bottom: 12px; }
+.order-logs .card-body > h3 { margin-bottom: 10px; }
+.order-logs { margin-top: 2px; }
 .log-list { display: flex; flex-direction: column; gap: 10px; }
 .log-item {
     display: grid;
@@ -4428,8 +4431,8 @@ body.auth-body { margin: 0; overflow-x: hidden; }
 .account-card .account-lead { color: var(--muted); font-size: 13.5px; margin-bottom: 18px; line-height: 1.55; }
 
 /* Order card Double-Bezel */
-.order-card .card-body { padding: clamp(20px, 2.8vw, 30px); }
-.order-card h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; letter-spacing: -0.01em; }
+.order-card .card-body { padding: clamp(18px, 2.5vw, 28px); }
+.order-card h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; letter-spacing: -0.01em; margin-bottom: 2px; }
 
 /* Empty-state editorial — same Double-Bezel shell */
 .empty-state {
