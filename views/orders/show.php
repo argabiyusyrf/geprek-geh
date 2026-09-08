@@ -204,11 +204,11 @@ $wa_number = $contacts['whatsapp'] ?? '';
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>No. Rekening / E-Wallet *</label>
+                            <label><?= $order['payment_method'] === 'ewallet' ? 'No. E-Wallet' : 'No. Rekening' ?> *</label>
                             <input type="text" name="payment_account_no" class="input" placeholder="<?= $order['payment_method'] === 'ewallet' ? '08xxxxxxxxxx' : '1234567890' ?>" required>
                         </div>
                         <div class="form-group">
-                            <label>Nama Pemilik Rekening *</label>
+                            <label>Nama Pemilik <?= $order['payment_method'] === 'ewallet' ? 'E-Wallet' : 'Rekening' ?> *</label>
                             <input type="text" name="payment_account_name" class="input" placeholder="Nama sesuai rekening" required>
                         </div>
                     </div>
