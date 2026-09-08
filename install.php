@@ -47,12 +47,12 @@ try {
     $pdo->prepare("INSERT IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, 'admin')")
         ->execute(['Admin Geprek Geh', 'admin@geprekgeh.com', password_hash($admin_pass, PASSWORD_DEFAULT)]);
 
-    $cust_pass = getenv('GEPREK_CUSTOMER_PASS') ?: bin2hex(random_bytes(4));
+    $cust_pass = getenv('GEPREK_CUSTOMER_PASS') ?: 'Argaabiyyu123';
     $pdo->prepare("INSERT IGNORE INTO users (name, email, password, phone, role) VALUES (?, ?, ?, ?, 'customer')")
-        ->execute(['Budi Santoso', 'budi@email.com', password_hash($cust_pass, PASSWORD_DEFAULT), '081234567890']);
+        ->execute(['Arga Abiyu', 'argaabiyyu@email.com', password_hash($cust_pass, PASSWORD_DEFAULT), '081234567890']);
 
     echo "✓ Akun admin: admin@geprekgeh.com / {$admin_pass}\n";
-    echo "✓ Akun customer: budi@email.com / {$cust_pass}\n";
+    echo "✓ Akun customer: argaabiyyu@email.com / {$cust_pass}\n";
 
     // Seed categories
     $categories = [
@@ -120,7 +120,7 @@ try {
 
     // Seed sample orders (use actual customer user_id)
     $cust_row = $pdo->prepare("SELECT id FROM users WHERE email = ? LIMIT 1");
-    $cust_row->execute(['budi@email.com']);
+    $cust_row->execute(['argaabiyyu@email.com']);
     $cust_user_id = (int) $cust_row->fetchColumn();
     if ($cust_user_id < 1) { $cust_user_id = 2; }
 
@@ -134,22 +134,19 @@ try {
             ->execute([$order_id, $product_ids[$product_slug], $qty, $price]);
     };
 
-    $order1 = $insert_order([$cust_user_id, 'GG-20260901-A1B2C3', 55000, 10000, 6050, 'processing', 'transfer', 'Jl. Merdeka No. 10, Jakarta Selatan', 'Level pedas sedang']);
+    $order1 = $insert_order([$cust_user_id, 'GG-20260908-X1Y2Z3', 89000, 10000, 9790, 'processing', 'transfer', 'Jl. Merdeka No. 10, Jakarta Selatan', 'Pedas level 3']);
     $insert_item($order1, 'nasi-geprek-spesial', 1, 30000);
     $insert_item($order1, 'geprek-setan', 1, 22000);
-    $insert_item($order1, 'es-teh-manis', 1, 5000);
+    $insert_item($order1, 'es-cimol-susu', 1, 12000);
+    $insert_item($order1, 'es-teh-manis', 2, 5000);
 
-    $order2 = $insert_order([$cust_user_id, 'GG-20260901-D4E5F6', 44000, 10000, 4840, 'delivered', 'cod', 'Jl. Sudirman No. 5, Bandung', null]);
-    $insert_item($order2, 'nasi-geprek-ayam', 1, 25000);
-    $insert_item($order2, 'geprek-level-2', 1, 19000);
-
-    echo "✓ 2 pesanan contoh berhasil ditambahkan\n";
+    echo "✓ 1 pesanan contoh berhasil ditambahkan (4 item)\n";
 
     echo "\n" . str_repeat('─', 40) . "\n";
     echo "✅ Instalasi selesai!\n";
     echo "🌐 Buka: http://localhost/geprek-geh/\n";
     echo "🔑 Admin: admin@geprekgeh.com / {$admin_pass}\n";
-    echo "👤 Customer: budi@email.com / {$cust_pass}\n";
+    echo "👤 Customer: argaabiyyu@email.com / {$cust_pass}\n";
 
 } catch (PDOException $e) {
     echo "✗ Error: " . $e->getMessage() . "\n";
