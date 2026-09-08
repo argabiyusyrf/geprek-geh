@@ -25,6 +25,7 @@ class ProductController {
 
     public function store() {
         \Auth::requireAdmin();
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/products/create'); exit; }
         $db = \Database::getInstance();
         $name = trim($_POST['name'] ?? '');
         $slug = \slug($name);
@@ -90,6 +91,7 @@ class ProductController {
 
     public function update($id) {
         \Auth::requireAdmin();
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/products'); exit; }
         $db = \Database::getInstance();
         $name = trim($_POST['name'] ?? '');
         $category_id = (int)($_POST['category_id'] ?? 0);
@@ -111,11 +113,22 @@ class ProductController {
         ];
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-            $image = 'product_' . time() . '.' . $ext;
+            $file = $_FILES['image'];
+            if ($file['size'] > 5 * 1024 * 1024) {
+                \flash_set('error', 'Ukuran gambar maksimal 5MB.');
+                header('Location: /geprek-geh/admin/products'); exit;
+            }
+            $imageInfo = @getimagesize($file['tmp_name']);
+            $typeToExt = [IMAGETYPE_PNG => 'png', IMAGETYPE_JPEG => 'jpg', IMAGETYPE_WEBP => 'webp'];
+            if (!$imageInfo || !isset($typeToExt[$imageInfo[2]])) {
+                \flash_set('error', 'File gambar tidak valid (PNG/JPG/WebP saja).');
+                header('Location: /geprek-geh/admin/products'); exit;
+            }
+            $ext = $typeToExt[$imageInfo[2]];
+            $image = 'product_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
             $upload_dir = __DIR__ . '/../../assets/uploads/products/';
             if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
-            move_uploaded_file($_FILES['image']['tmp_name'], $upload_dir . $image);
+            move_uploaded_file($file['tmp_name'], $upload_dir . $image);
             $data['image'] = $image;
         }
 
@@ -127,6 +140,7 @@ class ProductController {
 
     public function delete($id) {
         \Auth::requireAdmin();
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/products'); exit; }
         $db = \Database::getInstance();
         $db->delete('products', 'id = ?', [$id]);
         \flash_set('success', 'Produk berhasil dihapus.');

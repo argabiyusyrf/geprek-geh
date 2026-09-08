@@ -180,6 +180,7 @@ class Auth {
         $_SESSION['user_id'] = $id;
         $_SESSION['user_name'] = $name;
         $_SESSION['role'] = 'customer';
+        session_regenerate_id(true);
         return true;
     }
 

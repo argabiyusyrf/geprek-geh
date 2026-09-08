@@ -116,10 +116,13 @@
                             </a>
                         <?php endif; ?>
                         <div class="account-menu-sep"></div>
-                        <a href="/geprek-geh/auth/logout" role="menuitem" class="danger">
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-                            Keluar
-                        </a>
+                        <form method="POST" action="/geprek-geh/auth/logout">
+                            <?= csrf_field() ?>
+                            <button type="submit" role="menuitem" class="danger overlay-link-btn">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                                Keluar
+                            </button>
+                        </form>
                     </div>
                 </div>
             <?php endif; ?>
@@ -170,9 +173,15 @@
                 <a class="overlay-link <?= $uri === '/geprek-geh/orders' || str_starts_with($uri, '/geprek-geh/orders/') ? 'is-active' : '' ?>" href="/geprek-geh/orders"><small>04</small> Pesanan Saya</a>
                 <?php if (Auth::admin()): ?>
                     <a class="overlay-link" href="/geprek-geh/admin"><small>05</small> Admin Panel</a>
-                    <a class="overlay-link" href="/geprek-geh/auth/logout"><small>06</small> Keluar</a>
+                    <form method="POST" action="/geprek-geh/auth/logout">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="overlay-link"><small>06</small> Keluar</button>
+                    </form>
                 <?php else: ?>
-                    <a class="overlay-link" href="/geprek-geh/auth/logout"><small>05</small> Keluar</a>
+                    <form method="POST" action="/geprek-geh/auth/logout">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="overlay-link"><small>05</small> Keluar</button>
+                    </form>
                 <?php endif; ?>
             <?php endif; ?>
         </nav>

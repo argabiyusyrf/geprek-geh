@@ -41,6 +41,14 @@ session_set_cookie_params([
 ]);
 session_start();
 
+set_exception_handler(function (Throwable $e) {
+    error_log('[FATAL] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+    http_response_code(500);
+    if (ob_get_level()) ob_end_clean();
+    require __DIR__ . '/views/layouts/500.php';
+    exit;
+});
+
 require_once __DIR__ . '/core/Database.php';
 require_once __DIR__ . '/core/Router.php';
 require_once __DIR__ . '/core/Auth.php';
@@ -81,7 +89,7 @@ $router->get('/auth/forgot',               ['PasswordResetController', 'requestF
 $router->post('/auth/forgot',              ['PasswordResetController', 'request']);
 $router->get('/auth/reset',                ['PasswordResetController', 'resetForm']);
 $router->post('/auth/reset',               ['PasswordResetController', 'reset']);
-$router->get('/auth/logout',               ['AuthController', 'logout']);
+$router->post('/auth/logout',               ['AuthController', 'logout']);
 $router->get('/auth/2fa',                  ['AuthController', 'twoFactorForm']);
 $router->post('/auth/2fa',                 ['AuthController', 'twoFactorSubmit']);
 

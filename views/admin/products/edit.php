@@ -4,6 +4,7 @@
 
 <div class="card">
     <form method="POST" action="/geprek-geh/admin/products/<?= $product['id'] ?>" enctype="multipart/form-data">
+        <?= csrf_field() ?>
         <div class="form-row">
             <div class="form-group form-group--wide">
                 <label>Nama Produk</label>

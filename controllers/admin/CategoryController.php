@@ -16,6 +16,7 @@ class CategoryController {
 
     public function store() {
         \Auth::requireAdmin();
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/categories'); exit; }
         $db = \Database::getInstance();
         $name = trim($_POST['name'] ?? '');
         $description = trim($_POST['description'] ?? '');
@@ -33,6 +34,7 @@ class CategoryController {
 
     public function delete($id) {
         \Auth::requireAdmin();
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/categories'); exit; }
         $db = \Database::getInstance();
         $db->delete('categories', 'id = ?', [$id]);
         \flash_set('success', 'Kategori berhasil dihapus.');

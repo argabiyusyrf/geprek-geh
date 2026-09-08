@@ -6,6 +6,7 @@
     <div class="card">
         <h3>Tambah Kategori</h3>
         <form method="POST" action="/geprek-geh/admin/categories">
+            <?= csrf_field() ?>
             <div class="form-group">
                 <label>Nama</label>
                 <input type="text" name="name" class="input" required>
@@ -32,6 +33,7 @@
                     <td><?= $c['product_count'] ?></td>
                     <td>
                         <form method="POST" action="/geprek-geh/admin/categories/<?= $c['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus kategori ini? Produk di dalamnya juga akan dihapus.">
+                            <?= csrf_field() ?>
                             <button class="btn btn-sm btn-danger">Hapus</button>
                         </form>
                     </td>
