@@ -6,7 +6,7 @@
     <title>Admin — Geprek Geh</title>
     <link rel="stylesheet" href="/geprek-geh/public/fonts/fonts.css">
     <link rel="stylesheet" href="/geprek-geh/vendor/css/lenis.css">
-    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260909c">
+    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260909d">
 </head>
 <body class="admin-body">
 
