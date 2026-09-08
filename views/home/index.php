@@ -126,9 +126,17 @@ $hero_level = $categories[1] ?? null;
                             <span class="stock-badge">Habis</span>
                         <?php endif; ?>
                     </a>
-                    <div class="product-info">
+                     <div class="product-info">
                         <span class="product-cat"><?= e($p['category_name']) ?></span>
                         <h3><a href="/geprek-geh/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a></h3>
+                        <?php if ($p['review_count'] > 0): ?>
+                        <div class="product-rating">
+                            <?php for ($s = 1; $s <= 5; $s++): ?>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="<?= $s <= round($p['avg_rating']) ? '#D43E1B' : 'none' ?>" stroke="#D43E1B" stroke-width="1.8"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
+                            <?php endfor; ?>
+                            <span class="product-rating-count">(<?= $p['review_count'] ?>)</span>
+                        </div>
+                        <?php endif; ?>
                         <div class="product-price"><?= rupiah($p['price']) ?></div>
                         <?php if ($p['stock'] > 0): ?>
                         <form method="POST" action="/geprek-geh/cart/add">
