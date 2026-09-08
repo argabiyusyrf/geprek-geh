@@ -141,10 +141,11 @@ $router->post('/account/delete',               ['ProfileController', 'deleteAcco
 
 // ─── Cart ─────────────────────────────────────────
 $router->get('/cart',                      ['CartController', 'index']);
-$router->post('/cart/add',                 ['CartController', 'add']);
-$router->post('/cart/update',              ['CartController', 'update']);
-$router->post('/cart/remove',              ['CartController', 'remove']);
-$router->post('/cart/clear',               ['CartController', 'clear']);
+$router->get('/cart/drawer',              ['CartController', 'drawer']);
+$router->post('/cart/add',                ['CartController', 'add']);
+$router->post('/cart/update',             ['CartController', 'update']);
+$router->post('/cart/remove',             ['CartController', 'remove']);
+$router->post('/cart/clear',              ['CartController', 'clear']);
 
 // ─── Reviews ────────────────────────────────────────
 $router->post('/reviews',                     ['ReviewController', 'store']);
