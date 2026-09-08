@@ -73,41 +73,13 @@ try {
 
     // Seed products
     $products = [
-        // Geprek Original
-        [$cat_ids['geprek-original'], 'Geprek Ayam Original', 'geprek-ayam-original', 'Ayam goreng crispy dengan sambal geprek original pedas nikmat', 18000, 50, 1, 1],
-        [$cat_ids['geprek-original'], 'Geprek Paha Atas', 'geprek-paha-atas', 'Paha atas ayam goreng crispy + sambal geprek', 22000, 40, 1, 1],
-        [$cat_ids['geprek-original'], 'Geprek Dada', 'geprek-dada', 'Dada ayam goreng crispy + sambal geprek', 20000, 35, 1, 0],
-        [$cat_ids['geprek-original'], 'Geprek Sayap', 'geprek-sayap', 'Sayap ayam goreng crispy + sambal geprek', 16000, 30, 1, 0],
-
-        // Geprek Level
-        [$cat_ids['geprek-level'], 'Geprek Level 1 (Ringan)', 'geprek-level-1', 'Geprek dengan sambal level 1, cocok untuk pemula', 19000, 45, 1, 0],
-        [$cat_ids['geprek-level'], 'Geprek Level 2 (Sedang)', 'geprek-level-2', 'Geprek dengan sambal level 2, pedas sedang', 19000, 45, 1, 1],
-        [$cat_ids['geprek-level'], 'Geprek Level 3 (Pedas)', 'geprek-level-3', 'Geprek dengan sambal level 3, pedas menyengat!', 20000, 40, 1, 0],
-        [$cat_ids['geprek-level'], 'Geprek Setan 🔥', 'geprek-setan', 'Level tertinggi! Hanya untuk yang berani!', 22000, 25, 1, 1],
-
-        // Nasi Geprek
-        [$cat_ids['nasi-geprek'], 'Nasi Geprek Ayam', 'nasi-geprek-ayam', 'Nasi putih + ayam geprek original + lalapan', 25000, 60, 1, 1],
-        [$cat_ids['nasi-geprek'], 'Nasi Geprek Spesial', 'nasi-geprek-spesial', 'Nasi + ayam geprek + telur dadar + tempe + lalapan', 30000, 50, 1, 1],
-        [$cat_ids['nasi-geprek'], 'Nasi Geprek Komplit', 'nasi-geprek-komplit', 'Nasi + ayam geprek + telur + tempe + tahu + lalapan', 35000, 40, 1, 0],
+        // Makanan
         [$cat_ids['nasi-geprek'], 'Nasi Geprek Ikan Asin', 'nasi-geprek-ikan-asin', 'Nasi putih + ayam geprek + ikan asin goreng + sambal + lalapan', 28000, 40, 1, 1],
-
-        // Geprek Original (tambahan)
         [$cat_ids['geprek-original'], 'Geprek Tulang Lunak', 'geprek-tulang-lunak', 'Tulang lunak ayam goreng crispy digeprek dengan sambal spesial', 24000, 30, 1, 1],
 
         // Minuman
-        [$cat_ids['minuman'], 'Es Teh Manis', 'es-teh-manis', 'Teh manis dingin, segar!', 5000, 100, 1, 0],
-        [$cat_ids['minuman'], 'Es Jeruk', 'es-jeruk', 'Jeruk peras segar dengan es batu', 8000, 80, 1, 0],
-        [$cat_ids['minuman'], 'Es Kelapa Muda', 'es-kelapa-muda', 'Air kelapa muda segar', 10000, 50, 1, 0],
-        [$cat_ids['minuman'], 'Aqua 600ml', 'aqua-600ml', 'Air mineral kemasan', 4000, 100, 1, 0],
         [$cat_ids['minuman'], 'Es Jeruk Nipis', 'es-jeruk-nipis', 'Jeruk nipis peras segar dengan es batu, menyegarkan', 6000, 80, 1, 0],
         [$cat_ids['minuman'], 'Es Cimol Susu', 'es-cimol-susu', 'Cimol kenyal dengan susu coklat dingin dan es batu', 12000, 60, 1, 1],
-
-        // Side Dish
-        [$cat_ids['side-dish'], 'Nasi Putih', 'nasi-putih', 'Nasi putih hangat', 5000, 100, 1, 0],
-        [$cat_ids['side-dish'], 'Telur Dadar', 'telur-dadar', 'Telur dadar goreng', 5000, 80, 1, 0],
-        [$cat_ids['side-dish'], 'Tempe Goreng', 'tempe-goreng', 'Tempe goreng renyah', 4000, 70, 1, 0],
-        [$cat_ids['side-dish'], 'Tahu Goreng', 'tahu-goreng', 'Tahu goreng renyah', 4000, 70, 1, 0],
-        [$cat_ids['side-dish'], 'Lalapan', 'lalapan', 'Lalapan segar (timun, kemangi, kol)', 3000, 100, 1, 0],
     ];
 
     $product_ids = [];
@@ -116,7 +88,7 @@ try {
             ->execute([$cat_id, $name, $slug, $desc, $price, $stock, $active, $featured]);
         $product_ids[$slug] = (int) $pdo->lastInsertId();
     }
-    echo "✓ 24 produk berhasil ditambahkan\n";
+    echo "✓ 4 produk berhasil ditambahkan\n";
 
     // Seed sample orders (use actual customer user_id)
     $cust_row = $pdo->prepare("SELECT id FROM users WHERE email = ? LIMIT 1");
@@ -134,11 +106,11 @@ try {
             ->execute([$order_id, $product_ids[$product_slug], $qty, $price]);
     };
 
-    $order1 = $insert_order([$cust_user_id, 'GG-20260908-X1Y2Z3', 89000, 10000, 9790, 'processing', 'transfer', 'Jl. Merdeka No. 10, Jakarta Selatan', 'Pedas level 3']);
-    $insert_item($order1, 'nasi-geprek-spesial', 1, 30000);
-    $insert_item($order1, 'geprek-setan', 1, 22000);
+    $order1 = $insert_order([$cust_user_id, 'GG-20260908-X1Y2Z3', 78000, 10000, 8580, 'processing', 'transfer', 'Jl. Merdeka No. 10, Jakarta Selatan', null]);
+    $insert_item($order1, 'nasi-geprek-ikan-asin', 1, 28000);
+    $insert_item($order1, 'geprek-tulang-lunak', 1, 24000);
+    $insert_item($order1, 'es-jeruk-nipis', 1, 6000);
     $insert_item($order1, 'es-cimol-susu', 1, 12000);
-    $insert_item($order1, 'es-teh-manis', 2, 5000);
 
     echo "✓ 1 pesanan contoh berhasil ditambahkan (4 item)\n";
 
