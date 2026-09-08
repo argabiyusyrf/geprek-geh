@@ -442,43 +442,61 @@ function changeQty(delta) {
     const nameInput = form.querySelector('input[name="recipient_name"]');
     const phoneInput = form.querySelector('input[name="phone"]');
     const addressInput = form.querySelector('textarea[name="address"]');
+    const addressIdInput = document.getElementById('addressIdInput');
+    const fieldsWrap = document.getElementById('checkoutFields');
 
-    const savedBtns = wrap.querySelectorAll('[data-saved-address]');
-    const manualBtn = wrap.querySelector('[data-saved-manual]');
+    const savedCards = wrap.querySelectorAll('[data-saved-address]');
+    const manualCard = wrap.querySelector('[data-saved-manual]');
 
-    // prefill dari data user (untuk mode manual)
     const userName = nameInput && nameInput.defaultValue || '';
     const userPhone = phoneInput && phoneInput.defaultValue || '';
     const userAddress = addressInput && addressInput.defaultValue || '';
 
-    function setActive(btn) {
-        wrap.querySelectorAll('.saved-address').forEach((b) => b.classList.remove('is-active'));
-        if (btn) btn.classList.add('is-active');
+    function fillFields(recipient, phone, address) {
+        if (nameInput) nameInput.value = recipient || '';
+        if (phoneInput) phoneInput.value = phone || '';
+        if (addressInput) addressInput.value = address || '';
     }
 
-    savedBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
-            if (nameInput) nameInput.value = btn.dataset.recipient || '';
-            if (phoneInput) phoneInput.value = btn.dataset.phone || '';
-            if (addressInput) addressInput.value = btn.dataset.address || '';
-            setActive(btn);
+    function collapseFields() {
+        if (fieldsWrap) fieldsWrap.classList.add('is-collapsed');
+    }
+    function expandFields() {
+        if (fieldsWrap) fieldsWrap.classList.remove('is-collapsed');
+    }
+
+    function setActive(card) {
+        wrap.querySelectorAll('.sa-radio-card').forEach((c) => c.classList.remove('is-active'));
+        if (card) card.classList.add('is-active');
+    }
+
+    savedCards.forEach((card) => {
+        card.addEventListener('click', () => {
+            fillFields(card.dataset.recipient, card.dataset.phone, card.dataset.address);
+            if (addressIdInput) addressIdInput.value = card.dataset.id || '';
+            setActive(card);
+            collapseFields();
         });
     });
 
-    manualBtn.addEventListener('click', () => {
-        if (nameInput) nameInput.value = userName;
-        if (phoneInput) phoneInput.value = userPhone;
-        if (addressInput) addressInput.value = userAddress;
-        setActive(manualBtn);
-    });
+    if (manualCard) {
+        manualCard.addEventListener('click', () => {
+            fillFields(userName, userPhone, userAddress);
+            if (addressIdInput) addressIdInput.value = '';
+            setActive(manualCard);
+            expandFields();
+        });
+    }
 
-    // Auto-select alamat utama saat pertama kali dibuka (jika belum ada error manual)
-    const defaultActive = wrap.querySelector('.saved-address.is-active[data-saved-address]');
+    // Auto-select default address on load
+    const defaultCard = wrap.querySelector('.sa-radio-card.is-active[data-saved-address]');
     const gotErrors = form.querySelector('.field-error') !== null;
-    if (!gotErrors && defaultActive) {
-        if (nameInput) nameInput.value = defaultActive.dataset.recipient || '';
-        if (phoneInput) phoneInput.value = defaultActive.dataset.phone || '';
-        if (addressInput) addressInput.value = defaultActive.dataset.address || '';
+    if (!gotErrors && defaultCard) {
+        fillFields(defaultCard.dataset.recipient, defaultCard.dataset.phone, defaultCard.dataset.address);
+        if (addressIdInput) addressIdInput.value = defaultCard.dataset.id || '';
+        collapseFields();
+    } else if (gotErrors) {
+        expandFields();
     }
 })();
 

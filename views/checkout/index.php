@@ -55,50 +55,60 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
 
                     <?php if (!empty($saved_addresses)): ?>
                     <div class="saved-addresses" data-saved-addresses>
-                        <p class="saved-addresses-title">Alamat tersimpan</p>
+                        <p class="saved-addresses-title">Pilih alamat pengiriman</p>
+                        <input type="hidden" name="address_id" id="addressIdInput" value="<?= e($selected_address_id ?? '') ?>">
                         <?php foreach ($saved_addresses as $i => $sa): ?>
-                            <button type="button" class="saved-address <?= (int) $sa['is_default'] === 1 ? 'is-active' : '' ?>"
-                                    data-saved-address
-                                    data-recipient="<?= e($sa['recipient_name']) ?>"
-                                    data-phone="<?= e($sa['phone']) ?>"
-                                    data-address="<?= e($sa['address']) ?>">
-                                <span class="sa-label">
-                                    <?= e($sa['label'] ?: 'Alamat') ?>
-                                    <?php if ((int) $sa['is_default'] === 1): ?><span class="address-badge">Utama</span><?php endif; ?>
-                                </span>
-                                <span class="sa-body">
+                            <label class="sa-radio-card <?= (int) ($sa['is_default'] ?? 0) === 1 ? 'is-active' : '' ?>"
+                                   data-saved-address
+                                   data-id="<?= (int) $sa['id'] ?>"
+                                   data-recipient="<?= e($sa['recipient_name']) ?>"
+                                   data-phone="<?= e($sa['phone']) ?>"
+                                   data-address="<?= e($sa['address']) ?>">
+                                <input type="radio" name="picked_address" value="<?= (int) $sa['id'] ?>" class="sa-radio-input" <?= (int) ($sa['is_default'] ?? 0) === 1 ? 'checked' : '' ?>>
+                                <span class="sa-radio-dot"></span>
+                                <span class="sa-card-body">
+                                    <span class="sa-label">
+                                        <?= e($sa['label'] ?: 'Alamat') ?>
+                                        <?php if ((int) ($sa['is_default'] ?? 0) === 1): ?><span class="address-badge">Utama</span><?php endif; ?>
+                                    </span>
                                     <span class="sa-name"><?= e($sa['recipient_name']) ?></span>
                                     <span class="sa-addr"><?= e($sa['address']) ?></span>
                                     <?php $region = array_filter([$sa['village'], $sa['district'], $sa['city'], $sa['province']], fn($v) => !empty($v)); ?>
                                     <?php if ($region): ?><span class="sa-region"><?= e(implode(', ', $region)) ?></span><?php endif; ?>
                                 </span>
-                            </button>
+                            </label>
                         <?php endforeach; ?>
-                        <button type="button" class="saved-address is-manual <?= empty($field_errors) && empty($saved_manual) ? '' : 'is-active' ?>"
-                                data-saved-manual>
-                            <span class="sa-label">Tulis manual</span>
-                            <span class="sa-body"><span class="sa-name">Isi alamat secara manual</span></span>
-                        </button>
+                        <label class="sa-radio-card sa-radio-manual <?= empty($saved_addresses) ? 'is-active' : '' ?>"
+                               data-saved-manual>
+                            <input type="radio" name="picked_address" value="manual" class="sa-radio-input" <?= empty($saved_addresses) ? 'checked' : '' ?>>
+                            <span class="sa-radio-dot"></span>
+                            <span class="sa-card-body">
+                                <span class="sa-label">Tulis alamat baru</span>
+                                <span class="sa-name">Isi alamat secara manual</span>
+                            </span>
+                        </label>
                     </div>
                     <?php endif; ?>
 
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Nama Penerima *</label>
-                            <input type="text" name="recipient_name" class="input <?= !empty($field_errors['recipient_name']) ? 'is-invalid' : '' ?>" value="<?= e($recipient_name ?? $user['name']) ?>" placeholder="Nama lengkap" required>
-                            <?php if (!empty($field_errors['recipient_name'])): ?><span class="field-error"><?= e($field_errors['recipient_name']) ?></span><?php endif; ?>
+                    <div class="checkout-fields <?= !empty($saved_addresses) ? 'is-collapsed' : '' ?>" id="checkoutFields">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nama Penerima *</label>
+                                <input type="text" name="recipient_name" class="input <?= !empty($field_errors['recipient_name']) ? 'is-invalid' : '' ?>" value="<?= e($recipient_name ?? $user['name']) ?>" placeholder="Nama lengkap" required>
+                                <?php if (!empty($field_errors['recipient_name'])): ?><span class="field-error"><?= e($field_errors['recipient_name']) ?></span><?php endif; ?>
+                            </div>
+                            <div class="form-group">
+                                <label>No. Telepon *</label>
+                                <input type="tel" name="phone" class="input <?= !empty($field_errors['phone']) ? 'is-invalid' : '' ?>" value="<?= e($phone ?? $user['phone'] ?? '') ?>" placeholder="08xxxxxxxxxx" inputmode="numeric" required>
+                                <?php if (!empty($field_errors['phone'])): ?><span class="field-error"><?= e($field_errors['phone']) ?></span><?php endif; ?>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>No. Telepon *</label>
-                            <input type="tel" name="phone" class="input <?= !empty($field_errors['phone']) ? 'is-invalid' : '' ?>" value="<?= e($phone ?? $user['phone'] ?? '') ?>" placeholder="08xxxxxxxxxx" inputmode="numeric" required>
-                            <?php if (!empty($field_errors['phone'])): ?><span class="field-error"><?= e($field_errors['phone']) ?></span><?php endif; ?>
-                        </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label>Alamat Lengkap *</label>
-                        <textarea name="address" class="input <?= !empty($field_errors['address']) ? 'is-invalid' : '' ?>" rows="3" placeholder="Jalan, No, RT/RW, Kelurahan, Kecamatan, Kota, Kode Pos" required><?= e($address ?? '') ?></textarea>
-                        <?php if (!empty($field_errors['address'])): ?><span class="field-error"><?= e($field_errors['address']) ?></span><?php endif; ?>
+                        <div class="form-group">
+                            <label>Alamat Lengkap *</label>
+                            <textarea name="address" class="input <?= !empty($field_errors['address']) ? 'is-invalid' : '' ?>" rows="3" placeholder="Jalan, No, RT/RW, Kelurahan, Kecamatan, Kota, Kode Pos" required><?= e($address ?? '') ?></textarea>
+                            <?php if (!empty($field_errors['address'])): ?><span class="field-error"><?= e($field_errors['address']) ?></span><?php endif; ?>
+                        </div>
                     </div>
 
                     <div class="form-group">
