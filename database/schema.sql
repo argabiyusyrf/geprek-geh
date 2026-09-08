@@ -7,7 +7,10 @@ CREATE TABLE IF NOT EXISTS `users` (
     `email` VARCHAR(150) NOT NULL UNIQUE,
     `password` VARCHAR(255) NOT NULL,
     `phone` VARCHAR(20) DEFAULT NULL,
-    `address` TEXT DEFAULT NULL,
+    `notify_email` TINYINT(1) NOT NULL DEFAULT 1,
+    `totp_secret` VARCHAR(80) DEFAULT NULL,
+    `totp_enabled` TINYINT(1) NOT NULL DEFAULT 0,
+    `totp_recovery` TEXT DEFAULT NULL,
     `role` ENUM('customer','admin') DEFAULT 'customer',
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -52,19 +55,27 @@ CREATE TABLE IF NOT EXISTS `cart` (
 CREATE TABLE IF NOT EXISTS `orders` (
     `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT UNSIGNED NOT NULL,
+    `shipping_address_id` INT UNSIGNED DEFAULT NULL,
     `invoice_no` VARCHAR(30) NOT NULL UNIQUE,
     `total` INT UNSIGNED NOT NULL DEFAULT 0,
+    `discount` INT UNSIGNED NOT NULL DEFAULT 0,
+    `promo_code` VARCHAR(32) DEFAULT NULL,
+    `promo_code_id` INT UNSIGNED DEFAULT NULL,
     `shipping_cost` INT UNSIGNED NOT NULL DEFAULT 0,
     `tax` INT UNSIGNED NOT NULL DEFAULT 0,
-    `grand_total` INT UNSIGNED NOT NULL DEFAULT 0,
     `status` ENUM('pending','processing','shipped','delivered','cancelled') DEFAULT 'pending',
     `payment_method` VARCHAR(50) DEFAULT NULL,
+    `payment_status` ENUM('unpaid','paid','refunded') NOT NULL DEFAULT 'unpaid',
     `payment_proof` VARCHAR(255) DEFAULT NULL,
+    `tracking_no` VARCHAR(80) DEFAULT NULL,
     `shipping_address` TEXT DEFAULT NULL,
     `notes` TEXT DEFAULT NULL,
+    `cancel_reason` VARCHAR(255) DEFAULT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`shipping_address_id`) REFERENCES `addresses`(`id`) ON DELETE SET NULL,
+    FOREIGN KEY (`promo_code_id`) REFERENCES `promo_codes`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `order_items` (
