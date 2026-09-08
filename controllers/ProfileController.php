@@ -73,6 +73,9 @@ class ProfileController {
         $view_data['twofa_error']    = $_SESSION['twofa_error'] ?? null;
         unset($_SESSION['twofa_recovery_codes'], $_SESSION['twofa_error']);
 
+        // —— Settings tab (Sessions & Device) ——
+        $view_data['sessions'] = $this->sessions(Auth::id());
+
         extract($view_data);
 
         require __DIR__ . '/../views/layouts/header.php';

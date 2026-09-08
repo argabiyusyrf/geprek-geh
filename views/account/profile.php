@@ -484,11 +484,97 @@
     </aside>
 
     <?php elseif ($tab === 'settings'): ?>
-    <section class="card account-card account-card--full account-settings" data-reveal>
-        <h3>Pengaturan</h3>
-        <div class="account-empty">
-            <p>Fitur pengaturan akun segera hadir.</p>
-            <span class="ghost ghost--sm"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M1 12h4M19 12h4M4.2 19.8 7 17M17 7l2.8-2.8"/></svg></span>
+    <section class="card account-card account-card--full" data-reveal>
+        <div class="account-card-head">
+            <div>
+                <h3>Sesi & Perangkat</h3>
+                <p class="account-lead">Lihat semua perangkat yang sedang login ke akunmu. Revoke sesi yang mencurigakan.</p>
+            </div>
+        </div>
+
+        <?php if (empty($sessions)): ?>
+            <div class="account-empty">
+                <p>Belum ada sesi aktif.</p>
+            </div>
+        <?php else: ?>
+            <div class="session-list">
+                <?php foreach ($sessions as $s): ?>
+                    <div class="session-card <?= $s['is_current'] ? 'is-current' : '' ?>">
+                        <div class="session-icon">
+                            <?php if ($s['device_type'] === 'Mobile'): ?>
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+                            <?php elseif ($s['device_type'] === 'Tablet'): ?>
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+                            <?php else: ?>
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            <?php endif; ?>
+                        </div>
+                        <div class="session-info">
+                            <div class="session-head">
+                                <span class="session-device"><?= e($s['browser']) ?> &middot; <?= e($s['os']) ?></span>
+                                <?php if ($s['is_current']): ?>
+                                    <span class="session-badge">Sesi Ini</span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="session-meta">
+                                <span class="session-type"><?= e($s['device_type']) ?></span>
+                                <span class="session-dot">&middot;</span>
+                                <span class="session-ip"><?= e($s['ip_address'] ?: 'IP tidak diketahui') ?></span>
+                                <span class="session-dot">&middot;</span>
+                                <span class="session-time"><?= e($s['time_ago']) ?></span>
+                            </div>
+                        </div>
+                        <?php if (!$s['is_current']): ?>
+                            <form method="POST" action="/geprek-geh/account/sessions/<?= $s['id'] ?>/revoke" class="session-revoke">
+                                <?= csrf_field() ?>
+                                <button type="submit" class="btn btn-ghost btn-sm" data-confirm="Revoke sesi ini? Perangkat akan logout.">Logout</button>
+                            </form>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <?php if (count($sessions) > 1): ?>
+                <div class="session-footer">
+                    <form method="POST" action="/geprek-geh/account/sessions/revoke-all"
+                          data-confirm="Logout semua perangkat lain? Hanya sesi ini yang tetap aktif.">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-danger btn-sm">Logout Semua Perangkat Lain</button>
+                    </form>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
+    </section>
+
+    <section class="card account-card account-card--full" data-reveal>
+        <h3>Pengaturan Akun</h3>
+        <div class="settings-list">
+            <div class="settings-item">
+                <div class="settings-item-info">
+                    <b>Email</b>
+                    <span><?= e($user['email']) ?></span>
+                </div>
+                <span class="settings-item-status">Tidak dapat diubah</span>
+            </div>
+            <div class="settings-item">
+                <div class="settings-item-info">
+                    <b>Role</b>
+                    <span><?= e(ucfirst($user['role'])) ?></span>
+                </div>
+            </div>
+            <div class="settings-item">
+                <div class="settings-item-info">
+                    <b>Bergabung</b>
+                    <span><?= e(date('d M Y', strtotime($user['created_at']))) ?></span>
+                </div>
+            </div>
+            <div class="settings-item">
+                <div class="settings-item-info">
+                    <b>Autentikasi 2 Langkah</b>
+                    <span><?= (int) ($user['totp_enabled'] ?? 0) === 1 ? 'Aktif' : 'Nonaktif' ?></span>
+                </div>
+                <a href="/geprek-geh/account?tab=security" class="btn btn-ghost btn-sm">Kelola</a>
+            </div>
         </div>
     </section>
     <?php endif; ?>
