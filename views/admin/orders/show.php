@@ -79,7 +79,7 @@ $bank = $payment_details['bank'] ?? ['name' => '-', 'number' => '-', 'holder' =>
         <p>Subtotal: <?= rupiah($order['total']) ?></p>
         <p>Ongkir: <?= rupiah($order['shipping_cost']) ?></p>
         <p>Pajak: <?= rupiah($order['tax']) ?></p>
-        <p class="order-grand-total"><strong>Grand Total: <?= rupiah($order['grand_total']) ?></strong></p>
+        <p class="order-grand-total"><strong>Grand Total: <?= rupiah(grand_total($order)) ?></strong></p>
     </div>
 
     <div class="card">

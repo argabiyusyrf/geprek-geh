@@ -92,7 +92,7 @@
                     <span class="invoice"><?= e($o['invoice_no']) ?></span>
                     <span class="order-date"><?= date('d M Y, H:i', strtotime($o['created_at'])) ?></span>
                     <span class="badge <?= $badge_class ?>"><?= $status_label ?></span>
-                    <span class="order-total"><?= rupiah($o['grand_total']) ?></span>
+                    <span class="order-total"><?= rupiah(grand_total($o)) ?></span>
                 </a>
             <?php endif; ?>
         </section>
