@@ -2209,8 +2209,10 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 }
 
 /* ── Drawer scroll for forms ── */
-.drawer-body.form-group,
-.drawer-body .form-group { flex: none; }
+.drawer-body .form-group,
+.drawer-body .drawer-foot,
+.drawer-body .checkbox,
+.drawer-body .alert { flex: none; }
 .checkout-hero .sub { margin-bottom: 30px; }
 .checkout-steps {
     display: flex;
