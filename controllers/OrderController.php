@@ -167,7 +167,16 @@ class OrderController {
         $upload_dir = __DIR__ . '/../assets/uploads/payments/';
         if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
         if (move_uploaded_file($file['tmp_name'], $upload_dir . $filename)) {
-            $db->update('orders', ['payment_proof' => $filename], 'id = ?', [$id]);
+            $payment_bank = trim($_POST['payment_bank'] ?? '');
+            $payment_account_no = trim($_POST['payment_account_no'] ?? '');
+            $payment_account_name = trim($_POST['payment_account_name'] ?? '');
+
+            $db->update('orders', [
+                'payment_proof'        => $filename,
+                'payment_bank'         => $payment_bank ?: null,
+                'payment_account_no'   => $payment_account_no ?: null,
+                'payment_account_name' => $payment_account_name ?: null,
+            ], 'id = ?', [$id]);
             order_log($db, $id, 'customer', 'Bukti pembayaran diunggah, menunggu verifikasi admin');
             NotificationController::pushToAdmins(
                 'payment',

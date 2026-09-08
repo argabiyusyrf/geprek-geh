@@ -46,6 +46,11 @@ $bank = $payment_details['bank'] ?? ['name' => '-', 'number' => '-', 'holder' =>
         <?php if ($order['payment_proof']): ?>
             <div class="proof-section">
                 <h4>Bukti Pembayaran</h4>
+                <div class="proof-saved-details">
+                    <?php if ($order['payment_bank']): ?><span class="proof-saved-item"><strong>Bank/E-Wallet:</strong> <?= e($order['payment_bank']) ?></span><?php endif; ?>
+                    <?php if ($order['payment_account_no']): ?><span class="proof-saved-item"><strong>No. Rekening:</strong> <?= e($order['payment_account_no']) ?></span><?php endif; ?>
+                    <?php if ($order['payment_account_name']): ?><span class="proof-saved-item"><strong>Nama:</strong> <?= e($order['payment_account_name']) ?></span><?php endif; ?>
+                </div>
                 <img src="/geprek-geh/assets/uploads/payments/<?= e($order['payment_proof']) ?>" class="proof-img" alt="Bukti">
             </div>
         <?php elseif (in_array($order['payment_method'], ['transfer', 'ewallet'], true)): ?>
