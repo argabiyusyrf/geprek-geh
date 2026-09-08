@@ -164,4 +164,9 @@ class CartController {
             [$whereVal]
         );
     }
+
+    public function drawer() {
+        $cs = cart_summary();
+        require __DIR__ . '/../views/cart/drawer.php';
+    }
 }
