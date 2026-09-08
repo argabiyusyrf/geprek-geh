@@ -109,3 +109,81 @@ CREATE TABLE IF NOT EXISTS `sessions` (
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
     INDEX `idx_user_session` (`user_id`, `session_id`)
 ) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `addresses` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED NOT NULL,
+    `label` VARCHAR(40) DEFAULT NULL,
+    `recipient_name` VARCHAR(100) NOT NULL,
+    `phone` VARCHAR(20) DEFAULT NULL,
+    `province` VARCHAR(100) DEFAULT NULL,
+    `city` VARCHAR(100) DEFAULT NULL,
+    `district` VARCHAR(100) DEFAULT NULL,
+    `village` VARCHAR(100) DEFAULT NULL,
+    `postal_code` VARCHAR(10) DEFAULT NULL,
+    `address` TEXT NOT NULL,
+    `notes` TEXT DEFAULT NULL,
+    `is_default` TINYINT(1) NOT NULL DEFAULT 0,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `notifications` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED NOT NULL,
+    `type` VARCHAR(20) NOT NULL DEFAULT 'info',
+    `title` VARCHAR(150) NOT NULL,
+    `message` VARCHAR(255) DEFAULT NULL,
+    `link` VARCHAR(255) DEFAULT NULL,
+    `is_read` TINYINT(1) NOT NULL DEFAULT 0,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    INDEX `idx_notif_user_read` (`user_id`, `is_read`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `order_logs` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `order_id` INT UNSIGNED NOT NULL,
+    `actor` ENUM('customer','admin') NOT NULL DEFAULT 'customer',
+    `message` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `password_resets` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED NOT NULL,
+    `selector` VARCHAR(40) NOT NULL UNIQUE,
+    `token_hash` VARCHAR(128) NOT NULL,
+    `expires_at` DATETIME DEFAULT NULL,
+    `used_at` DATETIME DEFAULT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    INDEX `idx_pr_expires` (`expires_at`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `product_reviews` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `product_id` INT UNSIGNED NOT NULL,
+    `user_id` INT UNSIGNED NOT NULL,
+    `rating` TINYINT UNSIGNED NOT NULL,
+    `comment` TEXT DEFAULT NULL,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `promo_codes` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `code` VARCHAR(32) NOT NULL UNIQUE,
+    `type` ENUM('percentage','fixed') NOT NULL DEFAULT 'percentage',
+    `value` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    `min_order` INT UNSIGNED NOT NULL DEFAULT 0,
+    `max_uses` INT UNSIGNED DEFAULT NULL,
+    `used_count` INT UNSIGNED NOT NULL DEFAULT 0,
+    `starts_at` DATETIME DEFAULT NULL,
+    `expires_at` DATETIME DEFAULT NULL,
+    `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
