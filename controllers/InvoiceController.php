@@ -157,7 +157,7 @@ class InvoiceController {
             </tr>
             <tr class="total-row">
                 <td>Total</td>
-                <td><?= rupiah($order['grand_total']) ?></td>
+                <td><?= rupiah(grand_total($order)) ?></td>
             </tr>
         </table>
     </div>

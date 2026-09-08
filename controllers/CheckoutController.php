@@ -77,7 +77,8 @@ class CheckoutController {
         };
         $recipient_name = $post('recipient_name', $user['name'] ?? '');
         $phone = $post('phone', $user['phone'] ?? '');
-        $address = $post('address', $user['address'] ?? '');
+        $address = $post('address', '');
+        $address_id = (int) ($_POST['address_id'] ?? 0);
         $payment_method = $_POST['payment_method'] ?? 'transfer';
         if (!in_array($payment_method, ['transfer', 'ewallet', 'cod'], true)) $payment_method = 'transfer';
         $notes = $post('notes');
@@ -135,18 +136,19 @@ class CheckoutController {
 
         $invoice = generate_invoice();
         $order_id = $db->insert('orders', [
-            'user_id'          => Auth::id(),
-            'invoice_no'       => $invoice,
-            'total'            => $subtotal,
-            'discount'         => $discount,
-            'promo_code'       => $promo['code'] ?? null,
-            'shipping_cost'    => $shipping,
-            'tax'              => $tax,
-            'grand_total'      => $grand_total,
-            'status'           => 'pending',
-            'payment_method'   => $payment_method,
-            'shipping_address' => $address,
-            'notes'            => $notes,
+            'user_id'               => Auth::id(),
+            'shipping_address_id'   => $address_id ?: null,
+            'invoice_no'            => $invoice,
+            'total'                 => $subtotal,
+            'discount'              => $discount,
+            'promo_code'            => $promo['code'] ?? null,
+            'promo_code_id'         => $promo['id'] ?? null,
+            'shipping_cost'         => $shipping,
+            'tax'                   => $tax,
+            'status'                => 'pending',
+            'payment_method'        => $payment_method,
+            'shipping_address'      => $address,
+            'notes'                 => $notes,
         ]);
 
         // Increment promo usage
