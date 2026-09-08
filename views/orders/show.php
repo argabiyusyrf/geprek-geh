@@ -138,7 +138,7 @@ $wa_number = $contacts['whatsapp'] ?? '';
                     <div class="order-line"><span>Subtotal (<?= $total_qty ?> item)</span><span><?= rupiah($order['total']) ?></span></div>
                     <div class="order-line"><span>Ongkir</span><span><?= rupiah($order['shipping_cost']) ?></span></div>
                     <div class="order-line"><span>Pajak</span><span><?= rupiah($order['tax']) ?></span></div>
-                    <div class="order-line total"><span>Grand Total</span><span><?= rupiah($order['grand_total']) ?></span></div>
+                    <div class="order-line total"><span>Grand Total</span><span><?= rupiah(grand_total($order)) ?></span></div>
                 </div>
             </div>
         </div>

@@ -39,7 +39,7 @@ $filter_status = $_GET['status'] ?? '';
             <tr>
                 <td><strong><?= e($o['invoice_no']) ?></strong></td>
                 <td><?= e($o['customer_name']) ?></td>
-                <td><?= rupiah($o['grand_total']) ?></td>
+                <td><?= rupiah(grand_total($o)) ?></td>
                 <td>
                     <?= e($o['payment_method'] === 'ewallet' ? 'E-Wallet' : ucfirst($o['payment_method'] ?? '-')) ?>
                     <span class="badge <?= format_payment_status($o['payment_status'])[1] ?>"><?= format_payment_status($o['payment_status'])[0] ?></span>

@@ -63,7 +63,7 @@
                     <strong class="queue-invoice">#<?= e($o['invoice_no']) ?></strong>
                     <span class="queue-meta"><?= e($o['customer_name']) ?> · <?= date('d M, H:i', strtotime($o['created_at'])) ?></span>
                 </span>
-                <span class="queue-total"><?= rupiah($o['grand_total']) ?></span>
+                <span class="queue-total"><?= rupiah(grand_total($o)) ?></span>
                 <span class="badge <?= $bc ?>"><?= $sl ?></span>
             </a>
             <?php endforeach; ?>

@@ -58,7 +58,7 @@
                     </div>
                     <div class="order-card-body">
                         <span class="order-date"><?= date('d M Y, H:i', strtotime($o['created_at'])) ?></span>
-                        <span class="order-total"><?= rupiah($o['grand_total']) ?></span>
+                        <span class="order-total"><?= rupiah(grand_total($o)) ?></span>
                     </div>
                 </a>
                 <?php if ($can_reorder): ?>
