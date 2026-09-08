@@ -55,7 +55,13 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
 
                     <?php if (!empty($saved_addresses)): ?>
                     <div class="saved-addresses" data-saved-addresses>
-                        <p class="saved-addresses-title">Pilih alamat pengiriman</p>
+                        <div class="saved-addresses-head">
+                            <p class="saved-addresses-title">Pilih alamat pengiriman</p>
+                            <button type="button" class="btn-add-address" data-open-address-drawer>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                                Tambah
+                            </button>
+                        </div>
                         <input type="hidden" name="address_id" id="addressIdInput" value="<?= e($selected_address_id ?? '') ?>">
                         <?php foreach ($saved_addresses as $i => $sa): ?>
                             <label class="sa-radio-card <?= (int) ($sa['is_default'] ?? 0) === 1 ? 'is-active' : '' ?>"
