@@ -89,12 +89,18 @@ try {
         [$cat_ids['nasi-geprek'], 'Nasi Geprek Ayam', 'nasi-geprek-ayam', 'Nasi putih + ayam geprek original + lalapan', 25000, 60, 1, 1],
         [$cat_ids['nasi-geprek'], 'Nasi Geprek Spesial', 'nasi-geprek-spesial', 'Nasi + ayam geprek + telur dadar + tempe + lalapan', 30000, 50, 1, 1],
         [$cat_ids['nasi-geprek'], 'Nasi Geprek Komplit', 'nasi-geprek-komplit', 'Nasi + ayam geprek + telur + tempe + tahu + lalapan', 35000, 40, 1, 0],
+        [$cat_ids['nasi-geprek'], 'Nasi Geprek Ikan Asin', 'nasi-geprek-ikan-asin', 'Nasi putih + ayam geprek + ikan asin goreng + sambal + lalapan', 28000, 40, 1, 1],
+
+        // Geprek Original (tambahan)
+        [$cat_ids['geprek-original'], 'Geprek Tulang Lunak', 'geprek-tulang-lunak', 'Tulang lunak ayam goreng crispy digeprek dengan sambal spesial', 24000, 30, 1, 1],
 
         // Minuman
         [$cat_ids['minuman'], 'Es Teh Manis', 'es-teh-manis', 'Teh manis dingin, segar!', 5000, 100, 1, 0],
         [$cat_ids['minuman'], 'Es Jeruk', 'es-jeruk', 'Jeruk peras segar dengan es batu', 8000, 80, 1, 0],
         [$cat_ids['minuman'], 'Es Kelapa Muda', 'es-kelapa-muda', 'Air kelapa muda segar', 10000, 50, 1, 0],
         [$cat_ids['minuman'], 'Aqua 600ml', 'aqua-600ml', 'Air mineral kemasan', 4000, 100, 1, 0],
+        [$cat_ids['minuman'], 'Es Jeruk Nipis', 'es-jeruk-nipis', 'Jeruk nipis peras segar dengan es batu, menyegarkan', 6000, 80, 1, 0],
+        [$cat_ids['minuman'], 'Es Cimol Susu', 'es-cimol-susu', 'Cimol kenyal dengan susu coklat dingin dan es batu', 12000, 60, 1, 1],
 
         // Side Dish
         [$cat_ids['side-dish'], 'Nasi Putih', 'nasi-putih', 'Nasi putih hangat', 5000, 100, 1, 0],
@@ -110,7 +116,7 @@ try {
             ->execute([$cat_id, $name, $slug, $desc, $price, $stock, $active, $featured]);
         $product_ids[$slug] = (int) $pdo->lastInsertId();
     }
-    echo "✓ 20 produk berhasil ditambahkan\n";
+    echo "✓ 24 produk berhasil ditambahkan\n";
 
     // Seed sample orders
     $insert_order = function ($args) use ($pdo) {
