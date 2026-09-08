@@ -4658,6 +4658,15 @@ body.auth-body { margin: 0; overflow-x: hidden; }
     border-color: transparent;
     border-top-color: var(--clr-espresso, #2c1810);
 }
+.btn.btn-danger.is-loading::before,
+.btn.btn-danger.is-loading::after {
+    border-color: #fff;
+    border-top-color: transparent;
+}
+.btn.btn-danger.is-loading::after {
+    border-color: transparent;
+    border-top-color: #fff;
+}
 .btn-sm.is-loading::before,
 .btn-sm.is-loading::after {
     width: 14px; height: 14px;
