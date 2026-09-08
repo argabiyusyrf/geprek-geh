@@ -51,6 +51,11 @@ class CheckoutController {
         $recipient_name = $old['recipient_name'] ?? null;
         $phone = $old['phone'] ?? null;
         $address = $old['address'] ?? null;
+        $province = $old['province'] ?? null;
+        $city = $old['city'] ?? null;
+        $district = $old['district'] ?? null;
+        $village = $old['village'] ?? null;
+        $postal_code = $old['postal_code'] ?? null;
         $payment_method = $old['payment_method'] ?? null;
         $notes = $old['notes'] ?? null;
         $selected_address_id = $old['address_id'] ?? null;
@@ -79,6 +84,11 @@ class CheckoutController {
         $recipient_name = $post('recipient_name', $user['name'] ?? '');
         $phone = $post('phone', $user['phone'] ?? '');
         $address = $post('address', '');
+        $province = $post('province');
+        $city = $post('city');
+        $district = $post('district');
+        $village = $post('village');
+        $postal_code = $post('postal_code');
         $address_id = (int) ($_POST['address_id'] ?? 0);
         $payment_method = $_POST['payment_method'] ?? 'transfer';
         if (!in_array($payment_method, ['transfer', 'ewallet', 'cod'], true)) $payment_method = 'transfer';
@@ -97,7 +107,7 @@ class CheckoutController {
             $errors['address'] = 'Alamat pengiriman wajib diisi.';
         }
         if ($errors) {
-            $_SESSION['checkout_old'] = ['recipient_name' => $recipient_name, 'phone' => $phone, 'address' => $address, 'address_id' => $address_id, 'payment_method' => $payment_method, 'notes' => $notes];
+            $_SESSION['checkout_old'] = ['recipient_name' => $recipient_name, 'phone' => $phone, 'address' => $address, 'province' => $province, 'city' => $city, 'district' => $district, 'village' => $village, 'postal_code' => $postal_code, 'address_id' => $address_id, 'payment_method' => $payment_method, 'notes' => $notes];
             $_SESSION['checkout_errors'] = $errors;
             redirect('/geprek-geh/checkout');
         }
@@ -136,6 +146,13 @@ class CheckoutController {
         $grand_total = max(0, $subtotal - $discount + $tax + $shipping);
 
         $invoice = generate_invoice();
+        $full_address = array_filter([
+            $address,
+            $village, $district, $city, $province,
+            $postal_code ? "Kode Pos {$postal_code}" : null,
+        ], fn($v) => !empty($v));
+        $order_address = implode(', ', $full_address);
+
         $order_id = $db->insert('orders', [
             'user_id'               => Auth::id(),
             'shipping_address_id'   => $address_id ?: null,
@@ -148,7 +165,7 @@ class CheckoutController {
             'tax'                   => $tax,
             'status'                => 'pending',
             'payment_method'        => $payment_method,
-            'shipping_address'      => $address,
+            'shipping_address'      => $order_address,
             'notes'                 => $notes,
         ]);
 
