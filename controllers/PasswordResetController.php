@@ -5,9 +5,9 @@ class PasswordResetController {
     public function requestForm() {
         if (Auth::check()) redirect('/geprek-geh/account');
         $page_title = 'Lupa Password';
-        require __DIR__ . '/../views/layouts/header.php';
+        require __DIR__ . '/../views/layouts/auth-header.php';
         require __DIR__ . '/../views/auth/forgot.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        require __DIR__ . '/../views/layouts/auth-footer.php';
     }
 
     public function request() {
@@ -71,9 +71,9 @@ class PasswordResetController {
         $token    = $_GET['token'] ?? '';
         $page_title = 'Reset Password';
         $valid = self::validateToken($selector, $token) !== false;
-        require __DIR__ . '/../views/layouts/header.php';
+        require __DIR__ . '/../views/layouts/auth-header.php';
         require __DIR__ . '/../views/auth/reset.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        require __DIR__ . '/../views/layouts/auth-footer.php';
     }
 
     public function isValidLink(string $selector, string $token): bool {

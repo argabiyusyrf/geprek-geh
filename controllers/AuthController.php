@@ -2,9 +2,9 @@
 class AuthController {
     public function loginForm() {
         if (Auth::check()) redirect('/geprek-geh/');
-        require __DIR__ . '/../views/layouts/header.php';
+        require __DIR__ . '/../views/layouts/auth-header.php';
         require __DIR__ . '/../views/auth/login.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        require __DIR__ . '/../views/layouts/auth-footer.php';
     }
 
     public function login() {
@@ -46,9 +46,9 @@ class AuthController {
         if (empty($_SESSION['twofa_uid'])) redirect('/geprek-geh/auth/login');
         $app = require __DIR__ . '/../config/app.php';
         $twofa_name = $_SESSION['twofa_name'] ?? '';
-        require __DIR__ . '/../views/layouts/header.php';
+        require __DIR__ . '/../views/layouts/auth-header.php';
         require __DIR__ . '/../views/auth/twofactor.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        require __DIR__ . '/../views/layouts/auth-footer.php';
     }
 
     public function twoFactorSubmit() {
@@ -100,9 +100,9 @@ class AuthController {
 
     public function registerForm() {
         if (Auth::check()) redirect('/geprek-geh/');
-        require __DIR__ . '/../views/layouts/header.php';
+        require __DIR__ . '/../views/layouts/auth-header.php';
         require __DIR__ . '/../views/auth/register.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        require __DIR__ . '/../views/layouts/auth-footer.php';
     }
 
     public function register() {
