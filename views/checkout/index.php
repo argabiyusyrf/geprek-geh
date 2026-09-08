@@ -97,7 +97,7 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
 
                     <div class="form-group">
                         <label>Alamat Lengkap *</label>
-                        <textarea name="address" class="input <?= !empty($field_errors['address']) ? 'is-invalid' : '' ?>" rows="3" placeholder="Jalan, No, RT/RW, Kelurahan, Kecamatan, Kota, Kode Pos" required><?= e($address ?? $user['address'] ?? '') ?></textarea>
+                        <textarea name="address" class="input <?= !empty($field_errors['address']) ? 'is-invalid' : '' ?>" rows="3" placeholder="Jalan, No, RT/RW, Kelurahan, Kecamatan, Kota, Kode Pos" required><?= e($address ?? '') ?></textarea>
                         <?php if (!empty($field_errors['address'])): ?><span class="field-error"><?= e($field_errors['address']) ?></span><?php endif; ?>
                     </div>
 

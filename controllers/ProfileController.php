@@ -528,4 +528,47 @@ class ProfileController {
         flash_set('success', 'Alamat berhasil dihapus.');
         redirect('/geprek-geh/account?tab=addresses');
     }
+
+    public function toggleNotifications() {
+        Auth::requireLogin();
+        if (!verify_csrf()) {
+            flash_set('error', 'Token tidak valid.');
+            redirect('/geprek-geh/account?tab=settings');
+        }
+        $db = Database::getInstance();
+        $uid = Auth::id();
+        $user = $db->fetchOne("SELECT notify_email FROM users WHERE id = ?", [$uid]);
+        $new_val = $user['notify_email'] ? 0 : 1;
+        $db->update('users', ['notify_email' => $new_val], 'id = ?', [$uid]);
+        if (isset($_SESSION['user_info'])) $_SESSION['user_info']['notify_email'] = $new_val;
+        flash_set('success', $new_val ? 'Notifikasi email diaktifkan.' : 'Notifikasi email dinonaktifkan.');
+        redirect('/geprek-geh/account?tab=settings');
+    }
+
+    public function deleteAccount() {
+        Auth::requireLogin();
+        if (!verify_csrf()) {
+            flash_set('error', 'Token tidak valid.');
+            redirect('/geprek-geh/account');
+        }
+        $db = Database::getInstance();
+        $uid = Auth::id();
+
+        // Soft-delete: set flag instead of hard delete
+        $db->update('users', [
+            'email' => 'deleted_' . $uid . '_' . time() . '@deleted.local',
+            'name' => '[Dihapus]',
+            'totp_enabled' => 0,
+            'totp_secret' => null,
+            'totp_recovery' => null,
+        ], 'id = ?', [$uid]);
+
+        // Clear addresses + notifications linked
+        $db->delete('addresses', 'user_id = ?', [$uid]);
+        $db->delete('notifications', 'user_id = ?', [$uid]);
+
+        Auth::logout();
+        flash_set('success', 'Akunmu telah dihapus. Semua data pribadi telah dihapus.');
+        redirect('/geprek-geh/auth/login');
+    }
 }
