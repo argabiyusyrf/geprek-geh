@@ -286,6 +286,78 @@ class ProfileController {
         redirect('/geprek-geh/account?tab=security');
     }
 
+    // ─────────────────────────── Session Management ───────────────────────────
+
+    /** Ambil semua sesi aktif user + info current session. */
+    private function sessions(int $userId) {
+        $db = Database::getInstance();
+        $all = $db->fetchAll(
+            "SELECT * FROM sessions WHERE user_id = ? ORDER BY is_current DESC, last_activity DESC",
+            [$userId]
+        );
+        $currentSid = session_id();
+        foreach ($all as &$s) {
+            $s['is_current'] = ($s['session_id'] === $currentSid) ? 1 : (int) $s['is_current'];
+            $s['time_ago']   = self::relativeTime($s['last_activity']);
+        }
+        unset($s);
+        return $all;
+    }
+
+    /** Konversi timestamp ke format relatif (mis. "5 menit lalu"). */
+    private static function relativeTime(string $datetime): string {
+        $diff = time() - strtotime($datetime);
+        if ($diff < 60)    return 'Baru saja';
+        if ($diff < 3600)  return floor($diff / 60) . ' menit lalu';
+        if ($diff < 86400) return floor($diff / 3600) . ' jam lalu';
+        return floor($diff / 86400) . ' hari lalu';
+    }
+
+    /** Revoke satu sesi (kecuali sesi saat ini). */
+    public function revokeSession($id) {
+        Auth::requireLogin();
+        if (!verify_csrf()) {
+            flash_set('error', 'Token tidak valid.');
+            redirect('/geprek-geh/account?tab=settings');
+        }
+        $db = Database::getInstance();
+        $uid = Auth::id();
+        $id  = (int) $id;
+
+        $target = $db->fetchOne("SELECT * FROM sessions WHERE id = ? AND user_id = ?", [$id, $uid]);
+        if (!$target) {
+            flash_set('error', 'Sesi tidak ditemukan.');
+            redirect('/geprek-geh/account?tab=settings');
+        }
+        if ($target['session_id'] === session_id()) {
+            flash_set('error', 'Tidak bisa revoke sesi yang sedang aktif.');
+            redirect('/geprek-geh/account?tab=settings');
+        }
+
+        $db->delete('sessions', 'id = ?', [$id]);
+        flash_set('success', 'Sesi perangkat berhasil dihapus.');
+        redirect('/geprek-geh/account?tab=settings');
+    }
+
+    /** Revoke semua sesi kecuali sesi saat ini. */
+    public function revokeAllSessions() {
+        Auth::requireLogin();
+        if (!verify_csrf()) {
+            flash_set('error', 'Token tidak valid.');
+            redirect('/geprek-geh/account?tab=settings');
+        }
+        $db = Database::getInstance();
+        $uid = Auth::id();
+        $currentSid = session_id();
+
+        $db->query(
+            "DELETE FROM sessions WHERE user_id = ? AND session_id != ?",
+            [$uid, $currentSid]
+        );
+        flash_set('success', 'Semua sesi lain berhasil dihapus.');
+        redirect('/geprek-geh/account?tab=settings');
+    }
+
     // ─────────────────────────── Address CRUD ───────────────────────────
 
     private function addressInputs() {
