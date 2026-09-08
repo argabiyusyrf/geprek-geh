@@ -43,9 +43,16 @@ session_start();
 
 set_exception_handler(function (Throwable $e) {
     error_log('[FATAL] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
-    http_response_code(500);
-    if (ob_get_level()) ob_end_clean();
-    require __DIR__ . '/views/layouts/500.php';
+    $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        http_response_code(500);
+        echo json_encode(['ok' => false, 'message' => 'Terjadi kesalahan server. Silakan coba lagi.']);
+    } else {
+        http_response_code(500);
+        if (ob_get_level()) ob_end_clean();
+        require __DIR__ . '/views/layouts/500.php';
+    }
     exit;
 });
 
