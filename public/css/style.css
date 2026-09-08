@@ -14,6 +14,8 @@
     --ink:         #14110C; /* Espresso black */
     --ink-2:       #322A20;
     --ink-3:       #5A4D3D;
+    --ink-dark:    var(--ink-dark); /* Espresso dark for admin gradient */
+    --ink-warm:    var(--ink-warm); /* Warm cream for dark bg text */
     --muted:       #8A7A65;
     --accent:      #D43E1B; /* Chili */
     --accent-deep: #A82A0E;
@@ -612,7 +614,7 @@ section[id] { scroll-margin-top: 110px; }
     justify-content: space-between;
 }
 .overlay-brand {
-    color: #f5ede0;
+    color: var(--ink-warm);
     font-family: var(--font-display);
     font-weight: 600;
     font-size: 1.15rem;
@@ -627,7 +629,7 @@ section[id] { scroll-margin-top: 110px; }
     border-radius: 999px;
     border: 1px solid rgba(245, 237, 224, 0.25);
     background: rgba(255, 255, 255, 0.06);
-    color: #f5ede0;
+    color: var(--ink-warm);
     display: grid;
     place-items: center;
     cursor: pointer;
@@ -643,7 +645,7 @@ section[id] { scroll-margin-top: 110px; }
     align-items: center;
     gap: 18px;
     width: fit-content;
-    color: #f5ede0;
+    color: var(--ink-warm);
     font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(2.4rem, 9vw, 4.2rem);
@@ -1438,7 +1440,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
     padding: 13px 22px;
     border-radius: 999px;
     background: var(--ink);
-    color: #f5ede0;
+    color: var(--ink-warm);
     font-size: 14px;
     font-weight: 700;
     box-shadow: 0 16px 44px -14px rgba(29,26,21,0.5);
@@ -3091,7 +3093,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 /* ─── About strip ──────────────────────────────────────────── */
 .about-strip {
     background: linear-gradient(160deg, var(--ink), #34603c 240%);
-    color: #f5ede0;
+    color: var(--ink-warm);
     border-radius: var(--r-2xl);
     padding: clamp(40px, 6vw, 76px);
     display: grid;
@@ -3124,7 +3126,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
     border-radius: 20px;
     background: rgba(255,255,255,0.04);
 }
-.about-item b { display: block; font-size: 15px; color: #f5ede0; }
+.about-item b { display: block; font-size: 15px; color: var(--ink-warm); }
 .about-item span { font-size: 13.5px; color: rgba(245,237,224,0.6); line-height: 1.55; }
 .about-item .sig {
     width: 44px; height: 44px; flex: none;
@@ -3160,8 +3162,8 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .sidebar {
     width: 252px;
     margin: 18px 0 18px 18px;
-    background: linear-gradient(170deg, var(--ink), #2b2116);
-    color: #f5ede0;
+    background: linear-gradient(170deg, var(--ink), var(--ink-dark));
+    color: var(--ink-warm);
     border-radius: var(--r-lg);
     padding: 22px 14px;
     position: fixed;
@@ -3172,7 +3174,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
     box-shadow: var(--shadow-float);
 }
 .sidebar-header { padding: 6px 10px 18px; border-bottom: 1px solid rgba(245,237,224,0.1); }
-.sidebar-header .brand { color: #f5ede0; }
+.sidebar-header .brand { color: var(--ink-warm); }
 .sidebar-nav { padding: 14px 0; display: flex; flex-direction: column; gap: 3px; }
 .sidebar-nav a {
     display: flex; align-items: center; gap: 11px;
