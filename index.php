@@ -42,7 +42,9 @@ session_set_cookie_params([
 session_start();
 
 set_exception_handler(function (Throwable $e) {
-    error_log('[FATAL] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+    $msg = '[FATAL] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
+    error_log($msg);
+    @file_put_contents(__DIR__ . '/logs/error.log', date('Y-m-d H:i:s') . ' ' . $msg . "\n", FILE_APPEND);
     $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
     if ($isAjax) {
         header('Content-Type: application/json');
