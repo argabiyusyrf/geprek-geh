@@ -3923,6 +3923,110 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 .auth-card-core .input { width: 100%; }
 .is-code { text-align: center; letter-spacing: 0.35em; font-size: 1.25rem; font-weight: 700; }
 
+/* ─── Register form: field icons ──────────────────────────── */
+.reg-fields { display: flex; flex-direction: column; gap: 2px; }
+.reg-field-icon label { display: flex; align-items: center; gap: 6px; }
+.label-optional { font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 11px; color: var(--muted); opacity: 0.7; }
+.reg-input-wrap {
+    position: relative; display: flex; align-items: center;
+}
+.reg-input-icon {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); pointer-events: none; transition: color .3s var(--ease-soft);
+    z-index: 1;
+}
+.reg-input {
+    padding-left: 44px !important;
+}
+.reg-input-wrap:focus-within .reg-input-icon { color: var(--accent-deep); }
+
+/* ── Password toggle ── */
+.reg-input-pass { position: relative; }
+.pass-toggle {
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    display: grid; place-items: center; width: 32px; height: 32px;
+    border: none; background: transparent; color: var(--muted); cursor: pointer;
+    border-radius: 8px; transition: color .3s, background .3s;
+}
+.pass-toggle:hover { color: var(--ink-2); background: rgba(20,17,12,0.05); }
+.pass-toggle .eye-closed { display: none; }
+.pass-toggle.is-visible .eye-open { display: none; }
+.pass-toggle.is-visible .eye-closed { display: block; }
+
+/* ── Password strength meter ── */
+.pass-strength {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 10px; opacity: 0; transform: translateY(-4px);
+    transition: opacity .35s var(--ease-soft), transform .35s var(--ease-soft);
+    pointer-events: none;
+}
+.pass-strength.is-active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.pass-strength-bar {
+    flex: 1; height: 4px; border-radius: 999px;
+    background: var(--hairline); overflow: hidden;
+}
+.pass-strength-fill {
+    display: block; height: 100%; border-radius: 999px; width: 0;
+    transition: width .4s var(--ease-soft), background .4s var(--ease-soft);
+}
+.pass-strength-fill.weak   { width: 20%; background: var(--bad); }
+.pass-strength-fill.fair   { width: 40%; background: #c77a14; }
+.pass-strength-fill.good   { width: 65%; background: var(--sambal); }
+.pass-strength-fill.strong { width: 100%; background: var(--good); }
+.pass-strength-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    white-space: nowrap; min-width: 80px; text-align: right;
+}
+.pass-strength-label.weak   { color: var(--bad); }
+.pass-strength-label.fair   { color: #9a6209; }
+.pass-strength-label.good   { color: #8a6b10; }
+.pass-strength-label.strong { color: var(--good); }
+
+/* ── Terms checkbox ── */
+.reg-terms {
+    display: flex; align-items: flex-start; gap: 10px;
+    margin: 20px 0 22px; cursor: pointer; user-select: none;
+}
+.reg-terms input { position: absolute; opacity: 0; pointer-events: none; }
+.reg-terms-box {
+    flex: none; width: 20px; height: 20px; margin-top: 1px;
+    border-radius: 6px; border: 1.5px solid var(--hairline);
+    background: rgba(255,253,249,0.6);
+    display: grid; place-items: center;
+    transition: all .25s var(--ease-soft);
+}
+.reg-terms-box svg { opacity: 0; transform: scale(0.5); transition: all .25s var(--ease-spring); }
+.reg-terms input:checked + .reg-terms-box {
+    background: var(--accent-deep); border-color: var(--accent-deep);
+}
+.reg-terms input:checked + .reg-terms-box svg { opacity: 1; transform: scale(1); color: #fff; }
+.reg-terms input:focus-visible + .reg-terms-box { box-shadow: 0 0 0 3px rgba(232,75,35,0.2); }
+.reg-terms-text { font-size: 13px; line-height: 1.5; color: var(--muted); }
+.reg-terms-text a { color: var(--accent-deep); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(168,42,14,0.3); text-underline-offset: 2px; }
+.reg-terms-text a:hover { text-decoration-color: var(--accent-deep); }
+
+/* ── Submit button loading state ── */
+.reg-submit { position: relative; }
+.reg-submit-loading { display: none; }
+.reg-submit.is-loading .reg-submit-text,
+.reg-submit.is-loading .btn-icon { opacity: 0; }
+.reg-submit.is-loading .reg-submit-loading {
+    display: grid; place-items: center; position: absolute; inset: 0;
+}
+.reg-submit.is-loading .reg-submit-loading svg { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Divider & alt login ── */
+.reg-divider {
+    display: flex; align-items: center; gap: 16px;
+    margin: 22px 0 18px; color: var(--muted);
+    font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;
+}
+.reg-divider::before, .reg-divider::after {
+    content: ""; flex: 1; height: 1px; background: var(--hairline);
+}
+.reg-login-alt { font-size: 14px; font-weight: 600; gap: 10px; }
+
 /* ─── Admin dashboard extras ─────────────────────────────── */
 .admin-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 22px; border-bottom: 1px solid var(--hairline); margin-bottom: 0; }
 .admin-title.min h3 { font-family: var(--font-display); font-weight: 560; font-size: 1.25rem; letter-spacing: -0.01em; }
