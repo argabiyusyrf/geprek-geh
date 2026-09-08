@@ -3173,6 +3173,33 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
     font-weight: 700;
     color: var(--accent-deep);
 }
+/* Copy button */
+.btn-copy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-sm);
+    background: var(--card);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+.btn-copy:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+.btn-copy.copied {
+    background: var(--good);
+    color: #fff;
+    border-color: var(--good);
+}
 
 .proof-form { margin-top: 4px; }
 .proof-field [hidden] { display: none !important; }
