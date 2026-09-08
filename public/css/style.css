@@ -2424,6 +2424,20 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .auth-card > .auth-card-core > p { text-align: center; color: var(--muted); font-size: 14px; margin-bottom: 26px; }
 .auth-card-core form { margin-top: 10px; }
 .auth-link { text-align: center; margin-top: 22px; font-size: 14px; color: var(--muted); }
+.auth-back {
+    position: absolute; top: 40px; left: 40px;
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    color: var(--ink-3); background: var(--bg-soft);
+    border: 1px solid var(--hairline-s);
+    transition: all .3s var(--ease-soft);
+}
+.auth-back:hover {
+    background: var(--bg); color: var(--ink);
+    transform: translateX(-2px);
+}
+.auth-back svg { flex-shrink: 0; }
 
 /* ─── Account / Profile ───────────────────────────────────── */
 .account-grid {
