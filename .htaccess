@@ -1,6 +1,10 @@
 RewriteEngine On
 RewriteBase /geprek-geh/
 
+# ─── Favicon: serve SVG for /favicon.ico requests ──────────────
+RewriteCond %{REQUEST_URI} =/favicon.ico
+RewriteRule ^favicon\.ico$ public/favicon.svg [L,R=301]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
