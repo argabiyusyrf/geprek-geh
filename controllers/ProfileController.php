@@ -49,9 +49,9 @@ class ProfileController {
             "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 1",
             [Auth::id()]
         );
-        $order_all = $db->fetchAll("SELECT status, grand_total FROM orders WHERE user_id = ?", [Auth::id()]);
+        $order_all = $db->fetchAll("SELECT status, total, discount, shipping_cost, tax FROM orders WHERE user_id = ?", [Auth::id()]);
         $view_data['order_count'] = count($order_all);
-        $view_data['order_total'] = array_sum(array_column($order_all, 'grand_total'));
+        $view_data['order_total'] = array_sum(array_map('grand_total', $order_all));
         $status_map = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
         $counts = array_count_values(array_column($order_all, 'status'));
         $view_data['top_status'] = null;

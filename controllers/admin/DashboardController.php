@@ -6,7 +6,7 @@ class DashboardController {
         $db = \Database::getInstance();
         $stats = [
             'orders'    => $db->count('orders'),
-            'revenue'   => (int)$db->fetchColumn("SELECT COALESCE(SUM(grand_total),0) FROM orders WHERE status != 'cancelled'"),
+            'revenue'   => (int)$db->fetchColumn("SELECT COALESCE(SUM(total - discount + shipping_cost + tax),0) FROM orders WHERE status != 'cancelled'"),
             'products'  => $db->count('products'),
             'customers' => $db->count('users', "role = 'customer'"),
             'pending'   => $db->count('orders', "status = 'pending'"),
