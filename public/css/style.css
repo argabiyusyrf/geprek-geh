@@ -4008,13 +4008,18 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 /* ── Submit button loading state ── */
 .reg-submit { position: relative; }
 .reg-submit-loading { display: none; }
+.reg-submit.is-loading { animation: none !important; opacity: 1 !important; pointer-events: none; }
+.reg-submit.is-loading::after { display: none !important; }
 .reg-submit.is-loading .reg-submit-text,
-.reg-submit.is-loading .btn-icon { opacity: 0; }
+.reg-submit.is-loading > .btn-icon { opacity: 0; pointer-events: none; }
 .reg-submit.is-loading .reg-submit-loading {
     display: grid; place-items: center; position: absolute; inset: 0;
+    color: #fff;
 }
-.reg-submit.is-loading .reg-submit-loading svg { animation: spin 1s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
+.reg-submit.is-loading .reg-submit-loading svg {
+    animation: reg-spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes reg-spin { to { transform: rotate(360deg); } }
 
 /* ── Divider & alt login ── */
 .reg-divider {
