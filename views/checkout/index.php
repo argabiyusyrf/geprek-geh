@@ -104,9 +104,36 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
                             </div>
                         </div>
 
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Provinsi</label>
+                                <input type="text" name="province" class="input" value="<?= e($province ?? '') ?>" placeholder="Jawa Barat">
+                            </div>
+                            <div class="form-group">
+                                <label>Kota / Kabupaten</label>
+                                <input type="text" name="city" class="input" value="<?= e($city ?? '') ?>" placeholder="Bandung">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Kecamatan</label>
+                                <input type="text" name="district" class="input" value="<?= e($district ?? '') ?>" placeholder="Coblong">
+                            </div>
+                            <div class="form-group">
+                                <label>Kelurahan</label>
+                                <input type="text" name="village" class="input" value="<?= e($village ?? '') ?>" placeholder="Dago">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Kode Pos</label>
+                            <input type="text" name="postal_code" class="input" value="<?= e($postal_code ?? '') ?>" placeholder="40135" inputmode="numeric" maxlength="5">
+                        </div>
+
                         <div class="form-group">
                             <label>Alamat Lengkap *</label>
-                            <textarea name="address" class="input <?= !empty($field_errors['address']) ? 'is-invalid' : '' ?>" rows="3" placeholder="Jalan, No, RT/RW, Kelurahan, Kecamatan, Kota, Kode Pos" required><?= e($address ?? '') ?></textarea>
+                            <textarea name="address" class="input <?= !empty($field_errors['address']) ? 'is-invalid' : '' ?>" rows="3" placeholder="Jalan, No, RT/RW" required><?= e($address ?? '') ?></textarea>
                             <?php if (!empty($field_errors['address'])): ?><span class="field-error"><?= e($field_errors['address']) ?></span><?php endif; ?>
                         </div>
                     </div>
