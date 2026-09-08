@@ -63,7 +63,12 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
                                    data-id="<?= (int) $sa['id'] ?>"
                                    data-recipient="<?= e($sa['recipient_name']) ?>"
                                    data-phone="<?= e($sa['phone']) ?>"
-                                   data-address="<?= e($sa['address']) ?>">
+                                   data-address="<?= e($sa['address']) ?>"
+                                   data-province="<?= e($sa['province'] ?? '') ?>"
+                                   data-city="<?= e($sa['city'] ?? '') ?>"
+                                   data-district="<?= e($sa['district'] ?? '') ?>"
+                                   data-village="<?= e($sa['village'] ?? '') ?>"
+                                   data-postal="<?= e($sa['postal_code'] ?? '') ?>">
                                 <input type="radio" name="picked_address" value="<?= (int) $sa['id'] ?>" class="sa-radio-input" <?= (int) ($sa['is_default'] ?? 0) === 1 ? 'checked' : '' ?>>
                                 <span class="sa-radio-dot"></span>
                                 <span class="sa-card-body">

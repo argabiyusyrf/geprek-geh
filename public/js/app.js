@@ -442,6 +442,11 @@ function changeQty(delta) {
     const nameInput = form.querySelector('input[name="recipient_name"]');
     const phoneInput = form.querySelector('input[name="phone"]');
     const addressInput = form.querySelector('textarea[name="address"]');
+    const provinceInput = form.querySelector('input[name="province"]');
+    const cityInput = form.querySelector('input[name="city"]');
+    const districtInput = form.querySelector('input[name="district"]');
+    const villageInput = form.querySelector('input[name="village"]');
+    const postalInput = form.querySelector('input[name="postal_code"]');
     const addressIdInput = document.getElementById('addressIdInput');
     const fieldsWrap = document.getElementById('checkoutFields');
 
