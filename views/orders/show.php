@@ -168,11 +168,52 @@ $wa_number = $contacts['whatsapp'] ?? '';
                 <h3><?= $order['payment_proof'] ? 'Bukti Bayar' : 'Upload Bukti Bayar' ?></h3>
                 <?php if ($order['payment_proof']): ?>
                     <p class="proof-ok"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Bukti pembayaran sudah diupload.</p>
+                    <div class="proof-saved-details">
+                        <?php if ($order['payment_bank']): ?><span class="proof-saved-item"><strong>Bank/E-Wallet:</strong> <?= e($order['payment_bank']) ?></span><?php endif; ?>
+                        <?php if ($order['payment_account_no']): ?><span class="proof-saved-item"><strong>No. Rekening:</strong> <?= e($order['payment_account_no']) ?></span><?php endif; ?>
+                        <?php if ($order['payment_account_name']): ?><span class="proof-saved-item"><strong>Nama:</strong> <?= e($order['payment_account_name']) ?></span><?php endif; ?>
+                    </div>
                     <img src="/geprek-geh/assets/uploads/payments/<?= e($order['payment_proof']) ?>" alt="Bukti" class="proof-img">
                 <?php else: ?>
-                    <p class="proof-hint">Transfer ke rekening kami lalu unggah buktinya agar verifikasi lebih cepat.</p>
+                    <p class="proof-hint">Lengkapi data pembayaran lalu unggah buktinya agar verifikasi lebih cepat.</p>
                 <form method="POST" action="/geprek-geh/orders/<?= $order['id'] ?>/upload-proof" enctype="multipart/form-data" class="proof-form">
                     <?= csrf_field() ?>
+
+                    <div class="proof-fields-grid">
+                        <div class="form-group">
+                            <label>Bank / E-Wallet *</label>
+                            <select name="payment_bank" class="input" required>
+                                <option value="">Pilih...</option>
+                                <optgroup label="Transfer Bank">
+                                    <option value="BCA">BCA</option>
+                                    <option value="BNI">BNI</option>
+                                    <option value="BRI">BRI</option>
+                                    <option value="Mandiri">Mandiri</option>
+                                    <option value="CIMB Niaga">CIMB Niaga</option>
+                                    <option value="BSI">BSI</option>
+                                    <option value="Danamon">Danamon</option>
+                                    <option value="Permata">Permata</option>
+                                </optgroup>
+                                <optgroup label="E-Wallet">
+                                    <option value="ShopeePay">ShopeePay</option>
+                                    <option value="GoPay">GoPay</option>
+                                    <option value="OVO">OVO</option>
+                                    <option value="DANA">DANA</option>
+                                    <option value="LinkAja">LinkAja</option>
+                                    <option value="QRIS">QRIS</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>No. Rekening / E-Wallet *</label>
+                            <input type="text" name="payment_account_no" class="input" placeholder="08xxxxxxxxxx / 1234567890" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nama Pemilik Rekening *</label>
+                            <input type="text" name="payment_account_name" class="input" placeholder="Nama sesuai rekening" required>
+                        </div>
+                    </div>
+
                     <label class="proof-field" data-proof-field>
                         <input type="file" name="proof" accept="image/*" class="proof-input" data-proof-input required>
 
