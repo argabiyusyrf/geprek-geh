@@ -418,8 +418,13 @@ function changeQty(delta) {
     document.querySelectorAll('form[data-confirm]').forEach((form) => {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
+            e.stopPropagation();
+            const btn = form.querySelector('[type="submit"]');
             gehAlert({ message: form.dataset.confirm || 'Yakin melanjutkan?' }).then((ok) => {
-                if (ok) form.submit();
+                if (ok) {
+                    if (btn) { btn.disabled = true; btn.classList.add('is-loading'); }
+                    form.submit();
+                }
             });
         });
     });
