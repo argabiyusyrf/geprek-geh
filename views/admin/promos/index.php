@@ -18,7 +18,7 @@
             <?= csrf_field() ?>
             <div class="form-group">
                 <label>Kode</label>
-                <input type="text" name="code" class="input" placeholder="WELCOME10" required maxlength="32" style="text-transform:uppercase">
+                <input type="text" name="code" class="input promo-code-input" placeholder="WELCOME10" required maxlength="32">
             </div>
             <div class="form-group">
                 <label>Tipe Diskon</label>

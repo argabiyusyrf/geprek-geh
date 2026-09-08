@@ -28,7 +28,7 @@ $valid = (new PasswordResetController())->isValidLink($selector, $token);
                     <h1>Atur <em>ulang</em></h1>
 
                     <?php if (!$valid): ?>
-                        <div class="alert alert-error" style="position:static;transform:none;margin:18px 0;">Link reset sudah tidak valid atau kedaluwarsa. Silakan minta link baru.</div>
+                        <div class="alert alert-error alert-static">Link reset sudah tidak valid atau kedaluwarsa. Silakan minta link baru.</div>
                         <p class="auth-link"><a href="/geprek-geh/auth/forgot">Minta link baru</a></p>
                     <?php else: ?>
                         <p class="auth-sub">Buat password baru untuk akunmu. Minimal 6 karakter.</p>

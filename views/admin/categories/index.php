@@ -31,7 +31,7 @@
                     <td><?= e($c['name']) ?></td>
                     <td><?= $c['product_count'] ?></td>
                     <td>
-                        <form method="POST" action="/geprek-geh/admin/categories/<?= $c['id'] ?>/delete" class="inline-form" style="display:inline" data-confirm="Hapus kategori ini? Produk di dalamnya juga akan dihapus.">
+                        <form method="POST" action="/geprek-geh/admin/categories/<?= $c['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus kategori ini? Produk di dalamnya juga akan dihapus.">
                             <button class="btn btn-sm btn-danger">Hapus</button>
                         </form>
                     </td>
