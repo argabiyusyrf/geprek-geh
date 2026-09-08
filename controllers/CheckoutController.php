@@ -53,6 +53,7 @@ class CheckoutController {
         $address = $old['address'] ?? null;
         $payment_method = $old['payment_method'] ?? null;
         $notes = $old['notes'] ?? null;
+        $selected_address_id = $old['address_id'] ?? null;
         $field_errors = $_SESSION['checkout_errors'] ?? [];
         unset($_SESSION['checkout_errors'], $_SESSION['checkout_old']);
 
@@ -96,7 +97,7 @@ class CheckoutController {
             $errors['address'] = 'Alamat pengiriman wajib diisi.';
         }
         if ($errors) {
-            $_SESSION['checkout_old'] = ['recipient_name' => $recipient_name, 'phone' => $phone, 'address' => $address, 'payment_method' => $payment_method, 'notes' => $notes];
+            $_SESSION['checkout_old'] = ['recipient_name' => $recipient_name, 'phone' => $phone, 'address' => $address, 'address_id' => $address_id, 'payment_method' => $payment_method, 'notes' => $notes];
             $_SESSION['checkout_errors'] = $errors;
             redirect('/geprek-geh/checkout');
         }

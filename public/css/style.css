@@ -2123,44 +2123,90 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
     color: var(--muted);
     margin: 0 0 6px;
 }
-.saved-address {
+.sa-radio-card {
     display: flex;
     align-items: flex-start;
     gap: 12px;
     width: 100%;
     padding: 14px 16px;
-    border: 1px solid var(--hairline);
+    border: 1.5px solid var(--hairline);
     border-radius: var(--r-md);
     background: var(--surface);
     color: inherit;
     cursor: pointer;
     text-align: left;
-    transition: border-color .3s var(--ease-soft), background .3s var(--ease-soft), box-shadow .3s var(--ease-soft);
+    transition: border-color .25s var(--ease-soft), background .25s var(--ease-soft), box-shadow .25s var(--ease-soft);
+    position: relative;
 }
-.saved-address:hover { border-color: var(--accent); background: var(--card); }
-.saved-address.is-active {
+.sa-radio-card:hover { border-color: var(--accent); background: var(--card); }
+.sa-radio-card.is-active {
     border-color: var(--accent);
     background: var(--card);
     box-shadow: 0 2px 18px -10px rgba(232,75,35,0.4);
 }
-.saved-address .sa-label {
+.sa-radio-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+.sa-radio-dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--hairline);
+    flex-shrink: 0;
+    margin-top: 1px;
+    position: relative;
+    transition: border-color .25s var(--ease-soft), background .25s var(--ease-soft);
+}
+.sa-radio-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 10px; height: 10px;
+    margin: -5px 0 0 -5px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: scale(0);
+    transition: transform .25s var(--ease-spring);
+}
+.sa-radio-card.is-active .sa-radio-dot {
+    border-color: var(--accent);
+}
+.sa-radio-card.is-active .sa-radio-dot::after {
+    transform: scale(1);
+}
+.sa-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+}
+.sa-label {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     font-weight: 800;
     font-size: 13px;
 }
-.saved-address .sa-body {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    flex: 1;
-    min-width: 0;
-    text-align: left;
+.sa-name { font-weight: 600; font-size: 13px; }
+.sa-addr, .sa-region { font-size: 12px; color: var(--muted); line-height: 1.5; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sa-radio-manual .sa-name { font-weight: 500; }
+
+/* ── Collapsible checkout fields ── */
+.checkout-fields {
+    overflow: hidden;
+    max-height: 500px;
+    opacity: 1;
+    transition: max-height .4s var(--ease-soft), opacity .3s var(--ease-soft), margin .3s var(--ease-soft);
+    margin-bottom: 16px;
 }
-.saved-address .sa-name { font-weight: 600; font-size: 13px; }
-.saved-address .sa-addr, .saved-address .sa-region { font-size: 12px; color: var(--muted); line-height: 1.5; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.saved-address.is-manual .sa-name { font-weight: 500; }
+.checkout-fields.is-collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-bottom: 0;
+    pointer-events: none;
+}
 .checkout-hero .sub { margin-bottom: 30px; }
 .checkout-steps {
     display: flex;
