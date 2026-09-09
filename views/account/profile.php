@@ -618,5 +618,23 @@
 </div>
 
 <?php if (($tab ?? '') === 'addresses' && $drawer_start_open): ?>
-    <script>window.__ADDRESS_DRAWER_OPEN__ = true;</script>
+    <script>
+        window.__ADDRESS_DRAWER_OPEN__ = true;
+        <?php if ($edit_addr): ?>
+        window.__ADDRESS_EDIT_DATA__ = <?= json_encode([
+            'id'             => (int) $edit_addr['id'],
+            'label'          => $edit_addr['label'] ?? '',
+            'recipient_name' => $edit_addr['recipient_name'] ?? '',
+            'phone'          => $edit_addr['phone'] ?? '',
+            'province'       => $edit_addr['province'] ?? '',
+            'city'           => $edit_addr['city'] ?? '',
+            'district'       => $edit_addr['district'] ?? '',
+            'village'        => $edit_addr['village'] ?? '',
+            'postal_code'    => $edit_addr['postal_code'] ?? '',
+            'address'        => $edit_addr['address'] ?? '',
+            'notes'          => $edit_addr['notes'] ?? '',
+            'is_default'     => (int) $edit_addr['is_default'],
+        ], JSON_UNESCAPED_UNICODE) ?>;
+        <?php endif; ?>
+    </script>
 <?php endif; ?>
