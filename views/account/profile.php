@@ -422,7 +422,7 @@
             $drawerAction = $edit_addr ? '/geprek-geh/account/addresses/' . $edit_addr['id'] : '/geprek-geh/account/addresses';
         ?>
 
-        <form method="POST" action="<?= $drawerAction ?>" class="drawer-body">
+        <form method="POST" action="<?= $drawerAction ?>" class="drawer-body" id="address-form">
             <?= csrf_field() ?>
 
             <?php if ($a_old && !empty($address_errors)): ?>
