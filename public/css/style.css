@@ -2911,7 +2911,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
     padding: 18px 22px;
     border-bottom: 1px solid var(--hairline);
 }
-.drawer-head h4 { margin: 0; font-family: var(--font-display); font-weight: 560; }
+.drawer-head h4 { margin: 0; font-family: var(--font-display); font-weight: 560; transition: opacity .2s ease; }
 .drawer-close {
     border: 0; background: none; cursor: pointer;
     color: var(--muted); padding: 6px; border-radius: 8px;
