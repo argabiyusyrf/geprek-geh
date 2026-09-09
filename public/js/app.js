@@ -865,6 +865,24 @@ document.addEventListener('click', (e) => {
 
     const body = document.body;
     const openBtn = document.querySelector('[data-open-address-drawer]');
+    const form = drawer.querySelector('form');
+    const titleEl = drawer.querySelector('#drawer-title');
+    const formActionInput = form ? form.querySelector('[name="_form_action"]') : null;
+
+    // Default form action (for add)
+    const addAction = '/geprek-geh/account/addresses';
+
+    function resetForm() {
+        if (!form) return;
+        form.reset();
+        form.setAttribute('action', addAction);
+        form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        form.querySelectorAll('.field-error').forEach(el => el.remove());
+        if (titleEl) titleEl.textContent = 'Tambah Alamat';
+        // remove any leftover hidden edit-id input
+        const old = form.querySelector('input[name="edit_id"]');
+        if (old) old.remove();
+    }
 
     function open() {
         drawer.classList.add('is-open');
@@ -872,30 +890,86 @@ document.addEventListener('click', (e) => {
         if (overlay) overlay.classList.add('is-open');
         body.style.overflow = 'hidden';
         if (window.__lenis) window.__lenis.stop();
-        const first = drawer.querySelector('input, textarea, select, button');
+        const first = drawer.querySelector('input, textarea, select, button[type="submit"]');
         if (first) setTimeout(() => first.focus({ preventScroll: true }), 220);
     }
+
     function close() {
         drawer.classList.remove('is-open');
         drawer.setAttribute('aria-hidden', 'true');
         if (overlay) overlay.classList.remove('is-open');
         body.style.overflow = '';
         if (window.__lenis) window.__lenis.start();
+        // reset form after close animation finishes
+        setTimeout(resetForm, 350);
     }
-    window.openAddressDrawer = open;
+
+    function openForAdd() {
+        resetForm();
+        open();
+    }
+
+    function openForEdit(data) {
+        resetForm();
+        // set form action to edit endpoint
+        form.setAttribute('action', '/geprek-geh/account/addresses/' + data.id);
+        if (titleEl) titleEl.textContent = 'Edit Alamat';
+        // prefill fields
+        const fields = ['label', 'recipient_name', 'phone', 'province', 'city', 'district', 'village', 'postal_code', 'address', 'notes'];
+        fields.forEach(name => {
+            const input = form.querySelector('[name="' + name + '"]');
+            if (input && data[name] !== undefined) input.value = data[name] || '';
+        });
+        const defCheckbox = form.querySelector('[name="is_default"]');
+        if (defCheckbox) defCheckbox.checked = parseInt(data.is_default) === 1;
+        open();
+    }
+
+    window.openAddressDrawer = openForAdd;
     window.closeAddressDrawer = close;
 
-    if (openBtn) openBtn.addEventListener('click', open);
-    document.querySelectorAll('[data-close-address-drawer]').forEach((btn) => btn.addEventListener('click', close));
-    if (overlay) overlay.addEventListener('click', close);
+    if (openBtn) openBtn.addEventListener('click', openForAdd);
 
+    // edit buttons: instant client-side prefill
+    drawer.querySelectorAll('[data-close-address-drawer]').forEach((btn) => btn.addEventListener('click', close));
+    document.querySelectorAll('[data-edit-address]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            try {
+                const data = JSON.parse(btn.dataset.editAddress);
+                openForEdit(data);
+            } catch (_) {
+                // fallback: use server redirect
+                const form = btn.closest('form');
+                if (form) form.submit();
+            }
+        });
+    });
+
+    if (overlay) overlay.addEventListener('click', close);
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && drawer.classList.contains('is-open')) close();
     });
 
+    // loading state on submit
+    if (form) {
+        form.addEventListener('submit', () => {
+            const btn = form.querySelector('button[type="submit"]');
+            if (btn && !btn.classList.contains('is-loading')) {
+                btn.classList.add('is-loading');
+                btn.disabled = true;
+            }
+        });
+    }
+
     // auto-open when editing / after validation error (server set flag)
     if (window.__ADDRESS_DRAWER_OPEN__ === true) {
-        open();
+        const editData = window.__ADDRESS_EDIT_DATA__;
+        if (editData) {
+            openForEdit(editData);
+        } else {
+            open();
+        }
     }
 })();
 
