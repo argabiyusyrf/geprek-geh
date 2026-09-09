@@ -418,9 +418,10 @@
                 return $def;
             };
             $fdef = $edit_addr ? (int) $edit_addr['is_default'] : 0;
+            $drawerAction = $edit_addr ? '/geprek-geh/account/addresses/' . $edit_addr['id'] : '/geprek-geh/account/addresses';
         ?>
 
-        <form method="POST" action="/geprek-geh/account/addresses<?= $edit_addr ? '/' . $edit_addr['id'] : '' ?>" class="drawer-body">
+        <form method="POST" action="<?= $drawerAction ?>" class="drawer-body">
             <?= csrf_field() ?>
 
             <?php if ($a_old && !empty($address_errors)): ?>
