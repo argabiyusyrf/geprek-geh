@@ -348,7 +348,23 @@
             </div>
         <?php else: ?>
             <div class="address-grid">
-                <?php foreach ($addresses as $i => $ad): ?>
+                <?php foreach ($addresses as $i => $ad):
+                    $region = array_filter([$ad['village'], $ad['district'], $ad['city'], $ad['province']], fn($v) => !empty($v));
+                    $addrJson = e(json_encode([
+                        'id'             => (int) $ad['id'],
+                        'label'          => $ad['label'] ?? '',
+                        'recipient_name' => $ad['recipient_name'] ?? '',
+                        'phone'          => $ad['phone'] ?? '',
+                        'province'       => $ad['province'] ?? '',
+                        'city'           => $ad['city'] ?? '',
+                        'district'       => $ad['district'] ?? '',
+                        'village'        => $ad['village'] ?? '',
+                        'postal_code'    => $ad['postal_code'] ?? '',
+                        'address'        => $ad['address'] ?? '',
+                        'notes'          => $ad['notes'] ?? '',
+                        'is_default'     => (int) $ad['is_default'],
+                    ], JSON_UNESCAPED_UNICODE));
+                ?>
                     <div class="address-card <?= (int) $ad['is_default'] === 1 ? 'is-default' : '' ?>" data-index="<?= $i ?>">
                         <div class="address-card-top">
                             <span class="address-label">
@@ -356,16 +372,12 @@
                                 <?php if ((int) $ad['is_default'] === 1): ?><span class="address-badge">Utama</span><?php endif; ?>
                             </span>
                             <span class="address-actions">
-                                <form method="POST" action="/geprek-geh/account/addresses/<?= $ad['id'] ?>/edit" class="address-inline-form">
-                                    <?= csrf_field() ?>
-                                    <button type="submit" class="address-btn">Edit</button>
-                                </form>
+                                <button type="button" class="address-btn" data-edit-address='<?= $addrJson ?>'>Edit</button>
                             </span>
                         </div>
                         <div class="address-card-body">
                             <p class="address-name"><?= e($ad['recipient_name']) ?></p>
                             <p class="address-full"><?= e($ad['address']) ?></p>
-                            <?php $region = array_filter([$ad['village'], $ad['district'], $ad['city'], $ad['province']], fn($v) => !empty($v)); ?>
                             <?php if ($region): ?><p class="address-region"><?= e(implode(', ', $region)) ?></p><?php endif; ?>
                             <?php if (!empty($ad['postal_code'])): ?><p class="address-region">Kode Pos <?= e($ad['postal_code']) ?></p><?php endif; ?>
                             <?php if (!empty($ad['phone'])): ?><p class="address-phone"><?= e($ad['phone']) ?></p><?php endif; ?>
