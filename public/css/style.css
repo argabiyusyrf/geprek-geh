@@ -2627,8 +2627,14 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
     border-radius: var(--r-lg);
     background: var(--surface);
     position: relative;
+    transition: border-color .3s var(--ease-soft), box-shadow .3s var(--ease-soft), transform .3s var(--ease-soft);
+}
+.address-card:hover {
+    border-color: rgba(232,75,35,0.18);
+    box-shadow: 0 4px 16px -6px rgba(0,0,0,0.08);
 }
 .address-card.is-default { border-color: var(--accent); box-shadow: 0 2px 18px -10px rgba(232,75,35,0.35); }
+.address-card.is-default:hover { box-shadow: 0 6px 24px -8px rgba(232,75,35,0.4); }
 .address-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .address-label { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; font-size: 14px; }
 .address-badge {
@@ -2640,7 +2646,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .address-btn {
     border: 0; background: transparent; cursor: pointer;
     color: var(--muted); font-size: 12px; font-weight: 600;
-    padding: 4px 8px; border-radius: 8px;
+    padding: 4px 10px; border-radius: 8px;
     transition: color .25s var(--ease-soft), background .25s var(--ease-soft);
 }
 .address-btn:hover { color: var(--accent); background: rgba(232,75,35,0.08); }
@@ -2653,11 +2659,12 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .address-link {
     border: 0; background: none; cursor: pointer;
     color: var(--accent); font-size: 12px; font-weight: 700;
-    padding: 0;
-    transition: opacity .25s var(--ease-soft);
+    padding: 2px 4px; border-radius: 6px;
+    transition: opacity .25s var(--ease-soft), background .25s var(--ease-soft);
 }
-.address-link:hover { opacity: .75; }
+.address-link:hover { opacity: .75; background: rgba(232,75,35,0.06); }
 .address-link--danger { color: var(--bad); }
+.address-link--danger:hover { background: rgba(212,62,27,0.06); }
 .account-settings { text-align: center; }
 
 /* ─── Session cards ─────────────────────────────────────────── */
