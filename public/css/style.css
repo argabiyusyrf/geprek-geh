@@ -2919,6 +2919,12 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 }
 .drawer-close:hover { color: var(--ink); background: var(--surface); }
 .drawer-body { padding: 20px 22px; overflow-y: auto; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px; }
+.drawer-body::-webkit-scrollbar { width: 5px; }
+.drawer-body::-webkit-scrollbar-track { background: transparent; }
+.drawer-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,.15); border-radius: 99px; }
+.drawer-body .form-row { gap: 12px; }
+.drawer-body .form-row .form-group { min-width: 0; flex: 1; }
+.drawer-body .form-row .form-group .input { width: 100%; box-sizing: border-box; }
 .drawer-foot {
     display: flex; gap: 10px; justify-content: flex-end;
     padding: 16px 22px;
