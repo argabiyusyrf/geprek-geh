@@ -321,7 +321,8 @@
         $address_errors = $address_errors ?? [];
         $a_old = $address_old ?? null;
         $edit_id = $edit_id ?? null;
-        $drawer_start_open = ($a_old || $edit_id) ? true : false;
+        // only auto-open drawer when actually editing (has edit_id) or after validation error with old data
+        $drawer_start_open = $edit_id ? true : (($a_old && !empty($address_errors)) ? true : false);
         // objek yang sedang diedit (untuk prefill drawer)
         $edit_addr = null;
         if ($edit_id) {
