@@ -431,40 +431,40 @@
 
             <div class="form-group">
                 <label>Label Alamat <span class="muted-sm">(mis. Rumah, Kantor)</span></label>
-                <input type="text" name="label" class="input" value="<?= e($fv('label')) ?>" placeholder="Rumah">
+                <input type="text" name="label" class="input" value="<?= e($fv('label')) ?>" placeholder="cth. Rumah">
             </div>
 
             <div class="form-group">
                 <label>Nama Penerima <span class="req">*</span></label>
-                <input type="text" name="recipient_name" class="input <?= !empty($address_errors['recipient_name']) ? 'is-invalid' : '' ?>" value="<?= e($fv('recipient_name')) ?>" required>
+                <input type="text" name="recipient_name" class="input <?= !empty($address_errors['recipient_name']) ? 'is-invalid' : '' ?>" value="<?= e($fv('recipient_name')) ?>" placeholder="Nama lengkap penerima" required>
                 <?php if (!empty($address_errors['recipient_name'])): ?><span class="field-error"><?= e($address_errors['recipient_name']) ?></span><?php endif; ?>
             </div>
 
             <div class="form-group">
                 <label>No. Handphone Penerima <span class="req">*</span></label>
-                <input type="tel" name="phone" class="input <?= !empty($address_errors['phone']) ? 'is-invalid' : '' ?>" value="<?= e($fv('phone')) ?>" placeholder="08xxxxxxxxxx" inputmode="numeric">
+                <input type="tel" name="phone" class="input <?= !empty($address_errors['phone']) ? 'is-invalid' : '' ?>" value="<?= e($fv('phone')) ?>" placeholder="0812xxxx xxxx" inputmode="numeric">
                 <?php if (!empty($address_errors['phone'])): ?><span class="field-error"><?= e($address_errors['phone']) ?></span><?php endif; ?>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label>Provinsi</label>
-                    <input type="text" name="province" class="input" value="<?= e($fv('province')) ?>" placeholder="Jawa Barat">
+                    <input type="text" name="province" class="input" value="<?= e($fv('province')) ?>" placeholder="cth. Jawa Barat">
                 </div>
                 <div class="form-group">
                     <label>Kota / Kabupaten</label>
-                    <input type="text" name="city" class="input" value="<?= e($fv('city')) ?>" placeholder="Bandung">
+                    <input type="text" name="city" class="input" value="<?= e($fv('city')) ?>" placeholder="cth. Bandung">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label>Kecamatan</label>
-                    <input type="text" name="district" class="input" value="<?= e($fv('district')) ?>" placeholder="Coblong">
+                    <input type="text" name="district" class="input" value="<?= e($fv('district')) ?>" placeholder="cth. Coblong">
                 </div>
                 <div class="form-group">
                     <label>Kelurahan</label>
-                    <input type="text" name="village" class="input" value="<?= e($fv('village')) ?>" placeholder="Dago">
+                    <input type="text" name="village" class="input" value="<?= e($fv('village')) ?>" placeholder="cth. Dago">
                 </div>
             </div>
 
