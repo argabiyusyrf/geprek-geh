@@ -900,8 +900,12 @@ document.addEventListener('click', (e) => {
         if (overlay) overlay.classList.remove('is-open');
         body.style.overflow = '';
         if (window.__lenis) window.__lenis.start();
-        // reset form after close animation finishes
-        setTimeout(resetForm, 350);
+        // reset form + button state after close animation finishes
+        setTimeout(() => {
+            resetForm();
+            const btn = drawer.querySelector('button[type="submit"]');
+            if (btn) { btn.classList.remove('is-loading'); btn.disabled = false; }
+        }, 350);
     }
 
     function openForAdd() {
