@@ -490,11 +490,12 @@
                 <span>Jadikan alamat utama</span>
             </label>
 
-            <div class="drawer-foot">
-                <button type="button" class="btn btn-ghost" data-close-address-drawer>Batal</button>
-                <button type="submit" class="btn btn-primary"><?= $edit_addr ? 'Simpan Perubahan' : 'Simpan Alamat' ?></button>
-            </div>
         </form>
+
+        <div class="drawer-foot">
+            <button type="button" class="btn btn-ghost" data-close-address-drawer>Batal</button>
+            <button type="submit" form="address-form" class="btn btn-primary"><?= $edit_addr ? 'Simpan Perubahan' : 'Simpan Alamat' ?></button>
+        </div>
     </aside>
 
     <?php elseif ($tab === 'settings'): ?>
