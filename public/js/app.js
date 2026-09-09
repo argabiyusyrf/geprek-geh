@@ -954,7 +954,7 @@ document.addEventListener('click', (e) => {
     // loading state on submit
     if (form) {
         form.addEventListener('submit', () => {
-            const btn = form.querySelector('button[type="submit"]');
+            const btn = drawer.querySelector('button[type="submit"]');
             if (btn && !btn.classList.contains('is-loading')) {
                 btn.classList.add('is-loading');
                 btn.disabled = true;
