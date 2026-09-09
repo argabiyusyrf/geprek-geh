@@ -40,8 +40,10 @@ class ProfileController {
         $view_data['addresses'] = $this->addresses(Auth::id());
         $addr_old = $_SESSION['address_old'] ?? null;
         $view_data['address_old'] = $addr_old;
-        $view_data['edit_id'] = $_SESSION['address_edit_id'] ?? null;
+        $edit_id = $_SESSION['address_edit_id'] ?? null;
+        $view_data['edit_id'] = $edit_id;
         $view_data['address_errors'] = $_SESSION['address_errors'] ?? [];
+        // only auto-open drawer when actively editing (has edit_id), not from stale add-session
         unset($_SESSION['address_old'], $_SESSION['address_edit_id'], $_SESSION['address_errors']);
 
         // —— Overview tab ——
