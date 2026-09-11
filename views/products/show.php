@@ -56,23 +56,62 @@ $out_stock = $product['stock'] <= 0;
             <div class="pd-legenda">
                 <div class="pd-legenda-item">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-                    <span><b><?= $product['stock'] ?></b> porsi tersedia</span>
+                    <span><b><?= $product['stock'] ?></b> porsi tersedia di stok hari ini</span>
                 </div>
                 <div class="pd-legenda-item">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 14l2 2 4-4"/></svg>
-                    <span>Sambal level bisa dikustom</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20"/><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="M4 6v2"/><path d="M20 6v2"/><path d="M8 3v2"/><path d="M12 3v2"/><path d="M16 3v2"/></svg>
+                    <span>Dimasak <b>setelah pesanan masuk</b> &mdash; siap &plusmn;15 menit</span>
+                </div>
+                <div class="pd-legenda-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                    <span>Level sambal <b>bisa dikustom</b> 1&ndash;5, lihat skala di bawah</span>
                 </div>
                 <div class="pd-legenda-item">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v6a6 6 0 0 0 12 0V2M6 2h4M18 2h-4"/><path d="M6 2v6L4 6M18 2v6l2-2"/></svg>
-                    <span>Diantar hangat ±30 menit</span>
+                    <span>Antar hangat <b>&plusmn;30 menit (estimasi area lokal)</b></span>
+                </div>
+                <div class="pd-legenda-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+                    <span>Bayar <b>BNI, ShopeePay, atau COD</b> &mdash; tanpa biaya tersembunyi</span>
                 </div>
             </div>
 
-            <div class="pd-buy">
+            <div class="pd-levels">
+                <div class="pd-levels-head">
+                    <span class="pd-price-label">Takaran pedas</span>
+                    <span class="pd-levels-flag">Bisa custom</span>
+                </div>
+                <div class="pd-levels-track" role="img" aria-label="Skala level pedas 1 hingga 5">
+                    <span class="pd-level"><b>1</b><i>Ringan</i></span>
+                    <span class="pd-level"><b>2</b><i>Hangat</i></span>
+                    <span class="pd-level is-active"><b>3</b><i>Standar</i></span>
+                    <span class="pd-level"><b>4</b><i>Pedas</i></span>
+                    <span class="pd-level"><b>5</b><i>Setan</i></span>
+                </div>
+                <p class="pd-tiny">Standar masakan kami level 3. Tulis tingkat level kesukaanmu di <b>catatan pesanan</b> saat checkout.</p>
+            </div>
+
+            <?php
+                $tax_amount = (int) round($product['price'] * ($app['tax_rate'] ?? 0.11));
+                $ship       = (int) ($app['shipping'] ?? 0);
+            ?>
+            <div class="pd-buy" data-price="<?= (int)$product['price'] ?>" data-tax="<?= $tax_amount ?>" data-shipping="<?= $ship ?>">
                 <div class="pd-price">
                     <span class="pd-price-label">Harga per porsi</span>
                     <strong><?= rupiah($product['price']) ?></strong>
                 </div>
+
+                <div class="pd-breakdown">
+                    <div class="pd-line">
+                        <span>Subtotal &middot; <em id="pdQtyLabel">1&times; porsi</em></span>
+                        <b id="pdSubtotal"><?= rupiah($product['price']) ?></b>
+                    </div>
+                    <div class="pd-line pd-line--sub">
+                        <span>Pajak 11% (&plusmn;<?= rupiah($tax_amount) ?>/porsi)</span>
+                        <b>+ <?= rupiah($ship) ?> ongkir flat</b>
+                    </div>
+                </div>
+                <p class="pd-tiny">Total akhir pajak + ongkir dihitung dan tampil jelas di halaman checkout &mdash; tanpa biaya tersembunyi.</p>
 
                 <?php if ($product['stock'] > 0): ?>
                 <form method="POST" action="/geprek-geh/cart/add" class="pd-form">
@@ -116,6 +155,28 @@ $out_stock = $product['stock'] <= 0;
         </div>
         <?php endif; ?>
     </div>
+
+    <?php if ($review_stats['review_count'] > 0): ?>
+    <div class="review-dist" data-reveal>
+        <div class="review-dist-head">
+            <h3 class="review-dist-title">Rincian penilaian</h3>
+            <span class="review-dist-verified">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
+                Semua ulasan asli, tampil apa adanya
+            </span>
+        </div>
+        <div class="review-dist-bars">
+            <?php for ($r = 5; $r >= 1; $r--): ?>
+            <?php $pct = $review_stats['review_count'] > 0 ? round($rating_dist[$r] / $review_stats['review_count'] * 100) : 0; ?>
+            <div class="review-dist-row">
+                <span class="review-dist-label"><?= $r ?><span class="review-dist-star" aria-hidden="true">&#9733;</span></span>
+                <div class="review-dist-track"><i style="width:<?= $pct ?>%"></i></div>
+                <span class="review-dist-count"><?= $rating_dist[$r] ?></span>
+            </div>
+            <?php endfor; ?>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <?php if (Auth::check()): ?>
     <div class="review-form-wrap" data-reveal>

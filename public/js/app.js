@@ -242,7 +242,32 @@ function changeQty(delta) {
     const max = parseInt(input.max, 10);
     if (max > 0 && val > max) val = max;
     input.value = val;
+    updatePdSubtotal();
 }
+
+/* ── Live subtotal (product detail, transparent pricing) ── */
+function formatIdr(n) {
+    return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+}
+
+function updatePdSubtotal() {
+    const buy = document.querySelector('.pd-buy[data-price]');
+    const input = document.getElementById('qty');
+    const label = document.getElementById('pdQtyLabel');
+    const subtotal = document.getElementById('pdSubtotal');
+    if (!buy || !input || !label || !subtotal) return;
+    const qty = parseInt(input.value, 10) || 1;
+    const price = parseInt(buy.dataset.price, 10) || 0;
+    label.textContent = qty + '\u00d7 porsi';
+    subtotal.textContent = formatIdr(price * qty);
+}
+
+(function pdSubtotalListeners() {
+    const input = document.getElementById('qty');
+    if (!input) return;
+    updatePdSubtotal();
+    ['input', 'change'].forEach((ev) => input.addEventListener(ev, updatePdSubtotal));
+})();
 
 /* ── Cart quantity stepper: adjust + submit form ── */
 (function cartSteppers() {
