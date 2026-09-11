@@ -159,7 +159,7 @@ $router->get('/checkout',                  ['CheckoutController', 'index']);
 $router->post('/checkout',                 ['CheckoutController', 'process']);
 $router->get('/orders',                    ['OrderController', 'index']);
 $router->get('/orders/{id}',               ['OrderController', 'show']);
-$router->get('/orders/{id}/upload-proof', ['OrderController', 'uploadProof']);
+$router->post('/orders/{id}/upload-proof', ['OrderController', 'uploadProof']);
 $router->post('/orders/{id}/cancel',       ['OrderController', 'cancel']);
 $router->post('/orders/{id}/receive',      ['OrderController', 'receive']);
 $router->post('/orders/{id}/reorder',      ['OrderController', 'reorder']);
