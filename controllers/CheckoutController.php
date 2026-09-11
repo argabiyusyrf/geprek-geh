@@ -91,10 +91,39 @@ class CheckoutController {
         $district = $post('district');
         $village = $post('village');
         $postal_code = $post('postal_code');
-        $address_id = (int) ($_POST['address_id'] ?? 0);
         $payment_method = $_POST['payment_method'] ?? 'transfer';
         if (!in_array($payment_method, ['transfer', 'ewallet', 'cod'], true)) $payment_method = 'transfer';
         $notes = $post('notes');
+
+        // Pick shipping address: radio `picked_address` works even without JS.
+        // A numeric value loads the saved address from DB (ownership-verified);
+        // 'manual' or absence falls back to the typed fields.
+        $address_id = 0;
+        $saved_source = null;
+        $picked = trim((string) ($_POST['picked_address'] ?? ''));
+        if ($picked !== '' && $picked !== 'manual') {
+            $saved_source = $db->fetchOne(
+                "SELECT * FROM addresses WHERE id = ? AND user_id = ?",
+                [(int) $picked, Auth::id()]
+            );
+        }
+        if (!$saved_source && !empty($_POST['address_id'])) {
+            $saved_source = $db->fetchOne(
+                "SELECT * FROM addresses WHERE id = ? AND user_id = ?",
+                [(int) $_POST['address_id'], Auth::id()]
+            );
+        }
+        if ($saved_source) {
+            $address_id   = (int) $saved_source['id'];
+            $recipient_name = $saved_source['recipient_name'];
+            $phone        = $saved_source['phone'];
+            $address      = $saved_source['address'];
+            $province     = $saved_source['province'] ?? '';
+            $city         = $saved_source['city'] ?? '';
+            $district     = $saved_source['district'] ?? '';
+            $village      = $saved_source['village'] ?? '';
+            $postal_code  = $saved_source['postal_code'] ?? '';
+        }
 
         $errors = [];
         if (empty($recipient_name)) {
@@ -112,6 +141,9 @@ class CheckoutController {
         }
         if (empty($address)) {
             $errors['address'] = 'Alamat pengiriman wajib diisi.';
+        }
+        if ($postal_code !== '' && !preg_match('/^\d{5}$/', $postal_code)) {
+            $errors['postal_code'] = 'Kode pos harus 5 digit angka.';
         }
         if ($errors) {
             $_SESSION['checkout_old'] = ['recipient_name' => $recipient_name, 'phone' => $phone, 'address' => $address, 'province' => $province, 'city' => $city, 'district' => $district, 'village' => $village, 'postal_code' => $postal_code, 'address_id' => $address_id, 'payment_method' => $payment_method, 'notes' => $notes];
@@ -185,7 +217,7 @@ class CheckoutController {
         $db->update('users', ['phone' => $phone], 'id = ?', [Auth::id()]);
         unset($_SESSION['checkout_old']);
 
-        foreach ($items as $item) {
+foreach ($items as $item) {
             $db->insert('order_items', [
                 'order_id'   => $order_id,
                 'product_id' => $item['product_id'],
@@ -197,9 +229,22 @@ class CheckoutController {
                 [$item['quantity'], $item['product_id'], $item['quantity']]
             );
             if ($result->rowCount() === 0) {
+                // Stok habis saat checkout: batalkan order yang baru dibuat agar
+                // tidak ada order/item yatim, dan kembalikan stok yang terreservasi.
+                $db->delete('order_items', 'order_id = ?', [$order_id]);
+                $db->delete('orders', 'id = ?', [$order_id]);
+                foreach ($reserved as $r) {
+                    $db->query("UPDATE products SET stock = stock + ? WHERE id = ?", [$r['qty'], $r['product_id']]);
+                }
                 flash_set('error', "Stok {$item['name']} habis saat checkout. Silakan periksa kembali.");
                 redirect('/geprek-geh/cart');
             }
+            $reserved[] = ['product_id' => $item['product_id'], 'qty' => $item['quantity']];
+        }
+                flash_set('error', "Stok {$item['name']} habis saat checkout. Silakan periksa kembali.");
+                redirect('/geprek-geh/cart');
+            }
+            $reserved[] = ['product_id' => $item['product_id'], 'qty' => $item['quantity']];
         }
 
         $db->delete('cart', 'user_id = ?', [Auth::id()]);
