@@ -959,19 +959,34 @@ document.addEventListener('click', (e) => {
 /* ── Salin teks ke clipboard (data-copy="#selector") ── */
 (function copyText() {
     const btns = document.querySelectorAll('[data-copy]');
+    // execCommand fallback: works on plain HTTP where navigator.clipboard is unavailable
+    const legacyCopy = (text) => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        ta.setSelectionRange(0, text.length);
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
+        ta.remove();
+        return ok;
+    };
     btns.forEach((btn) => {
         btn.addEventListener('click', async () => {
             const el = document.querySelector(btn.dataset.copy);
             const text = el ? el.textContent.trim() : btn.dataset.copy;
-            try {
-                await navigator.clipboard.writeText(text);
-                const prev = btn.textContent;
-                btn.textContent = 'Tersalin ✓';
-                setTimeout(() => { btn.textContent = prev; }, 1600);
-            } catch (_) {
-                btn.textContent = 'Gagal salin';
-                setTimeout(() => { btn.textContent = prev ?? ''; }, 1600);
+            const prev = btn.textContent;
+            let ok = false;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try { await navigator.clipboard.writeText(text); ok = true; } catch (_) { ok = false; }
             }
+            if (!ok) ok = legacyCopy(text);
+            btn.textContent = ok ? 'Tersalin ✓' : 'Gagal salin';
+            setTimeout(() => { btn.textContent = prev; }, 1600);
         });
     });
 })();
