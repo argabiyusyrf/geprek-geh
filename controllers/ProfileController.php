@@ -34,6 +34,9 @@ class ProfileController {
         // —— Security tab ——
         $view_data['pwd_errors'] = $_SESSION['profile_pwd_errors'] ?? [];
         unset($_SESSION['profile_pwd_errors']);
+        $view_data['email_old'] = $_SESSION['email_old'] ?? '';
+        $view_data['email_errors'] = $_SESSION['email_errors'] ?? [];
+        unset($_SESSION['email_old'], $_SESSION['email_errors']);
 
         // —— Addresses tab ——
         $view_data['addresses'] = $this->addresses(Auth::id());
@@ -157,6 +160,45 @@ class ProfileController {
 
         $db->update('users', ['password' => password_hash($new, PASSWORD_DEFAULT)], 'id = ?', [$user['id']]);
         flash_set('success', 'Password berhasil diubah.');
+        redirect('/geprek-geh/account?tab=security');
+    }
+
+    public function changeEmail() {
+        Auth::requireLogin();
+        if (!verify_csrf()) {
+            flash_set('error', 'Token tidak valid.');
+            redirect('/geprek-geh/account');
+        }
+        $db = Database::getInstance();
+        $user = Auth::user();
+
+        $email = strtolower(trim($_POST['email'] ?? ''));
+        $password = $_POST['password'] ?? '';
+
+        $errors = [];
+        if (!password_verify($password, $user['password'])) {
+            $errors['email_pwd'] = 'Password salah.';
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 190) {
+            $errors['email'] = 'Alamat email tidak valid.';
+        } elseif (strcasecmp($email, $user['email']) === 0) {
+            $errors['email'] = 'Email baru sama dengan email sekarang.';
+        } else {
+            $exists = $db->fetchOne("SELECT id FROM users WHERE email = ?", [$email]);
+            if ($exists) {
+                $errors['email'] = 'Email sudah digunakan akun lain.';
+            }
+        }
+        if ($errors) {
+            $_SESSION['email_old'] = $email;
+            $_SESSION['email_errors'] = $errors;
+            redirect('/geprek-geh/account?tab=security');
+        }
+
+        $db->update('users', ['email' => $email], 'id = ?', [$user['id']]);
+        $_SESSION['user_email'] = $email;
+        if (isset($_SESSION['user_info'])) $_SESSION['user_info']['email'] = $email;
+        flash_set('success', 'Email berhasil diubah.');
         redirect('/geprek-geh/account?tab=security');
     }
 
