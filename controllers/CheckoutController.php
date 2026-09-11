@@ -7,8 +7,10 @@ class CheckoutController {
         $where = 'user_id';
         $val = Auth::id();
         $items = $db->fetchAll(
-            "SELECT ct.*, p.name, p.slug, p.price, p.image, p.stock
-             FROM cart ct JOIN products p ON ct.product_id = p.id
+            "SELECT ct.*, p.name, p.slug, p.price, p.image, p.stock, c.name AS category_name
+             FROM cart ct
+             JOIN products p ON ct.product_id = p.id
+             LEFT JOIN categories c ON p.category_id = c.id
              WHERE ct.{$where} = ? ORDER BY ct.created_at",
             [$val]
         );
