@@ -53,14 +53,24 @@ if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(
 
                 <span class="menu-sort">
                     <span class="menu-sort-label">Urutkan</span>
-                    <span class="menu-sort-box">
-                        <select name="sort" class="menu-sort-select" onchange="this.form.submit()" aria-label="Urutkan menu">
+                    <span class="menu-sort-box menu-dropdown" data-dropdown data-form-submit>
+                        <button type="button" class="menu-dropdown-trigger" data-dropdown-trigger aria-haspopup="listbox" aria-expanded="false">
+                            <span data-dropdown-label>Terpopuler</span>
+                            <svg class="menu-sort-chev menu-sort-chev--js" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                        <div class="menu-dropdown-menu" data-dropdown-menu role="listbox">
+                            <button type="button" class="menu-dropdown-item" data-value="populer" role="option">Terpopuler</button>
+                            <button type="button" class="menu-dropdown-item" data-value="terbaru" role="option">Terbaru</button>
+                            <button type="button" class="menu-dropdown-item" data-value="termurah" role="option">Harga Terendah</button>
+                            <button type="button" class="menu-dropdown-item" data-value="termahal" role="option">Harga Tertinggi</button>
+                        </div>
+                        <select name="sort" class="menu-sort-select menu-sort-native" data-dropdown-select onchange="this.form.submit()" aria-label="Urutkan menu">
                             <option value="populer"<?= $sort === 'populer' ? ' selected' : '' ?>>Terpopuler</option>
                             <option value="terbaru"<?= $sort === 'terbaru' ? ' selected' : '' ?>>Terbaru</option>
                             <option value="termurah"<?= $sort === 'termurah' ? ' selected' : '' ?>>Harga Terendah</option>
                             <option value="termahal"<?= $sort === 'termahal' ? ' selected' : '' ?>>Harga Tertinggi</option>
                         </select>
-                        <svg class="menu-sort-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        <svg class="menu-sort-chev menu-sort-chev--native" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
                     </span>
                 </span>
             </div>

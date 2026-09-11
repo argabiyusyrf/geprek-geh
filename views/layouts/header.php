@@ -34,6 +34,7 @@
     <?= $page_jsonld ?? '' ?>
 </head>
 <body>
+<script>document.documentElement.classList.add('js');</script>
 
 <nav class="island-nav">
     <div class="nav-pill">
