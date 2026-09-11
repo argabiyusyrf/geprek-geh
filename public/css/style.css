@@ -5506,13 +5506,13 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
     padding: 2px 14px;
 }
 .twofa-manual-row {
-    display: flex; align-items: center; gap: 12px;
+    display: flex; flex-direction: column; align-items: stretch; gap: 6px;
     padding: 11px 0;
 }
 .twofa-manual-row + .twofa-manual-row { border-top: 1px dashed var(--hairline); }
 .twofa-manual-label {
-    flex: none; width: 104px;
-    font-size: 12px; font-weight: 600; color: var(--ink-2);
+    font-size: 11px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase;
+    color: var(--ink-2);
 }
 .twofa-manual-field {
     flex: 1; min-width: 0;
@@ -5528,8 +5528,6 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 }
 .twofa-manual-field .btn { flex: none; margin-top: 0; }
 @media (max-width: 520px) {
-    .twofa-manual-row { flex-direction: column; align-items: stretch; gap: 6px; }
-    .twofa-manual-label { width: auto; }
     .twofa-manual-field code { white-space: normal; word-break: break-all; }
 }
 
