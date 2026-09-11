@@ -156,11 +156,6 @@
                     <span class="field-hint">Gunakan format 08xxxxxxxxxx.</span>
                     <?php if (!empty($profile_errors['phone'])): ?><span class="field-error"><?= e($profile_errors['phone']) ?></span><?php endif; ?>
                 </div>
-                <div class="form-group">
-                    <label for="pf-address">Alamat</label>
-                    <textarea id="pf-address" name="address" class="input <?= !empty($profile_errors['address']) ? 'is-invalid' : '' ?>" rows="3" maxlength="500" autocomplete="street-address" placeholder="Jalan, No, RT/RW, Kelurahan, Kecamatan, Kota, Kode Pos" required><?= e($address) ?></textarea>
-                    <?php if (!empty($profile_errors['address'])): ?><span class="field-error"><?= e($profile_errors['address']) ?></span><?php endif; ?>
-                </div>
                 <button type="submit" class="btn btn-primary btn-block">Simpan Perubahan</button>
             </form>
         </section>
@@ -178,7 +173,7 @@
                         <strong><?= $completeness ?>%</strong>
                     </div>
                     <div class="profile-progress-track"><span class="profile-progress-bar" style="width: <?= $completeness ?>%"></span></div>
-                    <p class="profile-progress-note"><?= $completeness === 100 ? 'Profilmu sudah lengkap.' : 'Lengkapi nomor & alamat supaya checkout lebih cepat.' ?></p>
+                    <p class="profile-progress-note"><?= $completeness === 100 ? 'Profilmu sudah lengkap.' : 'Lengkapi nama & nomor telepon supaya checkout lebih cepat.' ?></p>
                 </div>
 
                 <nav class="profile-quick">
@@ -216,19 +211,37 @@
             <form method="POST" action="/geprek-geh/account/password">
                 <?= csrf_field() ?>
                 <div class="form-group">
-                    <label>Password Lama</label>
-                    <input type="password" name="current_password" class="input <?= !empty($pwd_errors['current_password']) ? 'is-invalid' : '' ?>" autocomplete="current-password" required>
+                    <label for="pf-curpass">Password Lama</label>
+                    <div class="reg-input-pass">
+                        <input id="pf-curpass" type="password" name="current_password" class="input <?= !empty($pwd_errors['current_password']) ? 'is-invalid' : '' ?>" autocomplete="current-password" required>
+                        <button type="button" class="pass-toggle" data-toggle-pass="pf-curpass" aria-label="Tampilkan password" tabindex="-1">
+                            <svg class="eye-open" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <svg class="eye-closed" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                        </button>
+                    </div>
                     <?php if (!empty($pwd_errors['current_password'])): ?><span class="field-error"><?= e($pwd_errors['current_password']) ?></span><?php endif; ?>
                 </div>
                 <div class="form-group">
-                    <label>Password Baru</label>
-                    <input type="password" name="new_password" class="input <?= !empty($pwd_errors['new_password']) ? 'is-invalid' : '' ?>" minlength="6" autocomplete="new-password" required>
+                    <label for="pf-newpass">Password Baru</label>
+                    <div class="reg-input-pass">
+                        <input id="pf-newpass" type="password" name="new_password" class="input <?= !empty($pwd_errors['new_password']) ? 'is-invalid' : '' ?>" minlength="6" autocomplete="new-password" required>
+                        <button type="button" class="pass-toggle" data-toggle-pass="pf-newpass" aria-label="Tampilkan password" tabindex="-1">
+                            <svg class="eye-open" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <svg class="eye-closed" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                        </button>
+                    </div>
                     <span class="field-hint">Minimal 6 karakter.</span>
                     <?php if (!empty($pwd_errors['new_password'])): ?><span class="field-error"><?= e($pwd_errors['new_password']) ?></span><?php endif; ?>
                 </div>
                 <div class="form-group">
-                    <label>Konfirmasi Password Baru</label>
-                    <input type="password" name="new_password_confirm" class="input <?= !empty($pwd_errors['new_password_confirm']) ? 'is-invalid' : '' ?>" minlength="6" autocomplete="new-password" required>
+                    <label for="pf-confpass">Konfirmasi Password Baru</label>
+                    <div class="reg-input-pass">
+                        <input id="pf-confpass" type="password" name="new_password_confirm" class="input <?= !empty($pwd_errors['new_password_confirm']) ? 'is-invalid' : '' ?>" minlength="6" autocomplete="new-password" required>
+                        <button type="button" class="pass-toggle" data-toggle-pass="pf-confpass" aria-label="Tampilkan password" tabindex="-1">
+                            <svg class="eye-open" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <svg class="eye-closed" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                        </button>
+                    </div>
                     <?php if (!empty($pwd_errors['new_password_confirm'])): ?><span class="field-error"><?= e($pwd_errors['new_password_confirm']) ?></span><?php endif; ?>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Perbarui Password</button>
