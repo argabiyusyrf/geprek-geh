@@ -5575,3 +5575,108 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 /* Drawer · let nested scroll win over page scroll */
 .drawer { overflow: hidden; }
 .drawer-body { overscroll-behavior: contain; scrollbar-width: thin; }
+
+/* ─── Order detail · polish ───────────────────────────────── */
+
+/* Hero — tighter rhythm */
+.order-hero-badge { width: 58px; height: 58px; border-radius: 18px; margin-bottom: 14px; }
+.order-hero .sub { font-size: 13.5px; }
+.order-hero-pill { margin-top: 16px; }
+.order-paydue {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: rgba(242,176,29,0.12);
+    border: 1px solid rgba(242,176,29,0.32);
+    color: #8a5a06;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    transition: background .35s var(--ease-soft), transform .35s var(--ease-spring), box-shadow .35s var(--ease-soft);
+}
+.order-paydue:hover { background: rgba(242,176,29,0.2); color: #6f4704; transform: translateY(-2px); box-shadow: 0 14px 28px -16px rgba(242,176,29,0.55); }
+.order-paydue svg { flex: none; }
+.order-paydue-amount { font-weight: 800; font-variant-numeric: tabular-nums; }
+.order-paydue-cta {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #fff;
+    color: #8a5a06;
+    border: 1px solid rgba(242,176,29,0.35);
+}
+
+/* Timeline — breathing room */
+.order-timeline { margin-bottom: 16px; }
+.tl-desc { line-height: 1.45; }
+
+/* Items — scoped to detail only (checkout keeps its own look) */
+.order-items-list .order-item:first-child { padding-top: 4px; }
+.order-detail-main .order-item { padding: 13px 2px; gap: 14px; }
+.order-detail-main .order-item-name { font-weight: 700; transition: color .3s var(--ease-soft); }
+.order-detail-main .order-item-name:hover { color: var(--accent-deep); }
+.order-detail-main .order-item-price { margin-top: 3px; }
+.order-detail-main .order-item-total { font-size: 14px; }
+
+/* Meta grid */
+.order-meta-grid { gap: 14px 22px; }
+.meta-cell { padding: 8px 0; }
+
+/* Summary card — tinted grand total panel */
+.order-summary-card .order-line:not(.total) { border-bottom: 1px dashed var(--hairline-s); }
+.order-summary-card .order-line:not(.total):last-of-type { border-bottom: none; }
+.order-line.total {
+    margin-top: 12px;
+    padding: 14px 16px;
+    border-top: none;
+    border-radius: 14px;
+    background: radial-gradient(120% 160% at 0% 0%, rgba(232,75,35,0.10), rgba(232,75,35,0.03));
+    border: 1px solid rgba(232,75,35,0.16);
+}
+
+/* Payment instructions — copy chip */
+.pay-instructions-detail {
+    background: var(--card-muted);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+.pay-instructions-detail .pay-copy-target { font-weight: 700; letter-spacing: .02em; font-variant-numeric: tabular-nums; user-select: all; }
+.pay-instructions-detail .btn-copy { margin-left: auto; }
+.pay-instructions-detail .btn-copy:first-child { margin-left: 0; }
+.pay-amount-banner { border-radius: 14px; }
+
+/* Logs — timeline rail */
+.order-logs .log-list { position: relative; }
+.order-logs .log-item { position: relative; }
+.order-logs .log-dot {
+    width: 10px; height: 10px;
+    outline: 3px solid var(--card);
+    z-index: 1;
+}
+.order-logs .log-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 4px; top: 18px; bottom: -10px;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--hairline);
+}
+
+/* Actions + helper spacing */
+.order-actions { max-width: 460px; margin-top: 26px; }
+.order-more { margin-top: 26px; }
+
+@media (max-width: 640px) {
+    .order-detail-layout { gap: 18px; }
+    .order-paydue { width: 100%; }
+    .order-more .btn { flex: 1; justify-content: center; }
+}
