@@ -1231,3 +1231,68 @@ document.addEventListener('click', (e) => {
     window.addEventListener('pagehide', saveScroll);
     window.addEventListener('beforeunload', saveScroll);
 })();
+
+/* ── Cookie consent ── */
+(function cookieConsent() {
+    const KEY = 'gg_cookie_consent';
+    const bar = document.getElementById('cookie-bar');
+    const accept = bar && bar.querySelector('[data-cookie-accept]');
+    const decline = bar && bar.querySelector('[data-cookie-decline]');
+    const openBtns = document.querySelectorAll('[data-cookie-open]');
+
+    const reached = (() => {
+        try {
+            const v = JSON.parse(localStorage.getItem(KEY) || 'null');
+            return v && v.state;
+        } catch (_) { return false; }
+    })();
+
+    const show = () => {
+        if (!bar) return;
+        bar.setAttribute('aria-hidden', 'false');
+        bar.classList.add('is-visible');
+    };
+    const hide = () => {
+        if (!bar) return;
+        bar.removeAttribute('aria-hidden');
+        bar.classList.remove('is-visible');
+    };
+
+    const save = (state) => {
+        try { localStorage.setItem(KEY, JSON.stringify({ state, ts: Date.now() })); } catch (_) {}
+        hide();
+    };
+    openBtns.forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); show(); }));
+
+    if (!reached) {
+        const t = setTimeout(show, 900);
+        if (accept) accept.addEventListener('click', () => save('accepted'));
+        if (decline) decline.addEventListener('click', () => save('declined'));
+        // don't remove timers on purpose; keep the page stable
+        window.addEventListener('keydown', (e) => { if (e.key === 'Escape') clearTimeout(t); });
+    } else {
+        hide();
+    }
+})();
+
+/* ── Notifications page: mark-as-read on click ── */
+(function notifPageRead() {
+    const items = document.querySelectorAll('.notif-page-item[data-page-read-url]');
+    if (!items.length) return;
+
+    const csrfEl = document.querySelector('form input[name="_token"]');
+    if (!csrfEl) return;
+    const token = csrfEl.value;
+
+    items.forEach((item) => {
+        item.addEventListener('click', (e) => {
+            const readUrl = item.dataset.pageReadUrl;
+            if (!readUrl) return;
+            e.preventDefault();
+            const fd = new FormData();
+            fd.append('_token', token);
+            fetch(readUrl, { method: 'POST', body: fd, credentials: 'same-origin' })
+                .finally(() => { window.location.href = item.getAttribute('href'); });
+        });
+    });
+})();
