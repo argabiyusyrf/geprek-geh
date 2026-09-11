@@ -5643,6 +5643,28 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 
 /* Payment instructions — copy chip */
 #aksi-pembayaran { scroll-margin-top: 110px; }
+
+/* Proof form · bank/e-wallet select — brand polish */
+.proof-form select.input {
+    appearance: none;
+    cursor: pointer;
+    background-color: rgba(255,253,249,0.6);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1.5l6 6 6-6' fill='none' stroke='%23e84b23' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 14px;
+    padding-right: 40px;
+    color: var(--ink-2);
+    font-weight: 600;
+    transition: border-color .4s var(--ease-soft), box-shadow .4s var(--ease-soft), background-color .4s var(--ease-soft);
+}
+.proof-form select.input:hover { border-color: var(--accent); background-color: #fffdf9; }
+.proof-form select.input:focus { border-color: var(--accent); background-color: #fffdf9; box-shadow: 0 0 0 4px rgba(232,75,35,0.12); }
+.proof-form select.input option { background-color: #fffdf9; color: var(--ink); font-weight: 500; }
+.proof-form select.input option:hover,
+.proof-form select.input option:checked { background-color: rgba(232,75,35,0.09); color: var(--accent-deep); font-weight: 700; }
+.proof-form select.input option:first-child { color: var(--muted); font-weight: 500; }
+
 .pay-instructions-detail {
     background: var(--card-muted);
     border: 1px solid var(--hairline);
