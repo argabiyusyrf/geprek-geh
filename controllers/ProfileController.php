@@ -28,7 +28,6 @@ class ProfileController {
         $old = $_SESSION['profile_old'] ?? null;
         $view_data['name'] = $old['name'] ?? $user['name'];
         $view_data['phone'] = $old['phone'] ?? $user['phone'];
-        $view_data['address'] = $old['address'] ?? '';
         $view_data['profile_errors'] = $_SESSION['profile_errors'] ?? [];
         unset($_SESSION['profile_errors'], $_SESSION['profile_old']);
 
