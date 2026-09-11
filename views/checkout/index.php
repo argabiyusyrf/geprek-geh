@@ -116,7 +116,7 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
                             </div>
                             <div class="form-group">
                                 <label>Kota / Kabupaten</label>
-                                <input type="text" name="city" class="input" value="<?= e($city ?? '') ?>" placeholder="Bandung">
+                                <input type="text" name="city" autocomplete="address-level2" class="input" value="<?= e($city ?? '') ?>" placeholder="Bandung">
                             </div>
                         </div>
 
@@ -132,13 +132,14 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
                         </div>
 
                         <div class="form-group">
-                            <label>Kode Pos</label>
-                            <input type="text" name="postal_code" class="input" value="<?= e($postal_code ?? '') ?>" placeholder="40135" inputmode="numeric" maxlength="5">
-                        </div>
+<label>Kode Pos</label>
+                                <input type="text" name="postal_code" autocomplete="postal-code" class="input <?= !empty($field_errors['postal_code']) ? 'is-invalid' : '' ?>" value="<?= e($postal_code ?? '') ?>" placeholder="40135" inputmode="numeric" maxlength="5" pattern="\d{5}" title="5 digit angka">
+                                <?php if (!empty($field_errors['postal_code'])): ?><span class="field-error"><?= e($field_errors['postal_code']) ?></span><?php endif; ?>
+                            </div>
 
-                        <div class="form-group">
-                            <label>Alamat Lengkap *</label>
-                            <textarea name="address" class="input <?= !empty($field_errors['address']) ? 'is-invalid' : '' ?>" rows="3" placeholder="Jalan, No, RT/RW" required><?= e($address ?? '') ?></textarea>
+                            <div class="form-group">
+                                <label>Alamat Lengkap *</label>
+                                <textarea name="address" autocomplete="street-address" class="input <?= !empty($field_errors['address']) ? 'is-invalid' : '' ?>" rows="3" placeholder="Jalan, No, RT/RW" required><?= e($address ?? '') ?></textarea>
                             <?php if (!empty($field_errors['address'])): ?><span class="field-error"><?= e($field_errors['address']) ?></span><?php endif; ?>
                         </div>
                     </div>
@@ -237,12 +238,18 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
                                 <span>Subtotal <em>(<?= count($items) ?> item)</em></span>
                                 <span><?= rupiah($subtotal) ?></span>
                             </div>
+                            <?php if ($discount > 0): ?>
+                            <div class="order-line is-discount">
+                                <span>Diskon <?php if ($promo_label): ?><em><?= e($promo_label) ?></em><?php endif; ?></span>
+                                <span>– <?= rupiah($discount) ?></span>
+                            </div>
+                            <?php endif; ?>
                             <div class="order-line">
                                 <span>Pajak <em>11%</em></span>
                                 <span><?= rupiah($tax) ?></span>
                             </div>
                             <div class="order-line">
-                                <span>Ongkir</span>
+                                <span>Ongkir <em>(flat)</em></span>
                                 <span><?= rupiah($shipping) ?></span>
                             </div>
                             <div class="order-line total">
@@ -251,7 +258,12 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-lg btn-block checkout-submit">
+                        <div class="order-eta">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                            <span>Dipesan → disiapkan <strong>±15 menit</strong> di dapur.</span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg btn-block checkout-submit checkout-cta-summary">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7L10 17l-5-5"/></svg>
                             <span class="checkout-submit-label">Buat Pesanan</span>
                         </button>
@@ -264,5 +276,17 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Fixed mobile CTA: shows only on small screens -->
+    <div class="checkout-mobile-bar">
+        <div class="checkout-mobile-total">
+            <small>Total</small>
+            <strong><?= rupiah($grand_total) ?></strong>
+        </div>
+        <button type="submit" class="btn btn-primary checkout-submit checkout-mobile-submit">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7L10 17l-5-5"/></svg>
+            <span class="checkout-submit-label">Buat Pesanan</span>
+        </button>
     </div>
 </form>
