@@ -115,6 +115,7 @@ $router->post('/auth/2fa',                 ['AuthController', 'twoFactorSubmit']
 $router->get('/account',                   ['ProfileController', 'index']);
 $router->post('/account',                  ['ProfileController', 'update']);
 $router->post('/account/password',         ['ProfileController', 'changePassword']);
+$router->post('/account/email',            ['ProfileController', 'changeEmail']);
 $router->post('/account/2fa/setup',        ['ProfileController', 'twoFactorSetup']);
 $router->post('/account/2fa/cancel',       ['ProfileController', 'twoFactorCancel']);
 $router->post('/account/2fa/confirm',      ['ProfileController', 'twoFactorConfirm']);
@@ -122,6 +123,7 @@ $router->post('/account/2fa/disable',      ['ProfileController', 'twoFactorDisab
 $router->post('/account/2fa/recovery',     ['ProfileController', 'twoFactorRegenerate']);
 $router->post('/account/notifications/read-all',   ['NotificationController', 'readAll']);
 $router->post('/account/notifications/{id}/read',   ['NotificationController', 'read']);
+$router->get('/account/notifications',       ['NotificationController', 'index']);
 
 // Account — addresses (multi-alamat, drawer)
 $router->post('/account/addresses',        ['ProfileController', 'store']);
@@ -153,6 +155,10 @@ $router->post('/reviews/{id}/delete',         ['ReviewController', 'delete']);
 // ─── Promo ──────────────────────────────────────────
 $router->post('/promo/apply',                 ['PromoController', 'apply']);
 $router->post('/promo/remove',                ['PromoController', 'remove']);
+
+// ─── Legal / Static pages ───────────────────────────
+$router->get('/pages/terms',                  ['PageController', 'terms']);
+$router->get('/pages/privacy',                ['PageController', 'privacy']);
 
 // ─── Checkout & Orders ───────────────────────────
 $router->get('/checkout',                  ['CheckoutController', 'index']);
