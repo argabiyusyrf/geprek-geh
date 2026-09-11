@@ -889,6 +889,11 @@ section[id] { scroll-margin-top: 110px; }
     font-size: 7rem;
     position: relative;
 }
+.hero-dish .product-img-placeholder {
+    filter: drop-shadow(0 18px 24px rgba(194,58,20,0.26));
+    transition: transform 1s var(--ease-expo);
+}
+.hero-plate:hover .hero-dish .product-img-placeholder { transform: scale(1.06); }
 .hero-dish-img {
     position: absolute;
     inset: 0;
@@ -3686,15 +3691,15 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .bento .category-card,
     .category-card:nth-child(1), .category-card:nth-child(2), .category-card:nth-child(3),
     .category-card:nth-child(4), .category-card:nth-child(5), .category-card:nth-child(6),
-    .product-grid .product-card, .product-card, .product-card.feat-a, .product-card.feat-b,
-    .menu-bento .menu-card, .menu-card, .menu-card--feat { grid-column: span 1 !important; }
+    .product-grid .product-card, .product-card, .product-card.feat-a, .product-card--feat,
+    .menu-bento .product-card, .menu-bento .product-card.product-card--feat:first-child { grid-column: span 1 !important; }
     .category-card-core { padding: 24px 20px 22px; }
     .category-card h3 { font-size: 1.3rem; }
     .category-emoji svg { width: 44px; }
 
     /* ── Product cards ── */
     .product-img { min-height: 180px; }
-    .product-card.feat-a .product-img { min-height: 220px; }
+    .product-card.feat-a .product-img, .product-card--feat .product-img { min-height: 220px; }
 
     /* ── About strip ── */
     .about-strip { grid-template-columns: 1fr; padding: clamp(28px, 5vw, 48px); }
