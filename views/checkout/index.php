@@ -8,7 +8,7 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
     <header class="page-hero checkout-hero">
         <p class="eyebrow">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-            Tampan Pesanan
+            Langkah Terakhir
         </p>
         <h1>Checkout</h1>
         <p class="sub">Selesaikan pengiriman &amp; pembayaran. Pesananmu langsung diteruskan ke dapur begitu tombol diproses.</p>
@@ -95,16 +95,16 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
                     </div>
                     <?php endif; ?>
 
-                    <div class="checkout-fields <?= !empty($saved_addresses) ? 'is-collapsed' : '' ?>" id="checkoutFields">
+                    <div class="checkout-fields <?= !empty($saved_addresses) && empty($field_errors) && empty($selected_address_id) ? 'is-collapsed' : '' ?>" id="checkoutFields">
                         <div class="form-grid">
                             <div class="form-group">
                                 <label>Nama Penerima *</label>
-                                <input type="text" name="recipient_name" class="input <?= !empty($field_errors['recipient_name']) ? 'is-invalid' : '' ?>" value="<?= e($recipient_name ?? $user['name']) ?>" placeholder="Nama lengkap" required>
+                                <input type="text" name="recipient_name" autocomplete="name" class="input <?= !empty($field_errors['recipient_name']) ? 'is-invalid' : '' ?>" value="<?= e($recipient_name ?? $user['name']) ?>" placeholder="Nama lengkap" required>
                                 <?php if (!empty($field_errors['recipient_name'])): ?><span class="field-error"><?= e($field_errors['recipient_name']) ?></span><?php endif; ?>
                             </div>
                             <div class="form-group">
                                 <label>No. Telepon *</label>
-                                <input type="tel" name="phone" class="input <?= !empty($field_errors['phone']) ? 'is-invalid' : '' ?>" value="<?= e($phone ?? $user['phone'] ?? '') ?>" placeholder="08xxxxxxxxxx" inputmode="numeric" required>
+                                <input type="tel" name="phone" autocomplete="tel" class="input <?= !empty($field_errors['phone']) ? 'is-invalid' : '' ?>" value="<?= e($phone ?? $user['phone'] ?? '') ?>" placeholder="08xxxxxxxxxx" inputmode="numeric" required>
                                 <?php if (!empty($field_errors['phone'])): ?><span class="field-error"><?= e($field_errors['phone']) ?></span><?php endif; ?>
                             </div>
                         </div>
@@ -112,7 +112,7 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Provinsi</label>
-                                <input type="text" name="province" class="input" value="<?= e($province ?? '') ?>" placeholder="Jawa Barat">
+                                <input type="text" name="province" autocomplete="address-level1" class="input" value="<?= e($province ?? '') ?>" placeholder="Jawa Barat">
                             </div>
                             <div class="form-group">
                                 <label>Kota / Kabupaten</label>
