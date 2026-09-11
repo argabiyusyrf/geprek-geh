@@ -5636,7 +5636,6 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 .order-line.total {
     margin-top: 12px;
     padding: 14px 16px;
-    border-top: none;
     border-radius: 14px;
     background: radial-gradient(120% 160% at 0% 0%, rgba(232,75,35,0.10), rgba(232,75,35,0.03));
     border: 1px solid rgba(232,75,35,0.16);
