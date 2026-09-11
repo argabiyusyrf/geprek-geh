@@ -306,15 +306,24 @@
                         <p>Pindai QR di bawah dengan aplikasi authenticator, atau masukkan kunci rahasia secara manual.</p>
                         <div class="twofa-qr">
                             <canvas class="twofa-qr-canvas" data-twofa-uri="<?= e($twofa_uri) ?>" role="img" aria-label="QR code untuk 2FA" style="width:190px;height:190px"></canvas>
-                            <p class="twofa-qr-fallback" hidden>QR gagal dimuat. Gunakan <strong>kunci rahasia</strong> atau tautan <strong>otpauth</strong> di bawah ini.</p>
+                            <p class="twofa-qr-fallback" hidden>QR gagal dimuat. Gunakan kunci rahasia atau tautan manual di bawah ini.</p>
                         </div>
-                        <div class="twofa-secret">
-                            <code id="twofa-secret-text"><?= e($twofa_setup) ?></code>
-                            <button type="button" class="btn btn-ghost btn-sm twofa-copy" data-copy="#twofa-secret-text">Salin</button>
+                        <div class="twofa-manual">
+                            <div class="twofa-manual-row">
+                                <span class="twofa-manual-label">Kunci rahasia</span>
+                                <div class="twofa-manual-field">
+                                    <code id="twofa-secret-text"><?= e($twofa_setup) ?></code>
+                                    <button type="button" class="btn btn-ghost btn-sm twofa-copy" data-copy="#twofa-secret-text">Salin</button>
+                                </div>
+                            </div>
+                            <div class="twofa-manual-row">
+                                <span class="twofa-manual-label">Tautan manual</span>
+                                <div class="twofa-manual-field">
+                                    <code class="twofa-uri" id="twofa-uri-text"><?= e($twofa_uri) ?></code>
+                                    <button type="button" class="btn btn-ghost btn-sm twofa-copy" data-copy="#twofa-uri-text">Salin URI</button>
+                                </div>
+                            </div>
                         </div>
-                        <p class="twofa-hint twofa-hint--manual">Atau tambahkan kunci berikut ke aplikasi sebagai fallback:
-                        <span class="twofa-uri" id="twofa-uri-text"><?= e($twofa_uri) ?></span>
-                        <button type="button" class="btn btn-ghost btn-sm twofa-copy" data-copy="#twofa-uri-text">Salin URI</button></p>
                     </div>
                 </div>
 
