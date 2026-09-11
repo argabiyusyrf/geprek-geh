@@ -221,7 +221,27 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
                                         <button type="button" class="menu-dropdown-item" data-value="QRIS" role="option">QRIS</button>
                                     <?php endif; ?>
                                 </div>
-                                <select name="payment_bank" class="menu-sort-select menu-sort-native" data-dropdown-select></select>
+                                <select name="payment_bank" class="menu-sort-select menu-sort-native" data-dropdown-select>
+                                    <?php if ($order['payment_method'] === 'transfer'): ?>
+                                        <option value="">Pilih bank…</option>
+                                        <option value="BCA">BCA</option>
+                                        <option value="BNI">BNI</option>
+                                        <option value="BRI">BRI</option>
+                                        <option value="Mandiri">Mandiri</option>
+                                        <option value="CIMB Niaga">CIMB Niaga</option>
+                                        <option value="BSI">BSI</option>
+                                        <option value="Danamon">Danamon</option>
+                                        <option value="Permata">Permata</option>
+                                    <?php else: ?>
+                                        <option value="">Pilih e-wallet…</option>
+                                        <option value="ShopeePay">ShopeePay</option>
+                                        <option value="GoPay">GoPay</option>
+                                        <option value="OVO">OVO</option>
+                                        <option value="DANA">DANA</option>
+                                        <option value="LinkAja">LinkAja</option>
+                                        <option value="QRIS">QRIS</option>
+                                    <?php endif; ?>
+                                </select>
                                 <svg class="menu-sort-chev menu-sort-chev--native" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
                             </span>
                         </div>
