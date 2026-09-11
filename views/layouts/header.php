@@ -86,6 +86,9 @@
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </div>
+                        <div class="notif-foot">
+                            <a href="/geprek-geh/account/notifications" class="notif-seeall">Lihat Semua Notifikasi</a>
+                        </div>
                     </div>
                 </div>
                 <div class="account" data-account>

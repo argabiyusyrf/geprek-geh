@@ -67,4 +67,32 @@ class NotificationController {
         );
         exit;
     }
+
+    public function index() {
+        Auth::requireLogin();
+        $db = Database::getInstance();
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $perPage = 20;
+        $uid = Auth::id();
+
+        $total = (int) $db->fetchColumn(
+            "SELECT COUNT(*) FROM notifications WHERE user_id = ?",
+            [$uid]
+        );
+        $pages = max(1, (int) ceil($total / $perPage));
+        $page = min($page, $pages);
+        $offset = ($page - 1) * $perPage;
+
+        $notifications = $db->fetchAll(
+            "SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT {$perPage} OFFSET {$offset}",
+            [$uid]
+        );
+
+        $page_title = 'Notifikasi';
+        $page_description = 'Semua notifikasi pesanan dan aktivitas akunmu.';
+
+        require __DIR__ . '/../views/layouts/header.php';
+        require __DIR__ . '/../views/notifications/index.php';
+        require __DIR__ . '/../views/layouts/footer.php';
+    }
 }
