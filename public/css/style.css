@@ -51,6 +51,7 @@
     --r-outer:    2rem;
     --r-inner:    calc(2rem - 0.5rem);
     --r-xl:       1.5rem;
+    --r-2xl:      2rem;
     --r-lg:       1.125rem;
     --r-md:       0.875rem;
     --r-sm:       0.625rem;
