@@ -1,4 +1,15 @@
-<?php $active_cat_slug = $_GET['category'] ?? ''; ?>
+<?php
+$active_cat_slug = $_GET['category'] ?? '';
+$sort = $_GET['sort'] ?? 'populer';
+$menu_qs_common = ['sort' => $sort];
+if (!empty($_GET['q'])) $menu_qs_common['q'] = $_GET['q'];
+$menu_qs = http_build_query($menu_qs_common);
+$menu_href_all = '/geprek-geh/products' . ($menu_qs !== '' ? '?' . $menu_qs : '');
+$open_time = '';
+if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(\d{2}:\d{2})/', $app['contacts']['hours'], $mh)) {
+    $open_time = $mh[1] . '–' . $mh[2];
+}
+?>
 <section class="menu-hero">
     <div class="menu-hero-inner">
         <div class="menu-hero-content">
@@ -15,6 +26,10 @@
                 <?php $feat_count = array_sum(array_map(fn($p) => (int)$p['is_featured'], $products)); ?>
                 <span class="menu-stat-dot"></span>
                 <span class="menu-stat"><b><?= $feat_count ?></b> Populer</span>
+                <?php if ($open_time): ?>
+                <span class="menu-stat-dot"></span>
+                <span class="menu-stat"><b><?= e($open_time) ?></b> Jam Buka</span>
+                <?php endif; ?>
             </div>
         </div>
         <div class="menu-hero-deco" aria-hidden="true">

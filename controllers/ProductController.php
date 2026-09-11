@@ -28,6 +28,14 @@ class ProductController {
         );
         $total_pages = max(1, ceil($total / $per_page));
 
+        $order_map = [
+            'populer'  => 'p.is_featured DESC, review_count DESC, p.created_at DESC, p.id DESC',
+            'terbaru'  => 'p.created_at DESC, p.id DESC',
+            'termurah' => 'p.price ASC, p.id ASC',
+            'termahal' => 'p.price DESC, p.id DESC',
+        ];
+        $order_by = $order_map[$sort] ?? $order_map['populer'];
+
         $products = $db->fetchAll(
             "SELECT p.*, c.name AS category_name, c.slug AS category_slug,
               COALESCE(r.review_count, 0) AS review_count,
@@ -37,10 +45,12 @@ class ProductController {
                 SELECT product_id, COUNT(*) AS review_count, AVG(rating) AS avg_rating
                 FROM product_reviews GROUP BY product_id
               ) r ON r.product_id = p.id
-              WHERE {$where} ORDER BY p.is_featured DESC, p.created_at DESC LIMIT {$per_page} OFFSET {$offset}",
+              WHERE {$where} ORDER BY {$order_by} LIMIT {$per_page} OFFSET {$offset}",
             $params
         );
         $categories = $db->fetchAll("SELECT c.*, (SELECT COUNT(*) FROM products WHERE category_id = c.id AND is_active = 1) AS product_count FROM categories c ORDER BY c.sort_order, c.name");
+
+        $app = require __DIR__ . '/../config/app.php';
 
         require __DIR__ . '/../views/layouts/header.php';
         require __DIR__ . '/../views/products/index.php';
