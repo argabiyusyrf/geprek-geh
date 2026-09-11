@@ -28,6 +28,22 @@ class OrderController {
             $params
         );
 
+        $order_items = [];
+        if ($orders) {
+            $ids = array_column($orders, 'id');
+            $in = implode(',', array_fill(0, count($ids), '?'));
+            $rows = $db->fetchAll(
+                "SELECT oi.order_id, oi.quantity, oi.price, p.name, p.slug, p.image, c.name AS category_name
+                 FROM order_items oi
+                 JOIN products p ON oi.product_id = p.id
+                 LEFT JOIN categories c ON p.category_id = c.id
+                 WHERE oi.order_id IN ({$in})
+                 ORDER BY oi.id ASC",
+                $ids
+            );
+            foreach ($rows as $row) $order_items[$row['order_id']][] = $row;
+        }
+
         $status_counts = [];
         $counts = $db->fetchAll(
             "SELECT status, COUNT(*) AS c FROM orders WHERE user_id = ? GROUP BY status",
