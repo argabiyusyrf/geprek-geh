@@ -991,6 +991,23 @@ document.addEventListener('click', (e) => {
     });
 })();
 
+/* ── 2FA QR: graceful fallback if external QR service is unreachable ── */
+(function twofaQrFallback() {
+    const img = document.querySelector('.twofa-qr img');
+    if (!img) return;
+    const wrap = img.closest('.twofa-qr');
+    const showFallback = () => {
+        if (!wrap || wrap.querySelector('.twofa-qr-fallback')) return;
+        const p = document.createElement('p');
+        p.className = 'twofa-qr-fallback';
+        p.innerHTML = 'QR gagal dimuat. Gunakan <strong>kunci rahasia</strong> atau tautan <strong>otpauth</strong> di bawah ini.';
+        img.remove();
+        wrap.appendChild(p);
+    };
+    img.addEventListener('error', showFallback);
+    if (img.complete && img.naturalWidth === 0) showFallback();
+})();
+
 /* ── Format input kode 2FA: angka saja, max 6 digit pada kolom TOTP ── */
 (function twofaInputs() {
     document.querySelectorAll('input.twofa-code-input').forEach((input) => {

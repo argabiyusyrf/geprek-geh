@@ -5489,6 +5489,13 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 /* 2FA · QR within step, tighter frame */
 .twofa-step .twofa-qr { margin: 0 0 12px; }
 .twofa-step .twofa-qr img { box-shadow: 0 6px 18px -8px rgba(20,17,12,0.18); }
+.twofa-qr-fallback {
+    width: 100%; max-width: 320px; padding: 22px 18px; text-align: center;
+    border: 1px dashed rgba(20,17,12,0.25); border-radius: 14px;
+    background: var(--surface); color: var(--ink-2);
+    font-size: 13px; line-height: 1.55;
+}
+.twofa-qr-fallback strong { color: var(--ink); }
 
 /* 2FA · manual URI fallback */
 .twofa-hint--manual { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
