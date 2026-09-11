@@ -478,15 +478,16 @@ function updatePdSubtotal() {
     }
 
     const form = document.querySelector('form.checkout-form');
-    const submitBtn = form && form.querySelector('.checkout-submit');
-    if (form && submitBtn) {
-        form.addEventListener('submit', () => {
-            submitBtn.disabled = true;
-            submitBtn.classList.add('is-loading');
-            const label = submitBtn.querySelector('.checkout-submit-label');
+    if (!form) return;
+
+    form.addEventListener('submit', () => {
+        form.querySelectorAll('.checkout-submit').forEach((btn) => {
+            btn.disabled = true;
+            btn.classList.add('is-loading');
+            const label = btn.querySelector('.checkout-submit-label');
             if (label) label.textContent = 'Memproses…';
         });
-    }
+    });
 })();
 
 /* ── Upload bukti pembayaran: preview, ganti, batal, validasi ── */
