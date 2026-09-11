@@ -5271,3 +5271,195 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
     .order-card-items { gap: 6px; }
     .order-thumb { width: 40px; height: 40px; }
 }
+
+/* ─── Account · polish ─────────────────────────────────────── */
+
+/*  Fix: .card{} double-bezel (line 4650) overrides .account-card padding — re-assert */
+.card.account-card,
+.card.account-card.account-card--full { box-shadow: none; }
+.card.account-card { padding: 26px 28px; }
+.card.account-card.account-card--full { padding: 22px 24px; }
+.card.account-card:hover { transform: none; box-shadow: var(--shadow-soft); }
+.card.account-card h3 { margin-bottom: 14px; }
+
+/* Overview · hero */
+.overview-hero {
+    background: linear-gradient(135deg, rgba(232,75,35,0.07) 0%, rgba(232,75,35,0.02) 60%, rgba(245,158,11,0.04) 100%);
+    padding: 24px 28px;
+    margin-bottom: 18px;
+}
+.overview-hero:hover { transform: none; box-shadow: var(--shadow-soft); }
+.overview-hero-inner { gap: 20px; }
+.overview-hero .overview-ident { flex: 1; min-width: 0; }
+.overview-hero .overview-ident h3 { font-size: 23px; margin-bottom: 4px; }
+.overview-hero .overview-email { font-size: 13.5px; font-weight: 500; }
+
+/* Overview · stats */
+.overview-stats { gap: 14px; margin-bottom: 20px; }
+.stat-card.mini {
+    position: relative;
+    overflow: hidden;
+    transition: transform .4s var(--ease-spring), box-shadow .4s var(--ease-soft);
+}
+.stat-card.mini::after {
+    content: '';
+    position: absolute;
+    top: -28px;
+    right: -18px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(232,75,35,0.06);
+    transition: background .4s var(--ease-soft), transform .5s var(--ease-spring);
+}
+.stat-card.mini:hover { transform: translateY(-3px); box-shadow: 0 6px 24px -10px rgba(20,17,12,0.12); }
+.stat-card.mini:hover::after { background: rgba(232,75,35,0.12); transform: scale(1.4); }
+.stat-card.mini strong { font-size: 24px; letter-spacing: -0.02em; }
+.stat-label { margin-bottom: 2px; }
+
+/* Overview · cols */
+.overview-cols { gap: 16px; }
+.overview-cols .account-card--full { padding: 20px 22px; }
+.overview-cols .account-card--full h3 { font-size: 15px; margin-bottom: 10px; }
+
+/* Overview · order single */
+.account-order-single {
+    padding: 14px 16px;
+    background: var(--surface);
+    border-radius: var(--r-lg);
+    gap: 12px;
+}
+.account-order-single:hover { box-shadow: var(--shadow-float); }
+
+/* Overview · address mini */
+.overview-cols .address-name { font-size: 13.5px; }
+.overview-cols .address-full { font-size: 12.5px; }
+.overview-cols .address-region { font-size: 11.5px; }
+.overview-cols .address-link { font-size: 12.5px; margin-top: 10px; }
+
+/* Overview · shortcuts */
+.overview-shortcuts { gap: 12px; margin-top: 16px; }
+.sc-card {
+    padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(20,17,12,0.04);
+    transition: border-color .35s var(--ease-soft), transform .4s var(--ease-spring), box-shadow .4s var(--ease-soft);
+}
+.sc-card:hover { box-shadow: 0 8px 28px -10px rgba(232,75,35,0.3); }
+.sc-icon { width: 40px; height: 40px; border-radius: 13px; }
+.sc-label { font-size: 14px; }
+
+/* Profile tab · sidebar fix */
+.profile-summary {
+    padding: 32px 24px 28px;
+    background: linear-gradient(165deg, rgba(232,75,35,0.04), transparent 60%);
+}
+.profile-summary:hover { transform: none; box-shadow: var(--shadow-soft); }
+.profile-summary h3 { margin-bottom: 0; }
+.profile-summary-name { font-size: 17px; }
+.profile-summary-email { font-size: 13.5px; }
+.profile-avatar {
+    box-shadow: 0 14px 32px -14px rgba(232,75,35,0.55);
+}
+.profile-progress { border-radius: 14px; }
+.profile-progress-track { height: 7px; }
+.profile-progress-bar {
+    background: linear-gradient(90deg, var(--accent), #f59e0b, var(--accent));
+    background-size: 200% 100%;
+    animation: progress-shimmer 2.5s ease-in-out infinite;
+}
+@keyframes progress-shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+.profile-quick a {
+    border-radius: 13px;
+    transition: background .3s var(--ease-soft), border-color .3s var(--ease-soft), color .3s var(--ease-soft), transform .3s var(--ease-spring);
+}
+.profile-quick a:hover { transform: translateX(4px); }
+
+/* Profil tab · form card */
+.account-grid--profil .account-card:first-child { padding: 28px 30px; }
+.account-grid--profil .account-card:first-child h3 { margin-bottom: 8px; }
+
+/* Security tab · 2FA card */
+.twofa-card {
+    padding: 24px 26px;
+}
+.twofa-card:hover { transform: none; box-shadow: var(--shadow-soft); }
+.twofa-head { gap: 14px; margin-bottom: 8px; }
+.twofa-shield {
+    width: 44px; height: 44px;
+    border-radius: 14px;
+}
+.twofa-status { font-size: 12px; padding: 6px 13px; }
+.twofa-recovery {
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin: 8px 0 16px;
+}
+.twofa-qr img { border-radius: 16px; }
+.twofa-secret code { border-radius: 12px; padding: 12px 14px; }
+
+/* Addresses tab */
+.account-card--full:has(.address-grid) { padding: 24px 26px; }
+.address-grid { gap: 14px; }
+.address-card {
+    border-radius: var(--r-xl);
+    padding: 20px 22px;
+    transition: border-color .3s var(--ease-soft), box-shadow .4s var(--ease-spring), transform .3s var(--ease-spring);
+}
+.address-card:hover { transform: translateY(-2px); }
+.address-card.is-default:hover { transform: translateY(-3px); }
+.address-card-top { margin-bottom: 4px; }
+.address-card-body { gap: 6px; }
+.address-card-foot { padding-top: 14px; }
+.address-btn { font-size: 12.5px; padding: 5px 12px; border-radius: 9px; }
+
+/* Settings tab */
+.settings-item { padding: 16px 0; gap: 14px; }
+.settings-item-info b { font-size: 14px; }
+.settings-item-info span { font-size: 13px; }
+.settings-item--danger { margin-top: 6px; padding-top: 18px; border-top: 1px dashed var(--bad-soft); }
+
+/* Sessions */
+.session-list { gap: 12px; }
+.session-card { border-radius: var(--r-xl); padding: 18px 20px; transition: border-color .3s var(--ease-soft), transform .3s var(--ease-spring), box-shadow .3s var(--ease-soft); }
+.session-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px -6px rgba(0,0,0,0.06); }
+.session-icon { border-radius: 13px; }
+.session-device { font-size: 14.5px; }
+.session-badge { font-size: 11.5px; padding: 3px 12px; }
+.session-footer { margin-top: 18px; padding-top: 18px; }
+
+/* ─── Account · polish responsive ─────────────────────────── */
+@media (max-width: 768px) {
+    .account-tabs { gap: 6px; margin: 18px 0 20px; }
+    .account-tab { padding: 9px 14px; font-size: 12.5px; }
+    .account-card { padding: 20px 18px; }
+    .account-card.account-card--full { padding: 18px 16px; }
+    .overview-hero { padding: 18px 18px; border-radius: 20px; }
+    .overview-hero .overview-ident h3 { font-size: 20px; }
+    .overview-avatar { width: 52px; height: 52px; font-size: 22px; border-radius: 16px; }
+    .stat-card.mini { padding: 14px 16px; }
+    .stat-card.mini strong { font-size: 20px; }
+    .sc-card { padding: 14px 16px; }
+    .sc-icon { width: 36px; height: 36px; border-radius: 11px; }
+    .profile-summary { padding: 24px 18px 22px; }
+    .profile-avatar { width: 64px; height: 64px; font-size: 26px; border-radius: 18px; }
+    .twofa-card { padding: 20px 18px; }
+    .session-card { padding: 14px 16px; }
+    .address-card { padding: 16px 18px; }
+    .overview-cols .account-card--full { padding: 16px 14px; }
+    .account-grid--profil .account-card:first-child { padding: 20px 18px; }
+}
+
+@media (max-width: 480px) {
+    .account-tabs { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 4px; }
+    .account-tabs::-webkit-scrollbar { display: none; }
+    .account-tab { flex: none; white-space: nowrap; }
+    .overview-stats { grid-template-columns: 1fr; }
+    .stat-card.mini { flex-direction: row; align-items: center; justify-content: space-between; }
+    .stat-card.mini::after { display: none; }
+    .overview-shortcuts { grid-template-columns: 1fr 1fr; }
+    .account-order-single { flex-wrap: wrap; }
+    .account-order-single .order-total { margin-left: 0; width: 100%; text-align: right; font-size: 15px; }
+}
