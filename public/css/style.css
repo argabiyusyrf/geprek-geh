@@ -5497,15 +5497,45 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 }
 .twofa-qr-fallback strong { color: var(--ink); }
 
-/* 2FA · manual URI fallback */
-.twofa-hint--manual { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
-.twofa-uri {
-    display: inline-block; max-width: 100%; min-width: 0;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    vertical-align: middle;
+/* 2FA · manual entry fallback panel */
+.twofa-manual {
+    margin-top: 14px;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    background: var(--surface);
+    padding: 2px 14px;
 }
-.twofa-hint--manual .btn { margin-top: 0; }
+.twofa-manual-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 0;
+}
+.twofa-manual-row + .twofa-manual-row { border-top: 1px dashed var(--hairline); }
+.twofa-manual-label {
+    flex: none; width: 104px;
+    font-size: 12px; font-weight: 600; color: var(--ink-2);
+}
+.twofa-manual-field {
+    flex: 1; min-width: 0;
+    display: flex; align-items: center; gap: 10px;
+}
+.twofa-manual-field code {
+    flex: 1; min-width: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px; color: var(--ink);
+    background: rgba(20,17,12,0.045); border: 1px solid var(--hairline);
+    border-radius: 9px; padding: 9px 12px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.twofa-manual-field .btn { flex: none; margin-top: 0; }
+@media (max-width: 520px) {
+    .twofa-manual-row { flex-direction: column; align-items: stretch; gap: 6px; }
+    .twofa-manual-label { width: auto; }
+    .twofa-manual-field code { white-space: normal; word-break: break-all; }
+}
+
+/* 2FA · code input feels calmer at a readable width */
+.twofa-code-input { max-width: 260px; }
+@media (max-width: 520px) { .twofa-code-input { max-width: 100%; } }
 
 /* 2FA · recovery codes numbered grid */
 .twofa-recovery { padding: 16px 18px; }
