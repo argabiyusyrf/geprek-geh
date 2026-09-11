@@ -217,7 +217,8 @@ class CheckoutController {
         $db->update('users', ['phone' => $phone], 'id = ?', [Auth::id()]);
         unset($_SESSION['checkout_old']);
 
-foreach ($items as $item) {
+$reserved = [];
+        foreach ($items as $item) {
             $db->insert('order_items', [
                 'order_id'   => $order_id,
                 'product_id' => $item['product_id'],
@@ -236,11 +237,6 @@ foreach ($items as $item) {
                 foreach ($reserved as $r) {
                     $db->query("UPDATE products SET stock = stock + ? WHERE id = ?", [$r['qty'], $r['product_id']]);
                 }
-                flash_set('error', "Stok {$item['name']} habis saat checkout. Silakan periksa kembali.");
-                redirect('/geprek-geh/cart');
-            }
-            $reserved[] = ['product_id' => $item['product_id'], 'qty' => $item['quantity']];
-        }
                 flash_set('error', "Stok {$item['name']} habis saat checkout. Silakan periksa kembali.");
                 redirect('/geprek-geh/cart');
             }
