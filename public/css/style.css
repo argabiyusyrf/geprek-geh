@@ -5398,7 +5398,7 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
     padding: 16px 18px;
     margin: 8px 0 16px;
 }
-.twofa-qr img { border-radius: 16px; max-width: 100%; height: auto; }
+.twofa-qr img, .twofa-qr canvas { border-radius: 16px; max-width: 100%; height: auto; }
 .twofa-secret code { border-radius: 12px; padding: 12px 14px; }
 
 /* Addresses tab */
@@ -5488,7 +5488,7 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 
 /* 2FA · QR within step, tighter frame */
 .twofa-step .twofa-qr { margin: 0 0 12px; }
-.twofa-step .twofa-qr img { box-shadow: 0 6px 18px -8px rgba(20,17,12,0.18); }
+.twofa-step .twofa-qr img, .twofa-step .twofa-qr canvas { box-shadow: 0 6px 18px -8px rgba(20,17,12,0.18); }
 .twofa-qr-fallback {
     width: 100%; max-width: 320px; padding: 22px 18px; text-align: center;
     border: 1px dashed rgba(20,17,12,0.25); border-radius: 14px;
