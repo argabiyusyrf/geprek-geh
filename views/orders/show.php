@@ -136,8 +136,11 @@ $wa_number = $contacts['whatsapp'] ?? '';
                 <h3>Ringkasan Pembayaran</h3>
                 <div class="order-totals">
                     <div class="order-line"><span>Subtotal (<?= $total_qty ?> item)</span><span><?= rupiah($order['total']) ?></span></div>
-                    <div class="order-line"><span>Ongkir</span><span><?= rupiah($order['shipping_cost']) ?></span></div>
-                    <div class="order-line"><span>Pajak</span><span><?= rupiah($order['tax']) ?></span></div>
+                    <?php if ((float) $order['discount'] > 0): ?>
+                    <div class="order-line is-discount"><span>Diskon<?= $order['promo_code'] ? ' <em>' . e($order['promo_code']) . '</em>' : '' ?></span><span>&minus;<?= rupiah($order['discount']) ?></span></div>
+                    <?php endif; ?>
+                    <div class="order-line"><span>Pajak <em>(<?= (int) round(($app['tax_rate'] ?? 0.11) * 100) ?>%)</em></span><span><?= rupiah($order['tax']) ?></span></div>
+                    <div class="order-line"><span>Ongkir <em>(flat)</em></span><span><?= rupiah($order['shipping_cost']) ?></span></div>
                     <div class="order-line total"><span>Grand Total</span><span><?= rupiah(grand_total($order)) ?></span></div>
                 </div>
             </div>

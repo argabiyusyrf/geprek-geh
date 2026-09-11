@@ -1,7 +1,11 @@
 <?php $page_title = 'Pesanan Saya'; ?>
 
 <div class="page-top">
-    <header class="page-hero">
+    <header class="page-hero orders-hero">
+        <p class="eyebrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+            Riwayat Pesanan
+        </p>
         <h1>Pesanan Saya</h1>
         <p class="sub">Pantau status pesananmu — mulai dari diproses, diantar, sampai siap disantap.</p>
     </header>
@@ -49,6 +53,10 @@
         <?php foreach ($orders as $o):
             [$status_label, $badge_class] = format_status($o['status']);
             $can_reorder = in_array($o['status'], ['delivered', 'cancelled'], true);
+            $items = $order_items[$o['id']] ?? [];
+            $total_qty = array_sum(array_map(fn($i) => $i['quantity'], $items));
+            $shown = array_slice($items, 0, 3);
+            $more = count($items) - count($shown);
         ?>
             <div class="order-card-row">
                 <a href="/geprek-geh/orders/<?= $o['id'] ?>" class="order-card" data-reveal>
@@ -56,8 +64,25 @@
                         <span class="invoice"><?= e($o['invoice_no']) ?></span>
                         <span class="badge <?= $badge_class ?>"><?= $status_label ?></span>
                     </div>
+                    <?php if ($items): ?>
+                    <div class="order-card-items">
+                        <?php foreach ($shown as $i): ?>
+                            <?php if ($i['image']): ?>
+                                <img class="order-thumb" src="/geprek-geh/assets/uploads/products/<?= e($i['image']) ?>" alt="<?= e($i['name']) ?>" loading="lazy">
+                            <?php else: ?>
+                                <span class="order-thumb order-thumb-art"><?= product_art($i['name'], $i['category_name'] ?? '', '', 56) ?></span>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                        <?php if ($more > 0): ?><span class="order-thumb order-thumb-more">+<?= $more ?></span><?php endif; ?>
+                        <span class="order-card-items-meta">
+                            <?php $names = array_map(fn($i) => $i['name'], $items); ?>
+                            <span class="order-items-name"><?= e($names[0]) ?></span>
+                            <?php if (count($names) > 1): ?><span class="order-items-more">+<?= count($names) - 1 ?> lainnya</span><?php endif; ?>
+                        </span>
+                    </div>
+                    <?php endif; ?>
                     <div class="order-card-body">
-                        <span class="order-date"><?= date('d M Y, H:i', strtotime($o['created_at'])) ?></span>
+                        <span class="order-date"><?= date('d M Y, H:i', strtotime($o['created_at'])) ?><?= $total_qty ? '<span class="order-porsi">' . $total_qty . ' porsi</span>' : '' ?></span>
                         <span class="order-total"><?= rupiah(grand_total($o)) ?></span>
                     </div>
                 </a>
