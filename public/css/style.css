@@ -3735,7 +3735,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .icon-trigger { width: 36px; height: 36px; }
     .icon-trigger svg { width: 16px; height: 16px; }
     .nav-burger { width: 36px; height: 36px; }
-    .nav-burger span { left: 9px; width: 16px; }
+    .nav-burger span { left: 10px; width: 16px; }
     .nav-burger span:nth-child(1) { top: 13px; }
     .nav-burger span:nth-child(2) { top: 21px; }
     .nav-burger.open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
@@ -3763,7 +3763,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .icon-trigger { width: 34px; height: 34px; }
     .icon-trigger svg { width: 15px; height: 15px; }
     .nav-burger { width: 34px; height: 34px; }
-    .nav-burger span { left: 8px; width: 15px; }
+    .nav-burger span { left: 9px; width: 16px; }
     .nav-burger span:nth-child(1) { top: 12px; }
     .nav-burger span:nth-child(2) { top: 20px; }
     .nav-burger.open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
