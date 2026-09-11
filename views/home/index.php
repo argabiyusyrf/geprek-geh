@@ -219,22 +219,24 @@ $hero_level = $categories[1] ?? null;
         </div>
     </div>
     <div class="product-grid">
-        <?php foreach ($latest as $i => $p): ?>
+        <?php foreach ($latest as $p):
+            $out_stock = $p['stock'] <= 0;
+        ?>
             <article class="product-card" data-reveal>
-                <div class="product-card-inner">
+                <div class="product-card-core">
                     <a href="/geprek-geh/products/<?= e($p['slug']) ?>" class="product-img">
                         <?php if ($p['image']): ?>
-                            <img src="/geprek-geh/assets/uploads/products/<?= e($p['image']) ?>" alt="<?= e($p['name']) ?>">
+                            <img src="/geprek-geh/assets/uploads/products/<?= e($p['image']) ?>" alt="<?= e($p['name']) ?>" loading="lazy">
                         <?php else: ?>
-                            <span class="product-img-placeholder"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 11.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0z"/><path d="M11 7V3M13.5 4.5L8.5 6.5M15 7.5l-6 1.5"/><path d="M6 1l-1 3M9 2L7.5 4"/></svg></span>
+                            <?= product_art($p['name'], $p['category_name'], '', 240) ?>
                         <?php endif; ?>
-                        <?php if ($p['stock'] <= 0): ?>
-                            <span class="stock-badge">Habis</span>
+                        <?php if ($out_stock): ?>
+                            <span class="product-badges"><span class="badge badge--red">Habis</span></span>
                         <?php endif; ?>
                     </a>
-                    <div class="product-info">
+                    <div class="product-body">
                         <span class="product-cat"><?= e($p['category_name']) ?></span>
-                        <h3><a href="/geprek-geh/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a></h3>
+                        <h3 class="product-title"><a href="/geprek-geh/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a></h3>
                         <?php if ($p['review_count'] > 0): ?>
                         <div class="product-rating">
                             <?php for ($s = 1; $s <= 5; $s++): ?>
@@ -243,17 +245,22 @@ $hero_level = $categories[1] ?? null;
                             <span class="product-rating-count">(<?= $p['review_count'] ?>)</span>
                         </div>
                         <?php endif; ?>
-                        <div class="product-price"><?= rupiah($p['price']) ?></div>
-                        <?php if ($p['stock'] > 0): ?>
-                        <form method="POST" action="/geprek-geh/cart/add">
-                            <?= csrf_field() ?>
-                            <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
-                            <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="btn btn-outline">Tambah
-                                <span class="btn-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg></span>
-                            </button>
-                        </form>
+                        <?php if ($p['description']): ?>
+                            <p class="product-desc"><?= e(mb_strimwidth($p['description'], 0, 84, '…')) ?></p>
                         <?php endif; ?>
+                        <div class="product-foot">
+                            <b class="product-price"><?= rupiah($p['price']) ?></b>
+                            <?php if (!$out_stock): ?>
+                                <form method="POST" action="/geprek-geh/cart/add" class="product-add-form">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="product-add" title="Tambah ke keranjang">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </article>
