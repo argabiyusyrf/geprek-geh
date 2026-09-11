@@ -248,6 +248,31 @@
             </form>
         </section>
 
+        <section class="card account-card" data-reveal>
+            <h3>Ubah Email</h3>
+            <p class="account-lead">Ganti alamat email untuk login dan menerima notifikasi. Konfirmasi dengan password aktif.</p>
+            <form method="POST" action="/geprek-geh/account/email">
+                <?= csrf_field() ?>
+                <div class="form-group">
+                    <label for="pf-newemail">Email Baru</label>
+                    <input id="pf-newemail" type="email" name="email" class="input <?= !empty($email_errors['email']) ? 'is-invalid' : '' ?>" value="<?= e($email_old ?: $user['email']) ?>" autocomplete="email" required>
+                    <?php if (!empty($email_errors['email'])): ?><span class="field-error"><?= e($email_errors['email']) ?></span><?php endif; ?>
+                </div>
+                <div class="form-group">
+                    <label for="pf-emailpwd">Password Aktif</label>
+                    <div class="reg-input-pass">
+                        <input id="pf-emailpwd" type="password" name="password" class="input <?= !empty($email_errors['email_pwd']) ? 'is-invalid' : '' ?>" autocomplete="current-password" required>
+                        <button type="button" class="pass-toggle" data-toggle-pass="pf-emailpwd" aria-label="Tampilkan password" tabindex="-1">
+                            <svg class="eye-open" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <svg class="eye-closed" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                        </button>
+                    </div>
+                    <?php if (!empty($email_errors['email_pwd'])): ?><span class="field-error"><?= e($email_errors['email_pwd']) ?></span><?php endif; ?>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Simpan Email Baru</button>
+            </form>
+        </section>
+
         <section class="card account-card twofa-card" data-reveal>
             <div class="twofa-head">
                 <span class="twofa-shield">
