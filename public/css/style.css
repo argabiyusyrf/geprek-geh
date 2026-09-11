@@ -157,10 +157,13 @@ section[id] { scroll-margin-top: 110px; }
     border: 1px solid var(--hairline);
     border-radius: 999px;
     box-shadow: 0 10px 40px -18px rgba(29,26,21,0.28);
-    transition: box-shadow .6s var(--ease-soft);
+    transition: box-shadow .6s var(--ease-soft), padding .5s var(--ease-soft), gap .5s var(--ease-soft);
     position: relative;
 }
-.nav-pill.scrolled { box-shadow: 0 14px 44px -18px rgba(29,26,21,0.34); }
+.nav-pill.scrolled {
+    box-shadow: 0 14px 44px -18px rgba(29,26,21,0.34);
+    background: rgba(250, 246, 239, 0.88);
+}
 
 .brand {
     display: inline-flex;
@@ -562,25 +565,27 @@ section[id] { scroll-margin-top: 110px; }
 .nav-burger {
     display: none;
     position: relative;
-    width: 46px; height: 46px;
+    width: 40px; height: 40px;
     border-radius: 50%;
     border: 1px solid var(--hairline);
     background: rgba(255,253,249,0.6);
     cursor: pointer;
     flex: none;
+    transition: border-color .4s var(--ease-soft), background .4s var(--ease-soft);
 }
+.nav-burger:hover { border-color: var(--accent); background: rgba(232,75,35,0.06); }
 .nav-burger span {
     position: absolute;
-    left: 13px;
-    width: 20px; height: 2px;
+    left: 11px;
+    width: 18px; height: 2px;
     border-radius: 2px;
     background: var(--ink);
     transition: transform .55s var(--ease-expo), opacity .3s var(--ease-soft);
 }
-.nav-burger span:nth-child(1) { top: 17px; }
-.nav-burger span:nth-child(2) { top: 27px; }
-.nav-burger.open span:nth-child(1) { transform: translateY(5px) rotate(45deg); }
-.nav-burger.open span:nth-child(2) { transform: translateY(-5px) rotate(-45deg); }
+.nav-burger span:nth-child(1) { top: 15px; }
+.nav-burger span:nth-child(2) { top: 23px; }
+.nav-burger.open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
 
 /* Fullscreen glass overlay menu */
 .nav-overlay {
@@ -3609,8 +3614,8 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .nav-burger { display: block; }
     .nav-user { display: none; }
     .notif { display: none; }
-    .island-nav { top: 14px; }
-    .nav-pill { gap: 6px; padding: 8px 10px; }
+    .island-nav { top: 14px; padding: 0 10px; }
+    .nav-pill { gap: 6px; padding: 7px 8px; }
     .brand-word { display: none; }
 
     /* ── Homepage Hero ── */
