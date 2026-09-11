@@ -675,3 +675,40 @@
         <?php endif; ?>
     </script>
 <?php endif; ?>
+
+<?php if (($tab ?? '') === 'security'): ?>
+    <script>
+        (function () {
+            document.querySelectorAll('[data-toggle-pass]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var input = document.getElementById(this.dataset.togglePass);
+                    if (!input) return;
+                    var isPass = input.type === 'password';
+                    input.type = isPass ? 'text' : 'password';
+                    this.classList.toggle('is-visible', isPass);
+                });
+            });
+            var copyAll = document.querySelector('[data-copy-all-recovery]');
+            if (copyAll) {
+                copyAll.addEventListener('click', function () {
+                    var codeEls = document.querySelectorAll('.twofa-recovery-list code');
+                    var text = Array.prototype.map.call(codeEls, function (c) { return c.textContent.trim(); }).join('\n');
+                    if (!text) return;
+                    function done(ok) {
+                        copyAll.textContent = ok ? 'Tersalin' : 'Gagal';
+                        copyAll.disabled = true;
+                        setTimeout(function () { copyAll.textContent = 'Salin Semua'; copyAll.disabled = false; }, 1600);
+                    }
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+                    } else {
+                        var ta = document.createElement('textarea');
+                        ta.value = text; document.body.appendChild(ta); ta.select();
+                        try { done(document.execCommand('copy')); } catch (_) { done(false); }
+                        document.body.removeChild(ta);
+                    }
+                });
+            }
+        })();
+    </script>
+<?php endif; ?>

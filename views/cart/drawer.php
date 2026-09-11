@@ -11,7 +11,7 @@ $cs = cart_summary();
     </button>
 </header>
 
-<div class="drawer-body">
+<div class="drawer-body" data-lenis-prevent>
     <?php if (empty($cs['items'])): ?>
         <div class="drawer-empty">
             <span class="drawer-empty-icon">

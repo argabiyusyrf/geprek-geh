@@ -1100,3 +1100,76 @@ document.addEventListener('click', (e) => {
         if (e.key === 'Escape') closeAll();
     });
 })();
+
+/* ── Settings switches (role="switch") — submit parent form ── */
+(function settingsSwitch() {
+    const sliders = document.querySelectorAll('.switch-slider[role="switch"]');
+    if (!sliders.length) return;
+
+    function trigger(slider) {
+        const form = slider.closest('form');
+        if (!form || slider.classList.contains('is-pending')) return;
+        slider.classList.add('is-pending');
+        slider.setAttribute('aria-checked', slider.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+        if (form.requestSubmit) form.requestSubmit();
+        else form.submit();
+    }
+
+    sliders.forEach((slider) => {
+        slider.addEventListener('click', () => trigger(slider));
+        slider.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                trigger(slider);
+            }
+        });
+    });
+})();
+
+/* ── Account: keep active tab + scroll position across refresh ── */
+(function accountStay() {
+    const key = 'gg:account';
+    const tabEls = document.querySelectorAll('.account-tab');
+
+    if (tabEls.length) {
+        // remember current tab (from URL) so refreshes stay put
+        const params = new URLSearchParams(location.search);
+        const cur = params.get('tab');
+        if (cur) {
+            try { sessionStorage.setItem(key, cur); } catch (_) {}
+        }
+        tabEls.forEach((t) => t.addEventListener('click', () => {
+            const m = t.href.match(/[?&]tab=([^&]+)/);
+            if (m) { try { sessionStorage.setItem(key, m[1]); } catch (_) {} }
+        }));
+    }
+
+    // restore scroll after a soft refresh
+    const navType = performance.getEntriesByType && performance.getEntriesByType('navigation').length
+        ? performance.getEntriesByType('navigation')[0].type : '';
+    if (navType === 'reload') {
+        let y = 0;
+        try { y = parseInt(sessionStorage.getItem(key + ':scroll'), 10) || 0; } catch (_) {}
+        if (y > 0) {
+            const restore = () => {
+                const done = () => {
+                    if (window.__lenis) window.__lenis.scrollTo(y, { immediate: true });
+                    else window.scrollTo(0, y);
+                };
+                if (document.readyState !== 'complete') window.addEventListener('load', done, { once: true });
+                else setTimeout(done, 250);
+            };
+            if (document.readyState !== 'loading') restore();
+            else document.addEventListener('DOMContentLoaded', restore, { once: true });
+        }
+    }
+
+    function saveScroll() {
+        try {
+            const y = Math.max(0, Math.round(window.scrollY || window.pageYOffset || 0));
+            if (y > 0) sessionStorage.setItem(key + ':scroll', String(y));
+        } catch (_) {}
+    }
+    window.addEventListener('pagehide', saveScroll);
+    window.addEventListener('beforeunload', saveScroll);
+})();
