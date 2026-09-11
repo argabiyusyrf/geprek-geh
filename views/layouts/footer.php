@@ -23,12 +23,32 @@
             <a href="mailto:halo@geprekgeh.com">halo@geprekgeh.com</a>
             <a href="https://maps.google.com/?q=Jakarta" target="_blank" rel="noopener">Jl. Merdeka No. 10, Jakarta</a>
         </div>
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="/geprek-geh/pages/terms">Syarat &amp; Ketentuan</a>
+            <a href="/geprek-geh/pages/privacy">Kebijakan Privasi</a>
+            <a href="#" data-cookie-open>Pengaturan Cookie</a>
+        </div>
     </div>
     <div class="footer-base">
         <span>© <?= date('Y') ?> Geprek Geh. Semua hak dilindungi.</span>
         <span>Dibuat dengan pedas di Indonesia</span>
     </div>
 </footer>
+
+<!-- ── Cookie consent banner ─────────────────────────── -->
+<div class="cookie-bar" id="cookie-bar" role="region" aria-label="Cookie" aria-hidden="true">
+    <div class="cookie-bar-inner">
+        <div class="cookie-bar-body">
+            <strong>Kami pakai cookie 🍪</strong>
+            <p>Cookie membantu kami mengingat keranjang dan sesi loginmu, serta meningkatkan pengalaman belanja. Pelajari lebih lanjut di <a href="/geprek-geh/pages/privacy" class="cookie-link">Kebijakan Privasi</a>.</p>
+        </div>
+        <div class="cookie-bar-actions">
+            <button type="button" class="btn btn-sm btn-ghost" data-cookie-decline aria-label="Tolak cookie non-esensial">Tolak</button>
+            <button type="button" class="btn btn-sm btn-primary" data-cookie-accept aria-label="Setuju dan lanjut">Setuju</button>
+        </div>
+    </div>
+</div>
 
 <!-- ── Cart drawer global ───────────────────────────── -->
 <div class="drawer" id="cart-drawer" aria-hidden="true">
