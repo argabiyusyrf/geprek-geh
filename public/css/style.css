@@ -2285,8 +2285,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 }
 
 .checkout-grid { display: grid; grid-template-columns: 1.45fr 1fr; gap: 28px; }
-.checkout-left, .checkout-right { display: flex; flex-direction: column; gap: 26px; }
-.checkout-right { min-width: 0; }
+.checkout-left, .checkout-right { display: flex; flex-direction: column; gap: 26px; min-width: 0; }
 
 .checkout-card { border-radius: var(--r-2xl); overflow: hidden; }
 .checkout-card .card-body { padding: 30px; }
@@ -3629,6 +3628,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .form-grid { grid-template-columns: 1fr; }
     .checkout-card .card-body { padding: 24px; }
     .checkout-card-head { margin-bottom: 20px; }
+    .sa-addr, .sa-region { white-space: normal; }
 }
 
 @media (max-width: 768px) {
