@@ -2876,7 +2876,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .twofa-hint { font-size: 13px; color: var(--ink-2); line-height: 1.6; margin: 10px 0 4px; }
 .twofa-hint code, .twofa-uri { background: var(--surface); border: 1px solid var(--hairline); padding: 1px 5px; border-radius: 6px; font-size: 12px; color: var(--ink); word-break: break-all; }
 .twofa-qr { display: grid; place-items: center; margin: 16px 0; }
-.twofa-qr img { border: 1px solid var(--hairline); border-radius: 14px; background: #fff; }
+.twofa-qr img, .twofa-qr canvas { border: 1px solid var(--hairline); border-radius: 14px; background: #fff; }
 .twofa-secret { display: flex; align-items: center; gap: 8px; }
 .twofa-secret code {
     flex: 1; min-width: 0;

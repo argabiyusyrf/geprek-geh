@@ -39,6 +39,7 @@
 </div>
 
 <script src="/geprek-geh/vendor/lenis/lenis.min.js"></script>
-<script src="/geprek-geh/public/js/app.js?v=20260911h"></script>
+<script src="/geprek-geh/vendor/qrcode/qrcode.js"></script>
+<script src="/geprek-geh/public/js/app.js?v=20260911i"></script>
 </body>
 </html>

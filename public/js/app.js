@@ -991,21 +991,41 @@ document.addEventListener('click', (e) => {
     });
 })();
 
-/* ── 2FA QR: graceful fallback if external QR service is unreachable ── */
-(function twofaQrFallback() {
-    const img = document.querySelector('.twofa-qr img');
-    if (!img) return;
-    const wrap = img.closest('.twofa-qr');
-    const showFallback = () => {
-        if (!wrap || wrap.querySelector('.twofa-qr-fallback')) return;
-        const p = document.createElement('p');
-        p.className = 'twofa-qr-fallback';
-        p.innerHTML = 'QR gagal dimuat. Gunakan <strong>kunci rahasia</strong> atau tautan <strong>otpauth</strong> di bawah ini.';
-        img.remove();
-        wrap.appendChild(p);
-    };
-    img.addEventListener('error', showFallback);
-    if (img.complete && img.naturalWidth === 0) showFallback();
+/* ── 2FA QR: rendered locally via vendored qrcode-generator (no external API) ── */
+(function twofaQrLocal() {
+    const canvas = document.querySelector('.twofa-qr canvas[data-twofa-uri]');
+    if (!canvas) return;
+    const wrap = canvas.closest('.twofa-qr');
+    const fallback = wrap && wrap.querySelector('.twofa-qr-fallback');
+    let ok = false;
+    try {
+        const qr = qrcode(0, 'M');
+        qr.addData(canvas.dataset.twofaUri);
+        qr.make();
+        const count = qr.getModuleCount();
+        const border = 4;
+        const size = count + border * 2;
+        const scale = Math.max(1, Math.floor(190 / size));
+        canvas.width = canvas.height = size * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#131210';
+        for (let r = 0; r < count; r++) {
+            for (let c = 0; c < count; c++) {
+                if (qr.isDark(r, c)) {
+                    ctx.fillRect((c + border) * scale, (r + border) * scale, scale, scale);
+                }
+            }
+        }
+        canvas.style.width = (size * scale) + 'px';
+        canvas.style.height = (size * scale) + 'px';
+        ok = true;
+    } catch (_) { ok = false; }
+    if (!ok && fallback) {
+        canvas.remove();
+        fallback.hidden = false;
+    }
 })();
 
 /* ── Format input kode 2FA: angka saja, max 6 digit pada kolom TOTP ── */

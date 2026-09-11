@@ -305,7 +305,8 @@
                     <div>
                         <p>Pindai QR di bawah dengan aplikasi authenticator, atau masukkan kunci rahasia secara manual.</p>
                         <div class="twofa-qr">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=190x190&amp;margin=4&amp;qzone=1&amp;data=<?= e(rawurlencode($twofa_uri)) ?>" alt="QR code untuk 2FA" width="190" height="190" loading="lazy">
+                            <canvas class="twofa-qr-canvas" data-twofa-uri="<?= e($twofa_uri) ?>" role="img" aria-label="QR code untuk 2FA" style="width:190px;height:190px"></canvas>
+                            <p class="twofa-qr-fallback" hidden>QR gagal dimuat. Gunakan <strong>kunci rahasia</strong> atau tautan <strong>otpauth</strong> di bawah ini.</p>
                         </div>
                         <div class="twofa-secret">
                             <code id="twofa-secret-text"><?= e($twofa_setup) ?></code>
