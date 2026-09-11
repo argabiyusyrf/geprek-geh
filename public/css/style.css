@@ -5434,8 +5434,8 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 @media (max-width: 768px) {
     .account-tabs { gap: 6px; margin: 18px 0 20px; }
     .account-tab { padding: 9px 14px; font-size: 12.5px; }
-    .account-card { padding: 20px 18px; }
-    .account-card.account-card--full { padding: 18px 16px; }
+    .card.account-card { padding: 20px 18px; }
+    .card.account-card.account-card--full { padding: 18px 16px; }
     .overview-hero { padding: 18px 18px; border-radius: 20px; }
     .overview-hero .overview-ident h3 { font-size: 20px; }
     .overview-avatar { width: 52px; height: 52px; font-size: 22px; border-radius: 16px; }
