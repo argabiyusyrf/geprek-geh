@@ -145,7 +145,7 @@
         <nav class="overlay-links" role="navigation">
             <?php $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
             <a class="overlay-link <?= $uri === '/geprek-geh/products' || str_starts_with($uri, '/geprek-geh/products/') ? 'is-active' : '' ?>" href="/geprek-geh/products"><small>01</small> Menu</a>
-            <a class="overlay-link cart-link" href="/geprek-geh/cart" data-open-drawer><small>02</small> Keranjang<span class="cart-count" data-cart-count="<?= CartController::count() ?>"><?= CartController::count() ?></span></a>
+            <a class="overlay-link cart-link" href="/geprek-geh/cart"><small>02</small> Keranjang<span class="cart-count" data-cart-count="<?= CartController::count() ?>"><?= CartController::count() ?></span></a>
             <?php if (!Auth::check()): ?>
                 <a class="overlay-link <?= $uri === '/geprek-geh/auth/login' ? 'is-active' : '' ?>" href="/geprek-geh/auth/login"><small>03</small> Masuk</a>
                 <a class="overlay-link <?= $uri === '/geprek-geh/auth/register' ? 'is-active' : '' ?>" href="/geprek-geh/auth/register"><small>04</small> Daftar</a>
