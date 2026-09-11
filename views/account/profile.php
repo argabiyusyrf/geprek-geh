@@ -332,7 +332,7 @@
                             </div>
                             <div class="twofa-inline-actions">
                                 <button type="submit" class="btn btn-primary">Aktifkan 2FA</button>
-                                <button type="submit" formaction="/geprek-geh/account/2fa/cancel" class="btn btn-ghost">Batal</button>
+                                <button type="submit" formaction="/geprek-geh/account/2fa/cancel" formnovalidate class="btn btn-ghost">Batal</button>
                             </div>
                         </form>
                     </div>
