@@ -3604,8 +3604,8 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     /* kartu terakhir ganjil (5 kartu @ span 6) tampil penuh, bukan setengah baris */
     .bento .category-card:last-child:nth-child(odd) { grid-column: span 12; }
     .product-grid .product-card, .product-card { grid-column: span 6; }
-    .product-card.feat-a, .product-card.feat-b { grid-column: span 12; }
-    .menu-card, .menu-card--feat { grid-column: span 6; }
+    .product-card.feat-a, .product-card--feat,
+    .menu-bento .product-card.product-card--feat:first-child { grid-column: span 12; }
     .checkout-grid { grid-template-columns: 1fr; }
     .order-summary.sticky { position: static; }
     .order-detail-layout { grid-template-columns: 1fr; }
@@ -4468,22 +4468,22 @@ body.auth-body { margin: 0; overflow-x: hidden; }
 .product-grid .product-card:nth-child(7n+1) { grid-column: span 6; min-height: 420px; }
 .product-grid .product-card:nth-child(7n+1) .product-img { min-height: 280px; }
 .product-grid .product-card:nth-child(7n+5) { grid-column: span 4; }
-.menu-bento .menu-card { grid-column: span 4; }
-.menu-bento .menu-card.menu-card--feat:nth-child(7n+1) { grid-column: span 8; }
-.menu-bento .menu-card.menu-card--feat:nth-child(7n+1) .menu-card-img { aspect-ratio: 16/9; }
+.menu-bento .product-card { grid-column: span 4; }
+.menu-bento .product-card.product-card--feat:first-child { grid-column: span 8; }
+.menu-bento .product-card.product-card--feat:first-child .product-img { min-height: 340px; }
 @media (max-width: 900px) {
     .product-grid .product-card,
     .product-grid .product-card:nth-child(7n+1),
     .product-grid .product-card:nth-child(7n+5),
-    .menu-bento .menu-card,
-    .menu-bento .menu-card.menu-card--feat:nth-child(7n+1) {
+    .menu-bento .product-card,
+    .menu-bento .product-card.product-card--feat:first-child {
         grid-column: span 12;
     }
     .product-grid .product-card:nth-child(7n+1) { min-height: auto; }
 }
 @media (max-width: 600px) {
     .product-grid .product-card,
-    .menu-bento .menu-card { grid-column: span 12; }
+    .menu-bento .product-card { grid-column: span 12; }
 }
 
 /* Double-Bezel lift: outer shell becomes a real nested architecture */
