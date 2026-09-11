@@ -90,8 +90,9 @@ class OrderController {
             redirect('/geprek-geh/orders');
         }
         $items = $db->fetchAll(
-            "SELECT oi.*, p.name, p.image, p.slug
+            "SELECT oi.*, p.name, p.image, p.slug, c.name AS category_name
              FROM order_items oi JOIN products p ON oi.product_id = p.id
+             LEFT JOIN categories c ON p.category_id = c.id
              WHERE oi.order_id = ?",
             [$id]
         );

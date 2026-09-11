@@ -6,6 +6,8 @@ $created = date('d M Y, H:i', strtotime($order['created_at']));
 $bank_details = $payment_details['bank'] ?? ['name' => '-', 'number' => '-', 'holder' => '-'];
 $ewallet_details = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-', 'holder' => '-'];
 $wa_number = $contacts['whatsapp'] ?? '';
+$need_proof = in_array($order['payment_method'], ['transfer', 'ewallet'], true);
+$unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array($order['status'], ['pending', 'processing'], true);
 ?>
 
 <div class="page-top">
@@ -38,6 +40,14 @@ $wa_number = $contacts['whatsapp'] ?? '';
         <span class="badge order-hero-pill <?= $badge_class ?>"><?= $status_label ?></span>
         <?php if ($order['status'] !== 'cancelled'): ?>
         <span class="badge order-hero-pill <?= $payment_badge ?>"><?= $payment_status_label ?></span>
+        <?php endif; ?>
+        <?php if ($unpaid_flow): ?>
+        <a class="order-paydue" href="#aksi-pembayaran">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+            <span class="order-paydue-label">Menunggu pembayaran</span>
+            <span class="order-paydue-amount"><?= rupiah(grand_total($order)) ?></span>
+            <span class="order-paydue-cta">Bayar</span>
+        </a>
         <?php endif; ?>
     </header>
 </div>
@@ -146,10 +156,8 @@ $wa_number = $contacts['whatsapp'] ?? '';
             </div>
         </div>
 
-        <?php $need_proof = in_array($order['payment_method'], ['transfer', 'ewallet'], true); ?>
-
-        <?php if ($need_proof && $order['payment_status'] === 'unpaid' && in_array($order['status'], ['pending', 'processing'], true)): ?>
-        <div class="card order-card">
+        <?php if ($unpaid_flow): ?>
+        <div class="card order-card" id="aksi-pembayaran">
             <div class="card-body pay-instructions">
                 <h3>Instruksi Pembayaran</h3>
                 <div class="pay-amount-banner">
@@ -169,7 +177,7 @@ $wa_number = $contacts['whatsapp'] ?? '';
         </div>
         <?php endif; ?>
 
-        <?php if ($need_proof && $order['payment_status'] === 'unpaid' && in_array($order['status'], ['pending', 'processing'], true)): ?>
+        <?php if ($unpaid_flow): ?>
         <div class="card order-card">
             <div class="card-body proof-section">
                 <h3><?= $order['payment_proof'] ? 'Bukti Bayar' : 'Upload Bukti Bayar' ?></h3>
