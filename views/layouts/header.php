@@ -154,15 +154,6 @@
                 <a class="overlay-link <?= $uri === '/geprek-geh/orders' || str_starts_with($uri, '/geprek-geh/orders/') ? 'is-active' : '' ?>" href="/geprek-geh/orders"><small>04</small> Pesanan Saya</a>
                 <?php if (Auth::admin()): ?>
                     <a class="overlay-link" href="/geprek-geh/admin"><small>05</small> Admin Panel</a>
-                    <form method="POST" action="/geprek-geh/auth/logout">
-                        <?= csrf_field() ?>
-                        <button type="submit" class="overlay-link"><small>06</small> Keluar</button>
-                    </form>
-                <?php else: ?>
-                    <form method="POST" action="/geprek-geh/auth/logout">
-                        <?= csrf_field() ?>
-                        <button type="submit" class="overlay-link"><small>05</small> Keluar</button>
-                    </form>
                 <?php endif; ?>
             <?php endif; ?>
         </nav>
