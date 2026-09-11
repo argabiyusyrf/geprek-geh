@@ -1034,3 +1034,69 @@ document.addEventListener('click', (e) => {
         }
     });
 })();
+
+/* ── Custom dropdown — "Urutkan" (menu & orders) ── */
+(function sortDropdown() {
+    const boxes = document.querySelectorAll('[data-dropdown]');
+    if (!boxes.length) return;
+
+    const close = (box) => {
+        box.classList.remove('is-open');
+        const t = box.querySelector('[data-dropdown-trigger]');
+        if (t) t.setAttribute('aria-expanded', 'false');
+    };
+    const closeAll = () => boxes.forEach(close);
+
+    boxes.forEach((box) => {
+        const trigger = box.querySelector('[data-dropdown-trigger]');
+        const menu = box.querySelector('[data-dropdown-menu]');
+        const label = box.querySelector('[data-dropdown-label]');
+        const select = box.querySelector('[data-dropdown-select]');
+        const items = box.querySelectorAll('.menu-dropdown-item');
+        if (!trigger || !menu || !label || !select) return;
+
+        const apply = (value) => {
+            const item = Array.from(items).find((i) => i.dataset.value === value);
+            if (!item) return;
+            label.textContent = item.textContent;
+            items.forEach((i) => {
+                i.classList.toggle('is-selected', i.dataset.value === value);
+                i.setAttribute('aria-selected', i.dataset.value === value ? 'true' : 'false');
+            });
+        };
+
+        apply(select.value);
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = box.classList.contains('is-open');
+            closeAll();
+            if (!isOpen) {
+                box.classList.add('is-open');
+                trigger.setAttribute('aria-expanded', 'true');
+            }
+        });
+
+        items.forEach((item) => {
+            item.addEventListener('click', () => {
+                const v = item.dataset.value;
+                select.value = v;
+                apply(v);
+                close(box);
+                if (box.hasAttribute('data-form-submit')) {
+                    const form = box.closest('form');
+                    if (form) form.submit();
+                }
+            });
+        });
+
+        select.addEventListener('change', () => apply(select.value));
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('[data-dropdown]')) closeAll();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeAll();
+    });
+})();
