@@ -8,6 +8,11 @@ class OrderController {
         $status = $_GET['status'] ?? '';
         if (!in_array($status, $allowed, true)) $status = '';
 
+        $q = trim((string) ($_GET['q'] ?? ''));
+        $sort = $_GET['sort'] ?? 'terbaru';
+        $allowed_sort = ['terbaru', 'terlama', 'tertinggi', 'terendah'];
+        if (!in_array($sort, $allowed_sort, true)) $sort = 'terbaru';
+
         $page = max(1, (int)($_GET['page'] ?? 1));
         $per_page = 8;
         $offset = ($page - 1) * $per_page;
@@ -18,13 +23,29 @@ class OrderController {
             $where .= ' AND status = ?';
             $params[] = $status;
         }
+        if ($q !== '') {
+            $like = '%' . $q . '%';
+            $where .= ' AND (invoice_no LIKE ? OR EXISTS (
+                SELECT 1 FROM order_items oi JOIN products p ON p.id = oi.product_id
+                WHERE oi.order_id = orders.id AND p.name LIKE ?
+            ))';
+            $params[] = $like;
+            $params[] = $like;
+        }
 
         $total = (int) $db->fetchColumn("SELECT COUNT(*) FROM orders WHERE {$where}", $params);
         $total_pages = max(1, ceil($total / $per_page));
         if ($page > $total_pages) $page = $total_pages;
 
+        $order_dir = [
+            'terbaru'   => 'created_at DESC',
+            'terlama'   => 'created_at ASC',
+            'tertinggi' => '(total - discount + tax + shipping_cost) DESC',
+            'terendah'  => '(total - discount + tax + shipping_cost) ASC',
+        ][$sort];
+
         $orders = $db->fetchAll(
-            "SELECT * FROM orders WHERE {$where} ORDER BY created_at DESC LIMIT {$per_page} OFFSET {$offset}",
+            "SELECT * FROM orders WHERE {$where} ORDER BY {$order_dir} LIMIT {$per_page} OFFSET {$offset}",
             $params
         );
 
