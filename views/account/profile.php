@@ -262,11 +262,14 @@
 
             <?php if (!empty($twofa_recovery)): ?>
                 <div class="twofa-recovery">
-                    <p class="twofa-recovery-title">Recovery Code — simpan baik-baik</p>
+                    <div class="twofa-recovery-head">
+                        <p class="twofa-recovery-title">Recovery Code</p>
+                        <button type="button" class="btn btn-ghost btn-sm" data-copy-all-recovery>Salin Semua</button>
+                    </div>
                     <p class="twofa-recovery-note">Setiap kode hanya bisa dipakai <strong>sekali</strong> untuk login atau menonaktifkan 2FA. Halaman ini hanya menampilkannya satu kali.</p>
-                    <ul class="twofa-recovery-list">
-                        <?php foreach ($twofa_recovery as $rc): ?><li><code><?= e($rc) ?></code></li><?php endforeach; ?>
-                    </ul>
+                    <ol class="twofa-recovery-list">
+                        <?php foreach ($twofa_recovery as $i => $rc): ?><li><span>#<?= str_pad($i + 1, 2, '0', STR_PAD_LEFT) ?></span><code><?= e($rc) ?></code></li><?php endforeach; ?>
+                    </ol>
                 </div>
             <?php endif; ?>
 
@@ -287,35 +290,53 @@
                         <?= csrf_field() ?>
                         <div class="form-group">
                             <label for="twofa-dc">Kode Verifikasi</label>
-                            <input id="twofa-dc" type="text" name="code" class="input twofa-code-input" inputmode="numeric" placeholder="000000 / recovery" autocomplete="one-time-code" maxlength="8" required>
+                            <div class="twofa-code-wrap">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                <input id="twofa-dc" type="text" name="code" class="input twofa-code-input" inputmode="numeric" placeholder="000000 / recovery" autocomplete="one-time-code" maxlength="8" required>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-danger btn-block">Nonaktifkan 2FA</button>
                     </form>
                 </div>
 
             <?php elseif ($twofa_setup): ?>
-                <p class="twofa-hint">1) Pindai QR di bawah dengan aplikasi authenticator, atau masukkan kunci rahasia secara manual.</p>
-                <div class="twofa-qr">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=210x210&amp;margin=6&amp;qzone=1&amp;data=<?= e(rawurlencode($twofa_uri)) ?>" alt="QR code untuk 2FA" width="210" height="210" loading="lazy">
+                <div class="twofa-step">
+                    <span class="twofa-step-num">1</span>
+                    <div>
+                        <p>Pindai QR di bawah dengan aplikasi authenticator, atau masukkan kunci rahasia secara manual.</p>
+                        <div class="twofa-qr">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=190x190&amp;margin=4&amp;qzone=1&amp;data=<?= e(rawurlencode($twofa_uri)) ?>" alt="QR code untuk 2FA" width="190" height="190" loading="lazy">
+                        </div>
+                        <div class="twofa-secret">
+                            <code id="twofa-secret-text"><?= e($twofa_setup) ?></code>
+                            <button type="button" class="btn btn-ghost btn-sm twofa-copy" data-copy="#twofa-secret-text">Salin</button>
+                        </div>
+                        <p class="twofa-hint twofa-hint--manual">Atau tambahkan kunci berikut ke aplikasi sebagai fallback:
+                        <span class="twofa-uri" id="twofa-uri-text"><?= e($twofa_uri) ?></span>
+                        <button type="button" class="btn btn-ghost btn-sm twofa-copy" data-copy="#twofa-uri-text">Salin URI</button></p>
+                    </div>
                 </div>
-                <div class="twofa-secret">
-                    <code id="twofa-secret-text"><?= e($twofa_setup) ?></code>
-                    <button type="button" class="btn btn-ghost btn-sm twofa-copy" data-copy="#twofa-secret-text">Salin</button>
-                </div>
-                <p class="twofa-hint twofa-hint--manual">Atau buka <code>otpauth://</code> ini di aplikasi: <span class="twofa-uri"><?= e($twofa_uri) ?></span></p>
 
-                <p class="twofa-hint">2) Masukkan kode 6 digit yang tampil di aplikasi untuk mengaktifkan.</p>
-                <form method="POST" action="/geprek-geh/account/2fa/confirm">
-                    <?= csrf_field() ?>
-                    <div class="form-group">
-                        <label for="twofa-conf">Kode Verifikasi</label>
-                        <input id="twofa-conf" type="text" name="code" class="input twofa-code-input" inputmode="numeric" pattern="[0-9]{6}" placeholder="______" autocomplete="one-time-code" maxlength="6" required>
+                <div class="twofa-step">
+                    <span class="twofa-step-num">2</span>
+                    <div>
+                        <p>Masukkan kode 6 digit yang tampil di aplikasi untuk mengaktifkan.</p>
+                        <form method="POST" action="/geprek-geh/account/2fa/confirm">
+                            <?= csrf_field() ?>
+                            <div class="form-group">
+                                <label for="twofa-conf">Kode Verifikasi</label>
+                                <div class="twofa-code-wrap">
+                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                    <input id="twofa-conf" type="text" name="code" class="input twofa-code-input" inputmode="numeric" pattern="[0-9]{6}" placeholder="______" autocomplete="one-time-code" maxlength="6" required>
+                                </div>
+                            </div>
+                            <div class="twofa-inline-actions">
+                                <button type="submit" class="btn btn-primary">Aktifkan 2FA</button>
+                                <button type="submit" formaction="/geprek-geh/account/2fa/cancel" class="btn btn-ghost">Batal</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="twofa-inline-actions">
-                        <button type="submit" class="btn btn-primary">Aktifkan 2FA</button>
-                        <button type="submit" formaction="/geprek-geh/account/2fa/cancel" class="btn btn-ghost">Batal</button>
-                    </div>
-                </form>
+                </div>
 
             <?php else: ?>
                 <p class="twofa-hint">Melindungi akun dengan kode berubah-ubah dari aplikasi authenticator. Tanpa 2FA, siapa pun yang tahu password bisa masuk ke akunmu.</p>
@@ -433,7 +454,7 @@
             $drawerAction = $edit_addr ? '/geprek-geh/account/addresses/' . $edit_addr['id'] : '/geprek-geh/account/addresses';
         ?>
 
-        <form method="POST" action="<?= $drawerAction ?>" class="drawer-body" id="address-form">
+        <form method="POST" action="<?= $drawerAction ?>" class="drawer-body" id="address-form" data-lenis-prevent>
             <?= csrf_field() ?>
 
             <?php if ($a_old && !empty($address_errors)): ?>
@@ -599,13 +620,16 @@
                     <b>Notifikasi Email</b>
                     <span><?= (int) ($user['notify_email'] ?? 0) === 1 ? 'Aktif' : 'Nonaktif' ?></span>
                 </div>
-                <form method="POST" action="/geprek-geh/account/notifications/toggle" class="settings-toggle-form">
-                    <?= csrf_field() ?>
-                    <label class="switch">
-                        <input type="submit" class="switch-input" style="display:none">
-                        <span class="switch-slider" data-switch="<?= (int) ($user['notify_email'] ?? 0) === 1 ? 'on' : 'off' ?>"></span>
-                    </label>
-                </form>
+<form method="POST" action="/geprek-geh/account/notifications/toggle" class="settings-toggle-form">
+                        <?= csrf_field() ?>
+                        <label class="switch">
+                            <input type="submit" class="switch-input" style="display:none">
+                            <span class="switch-slider" data-switch="<?= (int) ($user['notify_email'] ?? 0) === 1 ? 'on' : 'off' ?>"
+                                  role="switch" tabindex="0"
+                                  aria-checked="<?= (int) ($user['notify_email'] ?? 0) === 1 ? 'true' : 'false' ?>"
+                                  aria-label="Notifikasi email"></span>
+                        </label>
+                    </form>
             </div>
             <div class="settings-item">
                 <div class="settings-item-info">
