@@ -5011,3 +5011,92 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
     .menu-category-pills { flex-wrap: nowrap; padding: 4px 2px 10px; }
     .menu-pill { flex: none; }
 }
+
+/* ─── Checkout · polish ─────────────────────────────────────── */
+
+/* Discount line (promo already applied on cart page) */
+.order-line.is-discount { color: #2da632; }
+.order-line.is-discount span:last-child { color: #2da632; font-weight: 700; }
+
+/* ETA strip for honest expectations */
+.order-eta {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 18px 0 0;
+    padding: 11px 14px;
+    border-radius: var(--r-md);
+    background: var(--accent-soft);
+    border: 1px dashed rgba(232,75,35,0.28);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--ink-2);
+}
+.order-eta svg { flex: none; margin-top: 2px; color: var(--accent-deep); }
+.order-eta strong { color: var(--accent-deep); font-weight: 700; }
+
+/* Fixed mobile CTA (hidden on desktop) */
+.checkout-mobile-bar {
+    display: none;
+}
+@media (max-width: 768px) {
+    .checkout-mobile-bar {
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        z-index: 60;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+        background: rgba(255,251,243,0.92);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-top: 1px solid var(--hairline);
+        box-shadow: 0 -12px 30px -18px rgba(29,26,21,0.35);
+    }
+    .checkout-mobile-total {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+        min-width: 0;
+    }
+    .checkout-mobile-total small {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+    }
+    .checkout-mobile-total strong {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--accent-deep);
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+    .checkout-mobile-submit {
+        flex: 1;
+        max-width: 230px;
+        min-height: 52px;
+    }
+    /* Hide the in-card CTA on mobile; the fixed bar replaces it */
+    .checkout-cta-summary { display: none; }
+    .checkout-mobile-bar + * { margin-top: 0; }
+    /* Keep the last content clear of the fixed bar */
+    .checkout-right { padding-bottom: 92px; }
+}
+
+/* Tighter cards & rows on very small screens */
+@media (max-width: 480px) {
+    .checkout-card .card-body { padding: 20px; }
+    .order-summary .card-body { padding: 20px; }
+    .checkout-card-head { margin-bottom: 20px; }
+    .checkout-steps { gap: 10px; margin-top: 4px; }
+    .order-item { gap: 10px; padding: 10px 0; }
+    .order-item-total { font-size: 13px; }
+    .radio-card { padding: 13px 15px; }
+    .sa-radio-card { padding: 12px 14px; }
+    .checkout-note { flex-wrap: wrap; text-align: center; }
+}
