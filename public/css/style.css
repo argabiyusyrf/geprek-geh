@@ -4628,7 +4628,9 @@ body.auth-body { margin: 0; overflow-x: hidden; }
 .product-grid .product-card:nth-child(7n+5) { grid-column: span 4; }
 .menu-bento .product-card { grid-column: span 4; }
 .menu-bento .product-card.product-card--feat:first-child { grid-column: span 8; }
-.menu-bento .product-card.product-card--feat:first-child .product-img { min-height: 340px; }
+@media (min-width: 769px) {
+    .menu-bento .product-card.product-card--feat:first-child .product-img { min-height: 340px; }
+}
 @media (max-width: 900px) {
     .product-grid .product-card,
     .product-grid .product-card:nth-child(7n+1),
