@@ -5643,6 +5643,7 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 }
 
 /* Payment instructions — copy chip */
+#aksi-pembayaran { scroll-margin-top: 110px; }
 .pay-instructions-detail {
     background: var(--card-muted);
     border: 1px solid var(--hairline);
