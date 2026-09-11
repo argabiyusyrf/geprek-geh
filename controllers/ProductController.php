@@ -4,6 +4,7 @@ class ProductController {
         $db = Database::getInstance();
         $cat = $_GET['category'] ?? null;
         $search = $_GET['q'] ?? null;
+        $sort = $_GET['sort'] ?? 'populer';
         $page = max(1, (int)($_GET['page'] ?? 1));
         $per_page = 12;
         $offset = ($page - 1) * $per_page;
