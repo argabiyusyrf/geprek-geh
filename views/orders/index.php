@@ -42,14 +42,24 @@
 
                 <span class="menu-sort">
                     <span class="menu-sort-label">Urutkan</span>
-                    <span class="menu-sort-box">
-                        <select name="sort" class="menu-sort-select" onchange="this.form.submit()" aria-label="Urutkan pesanan">
+                    <span class="menu-sort-box menu-dropdown" data-dropdown data-form-submit>
+                        <button type="button" class="menu-dropdown-trigger" data-dropdown-trigger aria-haspopup="listbox" aria-expanded="false">
+                            <span data-dropdown-label>Terbaru</span>
+                            <svg class="menu-sort-chev menu-sort-chev--js" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                        <div class="menu-dropdown-menu" data-dropdown-menu role="listbox">
+                            <button type="button" class="menu-dropdown-item" data-value="terbaru" role="option">Terbaru</button>
+                            <button type="button" class="menu-dropdown-item" data-value="terlama" role="option">Terlama</button>
+                            <button type="button" class="menu-dropdown-item" data-value="tertinggi" role="option">Total Terbesar</button>
+                            <button type="button" class="menu-dropdown-item" data-value="terendah" role="option">Total Terkecil</button>
+                        </div>
+                        <select name="sort" class="menu-sort-select menu-sort-native" data-dropdown-select onchange="this.form.submit()" aria-label="Urutkan pesanan">
                             <option value="terbaru"<?= $sort === 'terbaru' ? ' selected' : '' ?>>Terbaru</option>
                             <option value="terlama"<?= $sort === 'terlama' ? ' selected' : '' ?>>Terlama</option>
                             <option value="tertinggi"<?= $sort === 'tertinggi' ? ' selected' : '' ?>>Total Terbesar</option>
                             <option value="terendah"<?= $sort === 'terendah' ? ' selected' : '' ?>>Total Terkecil</option>
                         </select>
-                        <svg class="menu-sort-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        <svg class="menu-sort-chev menu-sort-chev--native" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
                     </span>
                 </span>
             </div>
