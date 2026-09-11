@@ -60,7 +60,14 @@ class ProductController {
             return;
         }
         $related = $db->fetchAll(
-            "SELECT p.*, c.name AS category_name FROM products p JOIN categories c ON p.category_id = c.id
+            "SELECT p.*, c.name AS category_name, c.slug AS category_slug,
+              COALESCE(r.review_count, 0) AS review_count,
+              COALESCE(r.avg_rating, 0) AS avg_rating
+             FROM products p JOIN categories c ON p.category_id = c.id
+             LEFT JOIN (
+                SELECT product_id, COUNT(*) AS review_count, AVG(rating) AS avg_rating
+                FROM product_reviews GROUP BY product_id
+             ) r ON r.product_id = p.id
              WHERE p.is_active = 1 AND p.category_id = ? AND p.id != ? ORDER BY RAND() LIMIT 4",
             [$product['category_id'], $product['id']]
         );
@@ -81,6 +88,15 @@ class ProductController {
             "SELECT * FROM product_reviews WHERE product_id = ? AND user_id = ?",
             [$product['id'], Auth::id()]
         ) : null;
+        $rating_dist = array_fill(1, 5, 0);
+        foreach ($db->fetchAll(
+            "SELECT rating, COUNT(*) AS total FROM product_reviews WHERE product_id = ? GROUP BY rating",
+            [$product['id']]
+        ) as $row) {
+            $rating_dist[(int)$row['rating']] = (int)$row['total'];
+        }
+
+        $app = require __DIR__ . '/../config/app.php';
 
         require __DIR__ . '/../views/layouts/header.php';
         require __DIR__ . '/../views/products/show.php';
