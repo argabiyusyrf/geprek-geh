@@ -618,7 +618,13 @@ function updatePdSubtotal() {
     }
 
     // Disable submit while invalid
+    const bankSel = form.querySelector('select[name="payment_bank"]');
     form.addEventListener('submit', (e) => {
+        if (bankSel && !bankSel.value) {
+            e.preventDefault();
+            showError('Pilih bank atau e-wallet terlebih dahulu.');
+            return;
+        }
         if (!input.files || !input.files[0]) {
             e.preventDefault();
             showError('Pilih file bukti pembayaran terlebih dahulu.');

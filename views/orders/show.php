@@ -197,26 +197,33 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
                     <div class="proof-fields-grid">
                         <div class="form-group">
                             <label><?= $order['payment_method'] === 'ewallet' ? 'E-Wallet' : 'Bank' ?> *</label>
-                            <select name="payment_bank" class="input" required>
-                                <option value="">Pilih...</option>
-                                <?php if ($order['payment_method'] === 'transfer'): ?>
-                                    <option value="BCA">BCA</option>
-                                    <option value="BNI">BNI</option>
-                                    <option value="BRI">BRI</option>
-                                    <option value="Mandiri">Mandiri</option>
-                                    <option value="CIMB Niaga">CIMB Niaga</option>
-                                    <option value="BSI">BSI</option>
-                                    <option value="Danamon">Danamon</option>
-                                    <option value="Permata">Permata</option>
-                                <?php else: ?>
-                                    <option value="ShopeePay">ShopeePay</option>
-                                    <option value="GoPay">GoPay</option>
-                                    <option value="OVO">OVO</option>
-                                    <option value="DANA">DANA</option>
-                                    <option value="LinkAja">LinkAja</option>
-                                    <option value="QRIS">QRIS</option>
-                                <?php endif; ?>
-                            </select>
+                            <span class="menu-dropdown proof-bank-dropdown" data-dropdown>
+                                <button type="button" class="menu-dropdown-trigger" data-dropdown-trigger aria-haspopup="listbox" aria-expanded="false">
+                                    <span data-dropdown-label>Pilih <?= $order['payment_method'] === 'ewallet' ? 'e-wallet' : 'bank' ?>…</span>
+                                    <svg class="menu-sort-chev menu-sort-chev--js" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                                </button>
+                                <div class="menu-dropdown-menu" data-dropdown-menu role="listbox">
+                                    <?php if ($order['payment_method'] === 'transfer'): ?>
+                                        <button type="button" class="menu-dropdown-item" data-value="BCA" role="option">BCA</button>
+                                        <button type="button" class="menu-dropdown-item" data-value="BNI" role="option">BNI</button>
+                                        <button type="button" class="menu-dropdown-item" data-value="BRI" role="option">BRI</button>
+                                        <button type="button" class="menu-dropdown-item" data-value="Mandiri" role="option">Mandiri</button>
+                                        <button type="button" class="menu-dropdown-item" data-value="CIMB Niaga" role="option">CIMB Niaga</button>
+                                        <button type="button" class="menu-dropdown-item" data-value="BSI" role="option">BSI</button>
+                                        <button type="button" class="menu-dropdown-item" data-value="Danamon" role="option">Danamon</button>
+                                        <button type="button" class="menu-dropdown-item" data-value="Permata" role="option">Permata</button>
+                                    <?php else: ?>
+                                        <button type="button" class="menu-dropdown-item" data-value="ShopeePay" role="option">ShopeePay</button>
+                                        <button type="button" class="menu-dropdown-item" data-value="GoPay" role="option">GoPay</button>
+                                        <button type="button" class="menu-dropdown-item" data-value="OVO" role="option">OVO</button>
+                                        <button type="button" class="menu-dropdown-item" data-value="DANA" role="option">DANA</button>
+                                        <button type="button" class="menu-dropdown-item" data-value="LinkAja" role="option">LinkAja</button>
+                                        <button type="button" class="menu-dropdown-item" data-value="QRIS" role="option">QRIS</button>
+                                    <?php endif; ?>
+                                </div>
+                                <select name="payment_bank" class="menu-sort-select menu-sort-native" data-dropdown-select></select>
+                                <svg class="menu-sort-chev menu-sort-chev--native" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                            </span>
                         </div>
                         <div class="form-group">
                             <label><?= $order['payment_method'] === 'ewallet' ? 'No. E-Wallet' : 'No. Rekening' ?> *</label>
