@@ -129,12 +129,10 @@
         $profile_errors = $profile_errors ?? [];
         $name = $name ?? '';
         $phone = $phone ?? '';
-        $address = $address ?? '';
         $completeness = 0;
         if ($name) $completeness += 1;
         if ($phone && preg_match('/^08\d{8,11}$/', preg_replace('/\D/', '', $phone))) $completeness += 1;
-        if ($address) $completeness += 1;
-        $completeness = (int) round(($completeness / 3) * 100);
+        $completeness = (int) round(($completeness / 2) * 100);
     ?>
     <div class="account-grid account-grid--profil">
         <section class="card account-card" data-reveal>

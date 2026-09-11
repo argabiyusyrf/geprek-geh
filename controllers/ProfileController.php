@@ -98,7 +98,6 @@ class ProfileController {
         if (strlen($phone) >= 11 && substr($phone, 0, 2) === '62') {
             $phone = '0' . substr($phone, 2);
         }
-        $address = trim($_POST['address'] ?? '');
 
         $errors = [];
         if (mb_strlen($name) < 2) {
@@ -116,18 +115,13 @@ class ProfileController {
                 $errors['phone'] = 'Format nomor tidak valid. Contoh: 081234567890.';
             }
         }
-        if (empty($address)) {
-            $errors['address'] = 'Alamat wajib diisi.';
-        } elseif (mb_strlen($address) > 500) {
-            $errors['address'] = 'Alamat terlalu panjang (maks. 500 karakter).';
-        }
         if ($errors) {
-            $_SESSION['profile_old'] = ['name' => $name, 'phone' => $phone, 'address' => $address];
+            $_SESSION['profile_old'] = ['name' => $name, 'phone' => $phone];
             $_SESSION['profile_errors'] = $errors;
             redirect('/geprek-geh/account?tab=profil');
         }
 
-        $db->update('users', ['name' => $name, 'phone' => $phone, 'address' => $address], 'id = ?', [$user['id']]);
+        $db->update('users', ['name' => $name, 'phone' => $phone], 'id = ?', [$user['id']]);
         $_SESSION['user_name'] = $name;
         flash_set('success', 'Profil berhasil diperbarui.');
         redirect('/geprek-geh/account?tab=profil');
