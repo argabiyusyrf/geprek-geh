@@ -3716,8 +3716,11 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .cart-item-actions { flex-wrap: wrap; }
     .product-detail { grid-template-columns: 1fr; }
     .product-detail-img { position: static; }
-    .pd { grid-template-columns: 1fr; }
+
+    /* ── Product detail responsive ── */
+    .pd { grid-template-columns: 1fr; gap: 24px; }
     .pd-info { position: static; }
+    .pd-visual { aspect-ratio: 4 / 3.8; }
     .order-detail-grid, .order-detail-layout, .admin-grid-2 { grid-template-columns: 1fr; }
     .footer-inner { grid-template-columns: 1fr; gap: 32px; }
 
@@ -3774,6 +3777,20 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .account-avatar { width: 28px; height: 28px; font-size: 12px; }
     .account-menu { min-width: 180px; right: -4px; }
     .notif-panel { width: min(280px, calc(100vw - 16px)); right: -4px; }
+
+    /* ── Product detail mobile ── */
+    .pd-caption { display: none; }
+    .pd-float { bottom: 12px; left: 12px; padding: 7px 12px; font-size: 11.5px; }
+    .pd-chip { top: 12px; left: 12px; padding: 6px 11px; font-size: 11px; }
+    .pd-price strong { font-size: 1.8rem; }
+    .pd-breakdown { padding: 12px 14px; }
+    .pd-levels { margin: 18px 0 22px; }
+    .review-dist { padding: 20px 16px; }
+    .review-dist-row { grid-template-columns: 34px 1fr 26px; gap: 10px; }
+    .review-form-wrap { padding: 18px 16px; }
+    .review-form-head { gap: 10px; }
+    .review-card { padding: 18px 16px; }
+    .review-delete { margin-top: 8px; }
 
     /* ── Overlay menu mobile ── */
     .overlay-inner { padding: 32px 24px 40px; gap: 36px; }
