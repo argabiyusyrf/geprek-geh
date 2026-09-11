@@ -3635,7 +3635,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .nav-center-link { display: none; }
     .nav-burger { display: block; }
     .nav-user { display: none; }
-    .notif { display: none; }
+    .notif-trigger { width: 36px; height: 36px; }
     .island-nav { top: 14px; padding: 0 10px; }
     .nav-pill { gap: 6px; padding: 7px 8px; }
     .brand-word { display: none; }
@@ -4260,6 +4260,13 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 }
 .review-login-hint a { font-weight: 800; }
 
+.review-purchase-hint {
+    display: inline-flex; align-items: center; gap: 8px; margin-bottom: clamp(36px, 5vw, 56px);
+    padding: 13px 20px; background: var(--bg-soft);
+    border: 1px dashed var(--hairline); border-radius: var(--r-pill);
+    font-size: 13.5px; color: var(--muted);
+}
+
 .review-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 .review-card {
     position: relative; padding: 22px 24px; border-radius: var(--r-xl);
@@ -4267,6 +4274,11 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     box-shadow: var(--shadow-float);
 }
 .review-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.review-verified-badge {
+    display: inline-block; padding: 2px 9px; border-radius: var(--r-pill);
+    background: #EEFBF2; color: #1a8c4e; font-size: 11.5px; font-weight: 600;
+    line-height: 1.5; white-space: nowrap;
+}
 .review-avatar { width: 42px; height: 42px; font-size: 1rem; }
 .review-card-head > div { flex: 1; min-width: 0; }
 .review-card-head strong { display: block; font-size: 14px; color: var(--ink); }

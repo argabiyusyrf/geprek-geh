@@ -239,6 +239,9 @@ $out_stock = $product['stock'] <= 0;
                         <span class="review-avatar"><?= e(mb_strtoupper(mb_substr($rv['user_name'], 0, 1))) ?></span>
                         <div>
                             <strong><?= e($rv['user_name']) ?></strong>
+                            <?php if (in_array($rv['user_id'], $review_buyer_ids)): ?>
+                                <span class="review-verified-badge">Terverifikasi Pembeli</span>
+                            <?php endif; ?>
                             <span class="review-date"><?= time_ago($rv['created_at']) ?></span>
                         </div>
                         <div class="review-stars">
