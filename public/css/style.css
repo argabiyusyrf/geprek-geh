@@ -3716,8 +3716,51 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .nav-actions .btn-sm { padding: 7px 12px; font-size: 12.5px; }
 }
 
+/* ─── Small phones (≤480px) ────────────────────────────────── */
+@media (max-width: 480px) {
+    .island-nav { top: 12px; padding: 0 8px; }
+    .nav-pill { gap: 5px; padding: 6px 7px; }
+    .brand-mark { width: 36px; height: 36px; font-size: 16px; }
+    .nav-actions .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 999px; }
+    .icon-trigger { width: 36px; height: 36px; }
+    .icon-trigger svg { width: 16px; height: 16px; }
+    .nav-burger { width: 36px; height: 36px; }
+    .nav-burger span { left: 9px; width: 16px; }
+    .nav-burger span:nth-child(1) { top: 13px; }
+    .nav-burger span:nth-child(2) { top: 21px; }
+    .nav-burger.open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+    .nav-burger.open span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
+    .account-trigger { width: 34px; height: 34px; }
+    .account-avatar { width: 28px; height: 28px; font-size: 12px; }
+    .account-menu { min-width: 180px; right: -4px; }
+    .notif-panel { width: min(280px, calc(100vw - 16px)); right: -4px; }
+    .search-panel { margin-top: 60px; margin-inline: 8px; padding: 8px; }
+    .search-input-wrap { padding: 9px 12px; gap: 10px; }
+    .search-input-wrap input { font-size: 1rem; }
+    .search-close { width: 32px; height: 32px; }
+
+    /* ── Overlay menu mobile ── */
+    .overlay-inner { padding: 32px 24px 40px; gap: 36px; }
+    .overlay-link { font-size: clamp(2rem, 8vw, 3.2rem); }
+    .overlay-close { width: 44px; height: 44px; }
+}
+
 /* ─── Ultra small (≤400px) ────────────────────────────────── */
 @media (max-width: 400px) {
+    .island-nav { top: 10px; padding: 0 6px; }
+    .nav-pill { gap: 4px; padding: 5px 6px; }
+    .brand-mark { width: 32px; height: 32px; font-size: 14px; }
+    .icon-trigger { width: 34px; height: 34px; }
+    .icon-trigger svg { width: 15px; height: 15px; }
+    .nav-burger { width: 34px; height: 34px; }
+    .nav-burger span { left: 8px; width: 15px; }
+    .nav-burger span:nth-child(1) { top: 12px; }
+    .nav-burger span:nth-child(2) { top: 20px; }
+    .nav-burger.open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+    .nav-burger.open span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
+    .account-trigger { width: 32px; height: 32px; }
+    .account-avatar { width: 26px; height: 26px; font-size: 11px; }
+    .nav-actions .btn-sm { padding: 5px 8px; font-size: 11.5px; }
     .hero-title { font-size: 2rem; }
     .hero-stats { gap: 14px; }
     .hero-stat b { font-size: 1.5rem; }
@@ -3725,7 +3768,6 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .about-strip { padding: 24px 20px; }
     .about-item { flex-direction: column; gap: 8px; }
     .footer-inner { gap: 24px; }
-    .brand-mark { width: 34px; height: 34px; font-size: 15px; }
 }
 
 /* ─── Order lifecycle (payment flow, logs, resi) ────────── */
