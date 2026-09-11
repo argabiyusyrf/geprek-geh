@@ -3732,12 +3732,19 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .hero-dish-meta { padding: 14px 16px 16px; }
     .hero-dish-meta h3 { font-size: 1.1rem; }
     .hero-dish-meta b { font-size: 1.2rem; }
+    .hero-visual::before { inset: -12px; }
+    .hero-visual::after { inset: -26px; }
+    .hero-glow--chili { right: -28%; top: -8%; opacity: 0.42; }
+    .hero-glow--gold { left: -30%; bottom: -12%; opacity: 0.4; }
+    .hero-steam { top: -24px; left: 28%; gap: 9px; }
+    .hero-steam i { width: 7px; height: 26px; }
     .hero-card-float {
         position: relative;
         bottom: auto; left: auto;
         max-width: 100%;
         margin-top: 12px;
         transform: none;
+        animation: none;
     }
     .hero-chip {
         position: relative;
@@ -3745,6 +3752,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
         display: inline-flex;
         margin-top: 12px;
         transform: none;
+        animation: none;
     }
     .hero-plate { transform: none; }
 
@@ -3866,6 +3874,9 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .account-avatar { width: 26px; height: 26px; font-size: 11px; }
     .nav-actions .btn-sm { padding: 5px 8px; font-size: 11.5px; }
     .hero-title { font-size: 2rem; }
+    .hero-visual::before { display: none; }
+    .hero-steam { top: -16px; }
+    .hero-steam i { height: 20px; }
     .hero-stats { gap: 14px; }
     .hero-stat b { font-size: 1.5rem; }
     .category-card-core { padding: 20px 16px 18px; }
