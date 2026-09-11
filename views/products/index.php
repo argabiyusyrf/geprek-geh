@@ -39,49 +39,68 @@ if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(
 </section>
 
 <section class="menu-filters">
-    <form method="GET" action="/geprek-geh/products" class="menu-filter-row">
-        <div class="menu-search">
-            <svg class="menu-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-            <input type="text" name="q" placeholder="Cari menu..." value="<?= e($_GET['q'] ?? '') ?>" class="menu-search-input" autocomplete="off">
-            <?php if (!empty($_GET['q'])): ?>
-                <a href="/geprek-geh/products?category=<?= e($_GET['category'] ?? '') ?>" class="menu-search-clear">&times;</a>
-            <?php endif; ?>
-        </div>
+    <div class="menu-toolbar">
+        <form method="GET" action="/geprek-geh/products" class="menu-filter-row">
+            <div class="menu-toolbar-top">
+                <div class="menu-search">
+                    <svg class="menu-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+                    <input type="text" name="q" placeholder="Cari menu..." value="<?= e($_GET['q'] ?? '') ?>" class="menu-search-input" autocomplete="off">
+                    <?php if (!empty($_GET['q'])): ?>
+                        <a href="<?= e($menu_href_all) ?>" class="menu-search-clear" aria-label="Bersihkan pencarian">&times;</a>
+                    <?php endif; ?>
+                </div>
 
-        <div class="menu-category-pills">
-            <a href="/geprek-geh/products<?= !empty($_GET['q']) ? '?q='.e($_GET['q']) : '' ?>"
-               class="menu-pill <?= empty($_GET['category']) ? 'active' : '' ?>">
-                Semua
-            </a>
-            <?php foreach ($categories as $cat): ?>
-                <a href="/geprek-geh/products?category=<?= e($cat['slug']) ?><?= !empty($_GET['q']) ? '&q='.e($_GET['q']) : '' ?>"
-                   class="menu-pill <?= ($_GET['category'] ?? '') === $cat['slug'] ? 'active' : '' ?>">
-                    <?= e($cat['name']) ?>
-                    <span class="menu-pill-count"><?= $cat['product_count'] ?></span>
-                </a>
-            <?php endforeach; ?>
+                <span class="menu-sort">
+                    <span class="menu-sort-label">Urutkan</span>
+                    <span class="menu-sort-box">
+                        <select name="sort" class="menu-sort-select" onchange="this.form.submit()" aria-label="Urutkan menu">
+                            <option value="populer"<?= $sort === 'populer' ? ' selected' : '' ?>>Terpopuler</option>
+                            <option value="terbaru"<?= $sort === 'terbaru' ? ' selected' : '' ?>>Terbaru</option>
+                            <option value="termurah"<?= $sort === 'termurah' ? ' selected' : '' ?>>Harga Terendah</option>
+                            <option value="termahal"<?= $sort === 'termahal' ? ' selected' : '' ?>>Harga Tertinggi</option>
+                        </select>
+                        <svg class="menu-sort-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </span>
+                </span>
+            </div>
+
+            <div class="menu-cat-scroll">
+                <div class="menu-category-pills">
+                    <a href="<?= e($menu_href_all) ?>"
+                       class="menu-pill <?= empty($_GET['category']) ? 'active' : '' ?>">
+                        Semua
+                    </a>
+                    <?php foreach ($categories as $cat): ?>
+                        <a href="/geprek-geh/products?category=<?= e($cat['slug']) ?>&<?= $menu_qs ?>"
+                           class="menu-pill <?= ($_GET['category'] ?? '') === $cat['slug'] ? 'active' : '' ?>">
+                            <?= e($cat['name']) ?>
+                            <span class="menu-pill-count"><?= $cat['product_count'] ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </form>
+
+        <div class="menu-results">
+            <span class="menu-results-text">
+                <?php if (!empty($_GET['q']) || !empty($_GET['category'])): ?>
+                    <?php
+                    $active_cat_name = '';
+                    foreach ($categories as $cat) {
+                        if ($cat['slug'] === $active_cat_slug) { $active_cat_name = $cat['name']; break; }
+                    }
+                    ?>
+                    <?= $total ?> hasil
+                    <?php if (!empty($_GET['q'])): ?> untuk "<strong><?= e($_GET['q']) ?></strong>"<?php endif; ?>
+                    <?php if ($active_cat_name): ?> dalam <strong><?= e($active_cat_name) ?></strong><?php endif; ?>
+                    — <a href="/geprek-geh/products" class="menu-results-reset">Reset</a>
+                <?php else: ?>
+                    Menampilkan semua <?= $total ?> menu
+                <?php endif; ?>
+            </span>
         </div>
-    </form>
+    </div>
 </section>
-
-<div class="menu-results">
-    <span class="menu-results-text">
-        <?php if (!empty($_GET['q']) || !empty($_GET['category'])): ?>
-            <?php
-            $active_cat_name = '';
-            foreach ($categories as $cat) {
-                if ($cat['slug'] === $active_cat_slug) { $active_cat_name = $cat['name']; break; }
-            }
-            ?>
-            <?= $total ?> hasil
-            <?php if (!empty($_GET['q'])): ?> untuk "<strong><?= e($_GET['q']) ?></strong>"<?php endif; ?>
-            <?php if ($active_cat_name): ?> dalam <strong><?= e($active_cat_name) ?></strong><?php endif; ?>
-            — <a href="/geprek-geh/products" class="menu-results-reset">Reset</a>
-        <?php else: ?>
-            Menampilkan semua <?= $total ?> menu
-        <?php endif; ?>
-    </span>
-</div>
 
 <?php if (empty($products)): ?>
     <div class="menu-empty">
@@ -165,6 +184,7 @@ if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(
         $qp = [];
         if (!empty($_GET['category'])) $qp['category'] = $_GET['category'];
         if (!empty($_GET['q'])) $qp['q'] = $_GET['q'];
+        if ($sort !== 'populer') $qp['sort'] = $sort;
         ?>
         <?php if ($page > 1): ?>
             <a href="?page=<?= $page - 1 ?>&<?= http_build_query($qp) ?>" class="menu-page-btn">&laquo;</a>
