@@ -5,6 +5,11 @@ $hero_level = $categories[1] ?? null;
 
 <!-- ── Hero · Editorial Split ───────────────────────── -->
 <section class="hero">
+    <div class="hero-ambient" aria-hidden="true">
+        <span class="hero-glow hero-glow--chili"></span>
+        <span class="hero-glow hero-glow--gold"></span>
+    </div>
+
     <div class="hero-copy">
         <span class="eyebrow" data-reveal>Menu Geprek Premium</span>
         <h1 class="hero-title" data-reveal>Geprek<br><em>Geh.</em></h1>
@@ -29,11 +34,16 @@ $hero_level = $categories[1] ?? null;
     </div>
 
     <div class="hero-visual" data-reveal data-reveal-delay>
+        <span class="hero-steam" aria-hidden="true"><i></i><i></i><i></i></span>
         <div class="hero-plate">
             <div class="hero-plate-core">
                 <div class="hero-dish">
-                    <span class="hero-dish-label">GG</span>
-                    <span class="product-img-placeholder"><svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 11.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0z"/><path d="M11 7V3M13.5 4.5L8.5 6.5M15 7.5l-6 1.5"/><path d="M6 1l-1 3M9 2L7.5 4"/></svg></span>
+                    <?php if ($hero_product && !empty($hero_product['image'])): ?>
+                        <img class="hero-dish-img" src="/geprek-geh/assets/uploads/products/<?= e($hero_product['image']) ?>" alt="<?= e($hero_product['name']) ?>">
+                    <?php else: ?>
+                        <span class="hero-dish-label">GG</span>
+                        <span class="product-img-placeholder"><svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 11.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0z"/><path d="M11 7V3M13.5 4.5L8.5 6.5M15 7.5l-6 1.5"/><path d="M6 1l-1 3M9 2L7.5 4"/></svg></span>
+                    <?php endif; ?>
                 </div>
                 <div class="hero-dish-meta">
                     <div>
