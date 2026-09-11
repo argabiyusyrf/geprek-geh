@@ -179,6 +179,7 @@ $out_stock = $product['stock'] <= 0;
     <?php endif; ?>
 
     <?php if (Auth::check()): ?>
+        <?php if ($has_delivered || $my_review): ?>
     <div class="review-form-wrap" data-reveal>
         <div class="review-form-head">
             <span class="review-form-avatar"><?= e(mb_strtoupper(mb_substr($_SESSION['user_name'], 0, 1))) ?></span>
@@ -186,6 +187,8 @@ $out_stock = $product['stock'] <= 0;
                 <strong>Tulis Ulasan</strong>
                 <?php if ($my_review): ?>
                     <span class="review-form-note">Kamu sudah review — update di bawah.</span>
+                <?php else: ?>
+                    <span class="review-form-note">Tulis pengalamanmu setelah pesanan diterima.</span>
                 <?php endif; ?>
             </div>
         </div>
@@ -208,6 +211,12 @@ $out_stock = $product['stock'] <= 0;
             </button>
         </form>
     </div>
+        <?php else: ?>
+    <div class="review-purchase-hint" data-reveal>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+        <span>Beli produk ini, lalu tulis ulasanmu setelah pesanan diterima.</span>
+    </div>
+        <?php endif; ?>
     <?php else: ?>
     <div class="review-login-hint" data-reveal>
         <a href="/geprek-geh/auth/login">Masuk</a> untuk menulis ulasan.

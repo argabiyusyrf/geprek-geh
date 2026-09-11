@@ -28,6 +28,19 @@ class ReviewController {
             [$product_id, Auth::id()]
         );
 
+        if (!$existing) {
+            $has_delivered = $db->fetchColumn(
+                "SELECT COUNT(*) FROM orders o
+                 JOIN order_items oi ON oi.order_id = o.id
+                 WHERE o.user_id = ? AND o.status = 'delivered' AND oi.product_id = ?",
+                [Auth::id(), $product_id]
+            );
+            if (!$has_delivered) {
+                flash_set('error', 'Hanya pembeli terverifikasi yang bisa memberi ulasan.');
+                redirect('/geprek-geh/products/' . $product['slug']);
+            }
+        }
+
         if ($existing) {
             $db->update('product_reviews', [
                 'rating'   => $rating,

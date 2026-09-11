@@ -99,6 +99,31 @@ class ProductController {
             "SELECT * FROM product_reviews WHERE product_id = ? AND user_id = ?",
             [$product['id'], Auth::id()]
         ) : null;
+
+        $has_delivered = false;
+        if (Auth::check()) {
+            $has_delivered = (int) $db->fetchColumn(
+                "SELECT COUNT(*) FROM orders o
+                 JOIN order_items oi ON oi.order_id = o.id
+                 WHERE o.user_id = ? AND o.status = 'delivered' AND oi.product_id = ?",
+                [Auth::id(), $product['id']]
+            ) > 0;
+        }
+
+        $review_buyer_ids = [];
+        if (!empty($reviews)) {
+            $review_user_ids = array_unique(array_column($reviews, 'user_id'));
+            $placeholders = implode(',', array_fill(0, count($review_user_ids), '?'));
+            $review_buyer_ids = array_column(
+                $db->fetchAll(
+                    "SELECT DISTINCT o.user_id FROM orders o
+                     JOIN order_items oi ON oi.order_id = o.id
+                     WHERE o.user_id IN ({$placeholders}) AND o.status = 'delivered' AND oi.product_id = ?",
+                    array_merge($review_user_ids, [$product['id']])
+                ),
+                'user_id'
+            );
+        }
         $rating_dist = array_fill(1, 5, 0);
         foreach ($db->fetchAll(
             "SELECT rating, COUNT(*) AS total FROM product_reviews WHERE product_id = ? GROUP BY rating",
