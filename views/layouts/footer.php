@@ -40,7 +40,7 @@
 <div class="cookie-bar" id="cookie-bar" role="region" aria-label="Cookie" aria-hidden="true">
     <div class="cookie-bar-inner">
         <div class="cookie-bar-body">
-            <strong>Kami pakai cookie 🍪</strong>
+            <strong>Kami pakai cookie</strong>
             <p>Cookie membantu kami mengingat keranjang dan sesi loginmu, serta meningkatkan pengalaman belanja. Pelajari lebih lanjut di <a href="/geprek-geh/pages/privacy" class="cookie-link">Kebijakan Privasi</a>.</p>
         </div>
         <div class="cookie-bar-actions">
@@ -60,6 +60,6 @@
 
 <script src="/geprek-geh/vendor/lenis/lenis.min.js"></script>
 <script src="/geprek-geh/vendor/qrcode/qrcode.js"></script>
-<script src="/geprek-geh/public/js/app.js?v=20260911j"></script>
+<script src="/geprek-geh/public/js/app.js?v=20260911k"></script>
 </body>
 </html>
