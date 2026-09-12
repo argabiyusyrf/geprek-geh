@@ -4973,7 +4973,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 .chart-area   { opacity: 0; transform: translateY(8px); transform-box: fill-box; animation: chartRise .8s cubic-bezier(.3,.1,.2,1) .5s forwards; }
 .chart-line   { stroke-dasharray: 1; stroke-dashoffset: 1; animation: chartDraw 1.5s cubic-bezier(.42,0,.2,1) .1s forwards; }
 .chart-dot    { opacity: 0; transform: scale(0); transform-box: fill-box; transform-origin: center; animation: dotPop .5s cubic-bezier(.34,1.56,.64,1) var(--d, .6s) forwards; }
-.chart-dot:hover { r: 7; filter: drop-shadow(0 3px 6px rgba(212,62,27,.45)); transition: r .25s var(--ease-spring), filter .25s; }
+.chart-dot:hover { filter: drop-shadow(0 3px 6px rgba(212,62,27,.45)); transition: filter .25s var(--ease-soft); }
 .donut-seg    { opacity: 0; stroke-dashoffset: var(--seg); animation: donutDraw 1.1s cubic-bezier(.42,0,.2,1) var(--d, .2s) forwards; }
 .donut-count, .donut-cap { opacity: 0; transform: translateY(6px); transform-box: fill-box; animation: chartRise .7s cubic-bezier(.3,.1,.2,1) .6s forwards; }
 @keyframes chartFade  { to { opacity: 1; } }
