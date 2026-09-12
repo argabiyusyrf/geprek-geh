@@ -38,7 +38,7 @@
                                 <label for="login-email">Email</label>
                                 <div class="reg-input-wrap">
                                     <svg class="reg-input-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg>
-                                    <input id="login-email" type="email" name="email" class="input reg-input" required placeholder="you@email.com" autocomplete="email" autofocus>
+                                    <input id="login-email" type="email" name="email" class="input reg-input" required placeholder="you@email.com" autocomplete="email" autofocus value="<?= e($login_old['email'] ?? '') ?>">
                                 </div>
                             </div>
 
