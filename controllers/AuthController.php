@@ -143,7 +143,7 @@ class AuthController {
         }
 
         if ($fatal) {
-            $_SESSION['reg_old'] = ['name' => $name, 'email' => $email, 'phone' => $phone];
+            $_SESSION['reg_old'] = ['name' => $name, 'email' => $email, 'phone' => $phone, 'terms' => $terms === '1' ? '1' : ''];
             $_SESSION['reg_errors'] = $errors;
             header('Location: /geprek-geh/auth/register');
             exit;
@@ -184,7 +184,7 @@ class AuthController {
         }
 
         if ($errors) {
-            $_SESSION['reg_old']     = ['name' => $name, 'email' => $email, 'phone' => $phone];
+            $_SESSION['reg_old']     = ['name' => $name, 'email' => $email, 'phone' => $phone, 'terms' => $terms === '1' ? '1' : ''];
             $_SESSION['reg_errors']  = $errors;
             header('Location: /geprek-geh/auth/register');
             exit;
