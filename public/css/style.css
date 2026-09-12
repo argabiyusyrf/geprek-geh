@@ -4752,6 +4752,9 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 .quick-item:hover .quick-icon { background: rgba(212,62,27,0.14); border-color: rgba(212,62,27,0.28); color: var(--accent); transform: scale(1.04); }
 .quick-icon { transition: transform .5s var(--ease-spring), background .3s var(--ease-soft); }
 
+/* Lift admin cards off the tan backdrop */
+.admin-content .card { background: var(--card); box-shadow: var(--shadow-inner-warm), var(--shadow-soft); }
+
 /* ─── Responsive for v2 pass ─────────────────────────────── */
 @media (max-width: 960px) {
     .pd { grid-template-columns: 1fr; }
