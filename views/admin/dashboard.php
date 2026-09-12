@@ -124,3 +124,101 @@
         </div>
     </div>
 </div>
+
+<div class="admin-grid-2 chart-grid">
+    <div class="card chart-card">
+        <div class="admin-card-head">
+            <div class="admin-title min">
+                <h3>Penjualan 7 Hari Terakhir</h3>
+            </div>
+            <span class="text-muted" style="font-size:12px;font-weight:700;">Pendapatan bersih</span>
+        </div>
+        <div class="chart-wrap">
+            <?php
+                $mx = max(1, max(array_column($sales7, 'revenue')));
+                $W = 580; $H = 216; $padL = 48; $padR = 10; $padT = 16; $padB = 28;
+                $pw = $W - $padL - $padR; $ph = $H - $padT - $padB;
+                $fmtIdr = function ($n) {
+                    $n = (float)$n;
+                    if ($n >= 1000000) return trim(number_format($n / 1000000, 1, ',', '.'), '0,') . 'jt';
+                    if ($n >= 1000)    return rtrim(rtrim(number_format($n / 1000, 1, ',', '.'), '0'), ',') . 'rb';
+                    return (string)(int)$n;
+                };
+                $pts = [];
+                foreach ($sales7 as $i => $s) {
+                    $pts[] = ['x' => $padL + $i * ($pw / 6), 'y' => $padT + $ph - ($s['revenue'] / $mx) * $ph, 's' => $s];
+                }
+                $line = array_reduce($pts, fn($c, $p) => $c . round($p['x'], 1) . ',' . round($p['y'], 1) . ' ', '');
+                $base = $padT + $ph;
+                $area = 'M' . round($pts[0]['x'], 1) . ',' . round($pts[0]['y'], 1)
+                      . implode('', array_map(fn($p) => ' L' . round($p['x'], 1) . ',' . round($p['y'], 1), array_slice($pts, 1)))
+                      . ' L' . round($pts[6]['x'], 1) . ',' . $base . ' L' . round($pts[0]['x'], 1) . ',' . $base . ' Z';
+            ?>
+            <svg class="chart-svg" viewBox="0 0 <?= $W ?> <?= $H ?>" role="img" aria-label="Grafik penjualan 7 hari terakhir">
+                <defs>
+                    <linearGradient id="salesFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#D43E1B" stop-opacity="0.28"/>
+                        <stop offset="100%" stop-color="#D43E1B" stop-opacity="0.02"/>
+                    </linearGradient>
+                </defs>
+                <?php for ($k = 0; $k <= 4; $k++): $gy = round($padT + $ph * (1 - $k / 4)); $gv = $mx * $k / 4; ?>
+                    <line x1="<?= $padL ?>" y1="<?= $gy ?>" x2="<?= $W - $padR ?>" y2="<?= $gy ?>" stroke="rgba(20,17,12,0.07)" stroke-width="1"/>
+                    <text x="<?= $padL - 8 ?>" y="<?= $gy + 4 ?>" text-anchor="end" font-size="11" fill="#8A7A65" font-weight="600"><?= $fmtIdr($gv) ?></text>
+                <?php endfor; ?>
+                <path d="<?= $area ?>" fill="url(#salesFill)"/>
+                <polyline points="<?= trim($line) ?>" fill="none" stroke="#D43E1B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <?php foreach ($pts as $p): ?>
+                    <circle cx="<?= round($p['x'], 1) ?>" cy="<?= round($p['y'], 1) ?>" r="4" fill="#FBF5E7" stroke="#D43E1B" stroke-width="2.5">
+                        <title><?= $p['s']['day'] ?> · <?= rupiah($p['s']['revenue']) ?> · <?= $p['s']['orders'] ?> pesanan</title>
+                    </circle>
+                <?php endforeach; ?>
+                <?php foreach ($sales7 as $i => $s): $x = round($padL + $i * ($pw / 6), 1); ?>
+                    <text x="<?= $x ?>" y="<?= $H - 6 ?>" text-anchor="middle" font-size="11" fill="#8A7A65" font-weight="600"><?= $s['day'] ?></text>
+                <?php endforeach; ?>
+            </svg>
+        </div>
+    </div>
+
+    <div class="card chart-card">
+        <div class="admin-card-head">
+            <div class="admin-title min">
+                <h3>Status Pesanan</h3>
+            </div>
+            <span class="text-muted" style="font-size:12px;font-weight:700;"><?= $status_total ?> total</span>
+        </div>
+        <div class="chart-donut">
+            <?php
+                $statusColor = ['pending' => '#E8A21A', 'processing' => '#1F5FA8', 'shipped' => '#D43E1B', 'delivered' => '#2C6E3F', 'cancelled' => '#8A7A65'];
+                $statusLabel = ['pending' => 'Menunggu', 'processing' => 'Diproses', 'shipped' => 'Dikirim', 'delivered' => 'Selesai', 'cancelled' => 'Dibatalkan'];
+                $C = 2 * M_PI * 64; $off = 0;
+            ?>
+            <svg class="chart-svg donut-svg" viewBox="0 0 200 200" role="img" aria-label="Komposisi status pesanan">
+                <g transform="rotate(-90 100 100)">
+                    <circle cx="100" cy="100" r="64" fill="none" stroke="rgba(20,17,12,0.06)" stroke-width="26"/>
+                    <?php if ($status_total > 0): foreach (['pending','processing','shipped','delivered','cancelled'] as $st):
+                        $n = $status_dist[$st]; if ($n < 1) continue;
+                        $seg = $n / $status_total * $C; ?>
+                        <circle cx="100" cy="100" r="64" fill="none" stroke="<?= $statusColor[$st] ?>" stroke-width="26"
+                                stroke-dasharray="<?= round($seg, 2) ?> <?= round($C - $seg, 2) ?>"
+                                stroke-dashoffset="<?= round(-$off, 2) ?>"/>
+                    <?php $off += $seg; endforeach; endif; ?>
+                </g>
+                <text x="100" y="97" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-size="34" font-weight="700" fill="#14110C"><?= $status_total ?></text>
+                <text x="100" y="119" text-anchor="middle" font-size="11" font-weight="700" letter-spacing="0.08em" fill="#8A7A65">PESANAN</text>
+            </svg>
+            <div class="chart-legend">
+                <?php if ($status_total > 0): foreach (['pending','processing','shipped','delivered','cancelled'] as $st):
+                    $n = $status_dist[$st]; if ($n < 1) continue; ?>
+                    <div class="legend-item">
+                        <span class="lg-dot" style="background:<?= $statusColor[$st] ?>"></span>
+                        <span class="lg-name"><?= $statusLabel[$st] ?></span>
+                        <span class="lg-sub"><?= round($n / $status_total * 100) ?>%</span>
+                        <span class="lg-meta"><?= $n ?></span>
+                    </div>
+                <?php endforeach; else: ?>
+                    <p class="text-muted">Belum ada pesanan.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
