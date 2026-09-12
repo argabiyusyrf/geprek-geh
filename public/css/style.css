@@ -6421,3 +6421,57 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 @media (max-width: 1024px) {
     .stats-grid--orders .stat-card { grid-column: auto !important; }
 }
+
+/* ─── Admin Pesanan: status stepper buttons ─────────────── */
+.btn-outline-danger {
+    color: var(--bad); background: transparent; border-color: var(--bad);
+}
+.btn-outline-danger:hover { background: var(--bad); color: #fff; }
+.status-stepper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.status-step {
+    position: relative; display: flex; flex-direction: column; align-items: flex-start;
+    gap: 7px; padding: 12px 13px; min-width: 0; text-align: left;
+    border: 1.5px solid var(--hairline); background: var(--card);
+    border-radius: 14px; cursor: pointer;
+    transition: border-color .2s var(--ease-soft), transform .2s var(--ease-soft), box-shadow .2s var(--ease-soft), opacity .2s;
+    font-family: inherit;
+}
+.status-step-no {
+    width: 21px; height: 21px; border-radius: 999px; flex: none;
+    display: grid; place-items: center;
+    font-size: 11px; font-weight: 800; font-family: var(--font-mono, ui-monospace, monospace);
+    background: var(--bg-soft); color: var(--muted);
+}
+.status-step-label { font-size: 12.5px; font-weight: 750; color: var(--ink); white-space: nowrap; }
+.status-step.is-past { opacity: .45; background: var(--bg-soft); cursor: not-allowed; }
+.status-step.is-past .status-step-no { background: rgba(20,17,12,.08); color: var(--muted); }
+.status-step.is-current { border-color: var(--accent); background: rgba(232,75,35,.07); cursor: default; }
+.status-step.is-current .status-step-no { background: var(--accent); color: #fff; }
+.status-step.is-locked { opacity: .4; cursor: not-allowed; }
+.status-step.is-locked .status-step-no {
+    background: repeating-linear-gradient(45deg, rgba(20,17,12,.07) 0 4px, transparent 4px 8px);
+    color: var(--muted);
+}
+.status-step.is-next:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: 0 10px 22px -10px rgba(232,75,35,.4); }
+.status-step.is-next:hover .status-step-no { background: var(--accent); color: #fff; }
+.status-step.has-extra::after {
+    content: ''; position: absolute; top: 12px; right: 12px;
+    width: 7px; height: 7px; border-radius: 50%; background: var(--warn);
+}
+.status-cancel-btn { margin-top: 12px; }
+.status-panel {
+    margin-top: 12px; padding: 14px; border-radius: 14px;
+    border: 1px solid var(--hairline); background: var(--bg-soft);
+    animation: fadeup .25s var(--ease-soft);
+}
+.status-panel-tag { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 11px; }
+.status-panel-tag strong { color: var(--ink); }
+.status-extra-field { display: flex; flex-direction: column; gap: 6px; }
+.status-extra-field + .status-extra-field { margin-top: 10px; }
+.status-extra-label { font-size: 12.5px; font-weight: 700; color: var(--ink-2); }
+.status-panel-actions { display: flex; align-items: center; gap: 8px; margin-top: 13px; }
+.status-panel-actions .btn-primary { flex: 1; justify-content: center; }
+@media (max-width: 480px) {
+    .status-stepper { grid-template-columns: repeat(2, 1fr); }
+}
+@keyframes fadeup { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
