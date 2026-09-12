@@ -97,7 +97,7 @@
                             </div>
                         </div>
 
-                        <label class="reg-terms">
+                        <label class="reg-terms<?= !empty($reg_errors['terms']) ? ' is-error' : '' ?>">
                             <input type="checkbox" name="terms" id="reg-terms" value="1"<?= !empty($reg_old['terms']) ? ' checked' : '' ?>>
                             <span class="reg-terms-box">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>

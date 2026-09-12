@@ -1677,6 +1677,18 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .alert-warning { background: rgba(255,247,230,0.92); color: var(--warn); border: 1px solid rgba(161,98,7,0.25); }
 .alert-info    { background: rgba(235,246,255,0.92); color: #1a5f8a; border: 1px solid rgba(26,95,138,0.25); }
 
+/* Inline (non-floating) alert — dipakai di halaman auth, bukan toast */
+.alert-static {
+    position: static;
+    transform: none;
+    animation: none;
+    border-radius: 14px;
+    margin-bottom: 20px;
+    box-shadow: none;
+    font-size: 13.5px;
+    padding: 14px 18px;
+}
+
 /* ─── Toast (AJAX feedback) ────────────────────────────────── */
 .toast-container {
     position: fixed;
@@ -4514,6 +4526,9 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 .reg-terms-text { font-size: 13px; line-height: 1.5; color: var(--muted); }
 .reg-terms-text a { color: var(--accent-deep); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(168,42,14,0.3); text-underline-offset: 2px; }
 .reg-terms-text a:hover { text-decoration-color: var(--accent-deep); }
+.reg-terms.is-error .reg-terms-box { border-color: var(--bad); }
+.reg-terms.is-error .reg-terms-text { color: var(--bad); }
+.reg-terms.is-error .reg-terms-text a { color: var(--bad); }
 
 /* ── Submit button loading state ── */
 .reg-submit { position: relative; }
