@@ -116,7 +116,7 @@ $proof_exists = !empty($order['payment_proof']) && file_exists(dirname(__DIR__, 
                     <td class="num"><?= \rupiah($item['price']) ?></td>
                     <td class="num"><?= \rupiah($sub) ?></td>
                 </tr>
-            <?php endforeach; ?>
+            <?php endforeach; endif; ?>
         </tbody>
     </table>
 

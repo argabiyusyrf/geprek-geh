@@ -29,6 +29,10 @@ $can_verify = in_array($method, ['transfer', 'ewallet'], true)
     && !in_array($order['status'], ['cancelled', 'delivered'], true);
 ?>
 
+<a href="/geprek-geh/admin/orders" class="back-link">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Kembali ke Pesanan
+</a>
 <div class="breadcrumb">
     <a href="/geprek-geh/admin">Dashboard</a>
     <span>/</span>
@@ -54,9 +58,18 @@ $can_verify = in_array($method, ['transfer', 'ewallet'], true)
                 WhatsApp
             </a>
         <?php endif; ?>
-        <a href="/geprek-geh/orders/<?= $order['id'] ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline">Lihat di Toko</a>
+        <button type="button" class="btn btn-sm btn-outline" data-copy="#oc-summary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Salin Rincian
+        </button>
+        <a href="/geprek-geh/admin/orders/<?= $order['id'] ?>/print" target="_blank" rel="noopener" class="btn btn-sm btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+            Cetak
+        </a>
     </div>
 </div>
+
+<pre id="oc-summary" hidden><?= e($order_summary) ?></pre>
 
 <div class="order-badge-row">
     <span class="badge <?= $badge_class ?>"><?= $status_label ?></span>
