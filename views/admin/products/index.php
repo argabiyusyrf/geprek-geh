@@ -101,7 +101,10 @@
 <div class="drawer-overlay" id="product-drawer-overlay" data-drawer-overlay></div>
 <aside class="drawer" id="product-drawer" data-product-drawer aria-hidden="true" data-lenis-prevent>
     <div class="drawer-head">
-        <h4 id="product-drawer-title">Tambah Produk</h4>
+        <div>
+            <span class="drawer-eyebrow" id="product-drawer-eyebrow">Produk</span>
+            <h4 id="product-drawer-title">Tambah Produk</h4>
+        </div>
         <button type="button" class="drawer-close" data-close-product-drawer aria-label="Tutup">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
@@ -112,30 +115,32 @@
 
         <div class="form-group">
             <label>Nama Produk <span class="req">*</span></label>
-            <input type="text" name="name" id="product-name" class="input" placeholder="cth. Ayam Geprek Original" required>
+            <input type="text" name="name" id="product-name" class="input <?= !empty($formErrors['name']) ? 'is-invalid' : '' ?>" value="<?= e(\fval($formOld, [], 'name')) ?>" placeholder="cth. Ayam Geprek Original" required>
+            <?php if (!empty($formErrors['name'])): ?><span class="field-error"><?= e($formErrors['name']) ?></span><?php endif; ?>
             <span class="product-slug-preview" id="product-slug-preview">/nama-produk</span>
         </div>
 
         <div class="form-row">
             <div class="form-group">
                 <label>Kategori <span class="req">*</span></label>
-                <select name="category_id" class="input" required>
+                <select name="category_id" class="input <?= !empty($formErrors['category_id']) ? 'is-invalid' : '' ?>" required>
                     <option value="">Pilih</option>
                     <?php foreach ($categories as $c): ?>
-                        <option value="<?= $c['id'] ?>"><?= e($c['name']) ?></option>
+                        <option value="<?= $c['id'] ?>" <?= (int) (\fval($formOld, [], 'category_id', 0)) === (int) $c['id'] ? 'selected' : '' ?>><?= e($c['name']) ?></option>
                     <?php endforeach; ?>
                 </select>
+                <?php if (!empty($formErrors['category_id'])): ?><span class="field-error"><?= e($formErrors['category_id']) ?></span><?php endif; ?>
             </div>
             <div class="form-group">
-                <label>Harga (Rp)</label>
-                <input type="number" name="price" class="input" required min="0" placeholder="15000">
+                <label>Harga (Rp) <span class="req">*</span></label>
+                <input type="number" name="price" class="input <?= !empty($formErrors['price']) ? 'is-invalid' : '' ?>" required min="0" placeholder="15000" value="<?= e(\fval($formOld, [], 'price', 0)) ?>">
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group">
                 <label>Stok</label>
-                <input type="number" name="stock" class="input" required min="0" value="0">
+                <input type="number" name="stock" class="input" required min="0" value="<?= e(\fval($formOld, [], 'stock', 0)) ?>">
             </div>
             <div class="form-group">
                 <label>Gambar</label>
@@ -150,12 +155,13 @@
 
         <div class="form-group">
             <label>Deskripsi</label>
-            <textarea name="description" class="input" rows="4" placeholder="Cara penyajian, level, bahan, dll."></textarea>
+            <textarea name="description" class="input" rows="4" placeholder="Cara penyajian, level, bahan, dll."><?= e(\fval($formOld, [], 'description')) ?></textarea>
         </div>
 
+        <?php $defaultActive = $formOld !== null ? isset($formOld['is_active']) : true; ?>
         <div class="form-row">
-            <label class="checkbox-label"><input type="checkbox" name="is_active" checked> Aktif</label>
-            <label class="checkbox-label"><input type="checkbox" name="is_featured"> ★ Favorit</label>
+            <label class="checkbox-label"><input type="checkbox" name="is_active" <?= $defaultActive ? 'checked' : '' ?>> Aktif</label>
+            <label class="checkbox-label"><input type="checkbox" name="is_featured" <?= $formOld !== null && isset($formOld['is_featured']) ? 'checked' : '' ?>> ★ Favorit</label>
         </div>
     </form>
 
@@ -188,4 +194,15 @@ $__categoriesData = array_map(function ($c) {
 <script>
 window.__gehProducts = <?= json_encode($__productsData, $_jsonOpts) ?>;
 window.__gehCategories = <?= json_encode($__categoriesData, $_jsonOpts) ?>;
+<?php
+$_drawerError = $formOld !== null && $formErrors !== null;
+if ($_drawerError) {
+    $__errState = isset($_GET['edit'])
+        ? json_encode(['mode' => 'edit', 'id' => (int) $_GET['edit']], $_jsonOpts)
+        : json_encode(['mode' => 'create', 'id' => null], $_jsonOpts);
+    echo 'window.__gehDrawerError = ' . $__errState . ';' . "\n";
+} else {
+    echo 'window.__gehDrawerError = null;' . "\n";
+}
+?>
 </script>
