@@ -9,6 +9,13 @@ class CategoryController {
              FROM categories c ORDER BY c.sort_order, c.name"
         );
 
+        $cstats = [
+            'total'    => count($categories),
+            'products' => array_sum(array_column($categories, 'product_count')),
+            'avg'      => $categories ? round(array_sum(array_column($categories, 'product_count')) / count($categories), 1) : 0,
+            'empty'    => count(array_filter($categories, function ($c) { return (int) $c['product_count'] === 0; })),
+        ];
+
         $formErrors = \form_errors();
         $formOld    = \form_old();
 
