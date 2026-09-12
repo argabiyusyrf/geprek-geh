@@ -2033,6 +2033,7 @@ document.addEventListener('click', (e) => {
         if (!panel) return;
         const statusInput = panel.querySelector('[data-panel-status]');
         const labelEl = panel.querySelector('[data-panel-label]');
+        const cancelTa = panel.querySelector('[data-panel-extra="cancelled"] textarea');
 
         const openExtra = (btn) => {
             const to = btn.dataset.openExtra;
