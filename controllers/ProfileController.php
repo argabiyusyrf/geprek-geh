@@ -171,6 +171,41 @@ class ProfileController {
         redirect('/geprek-geh/account?tab=security');
     }
 
+    public function changeKeyword() {
+        Auth::requireLogin();
+        if (!verify_csrf()) {
+            flash_set('error', 'Token tidak valid.');
+            redirect('/geprek-geh/account?tab=security');
+        }
+        $db = Database::getInstance();
+        $user = Auth::user();
+
+        $current = $_POST['current_password'] ?? '';
+        $kw = $_POST['keyword'] ?? '';
+
+        $errors = [];
+        if ($kw === '') {
+            $errors['keyword'] = 'Kata kunci tidak boleh kosong.';
+        } elseif (mb_strlen($kw) < 6) {
+            $errors['keyword'] = 'Kata kunci minimal 6 karakter.';
+        } elseif (mb_strlen($kw) > 72) {
+            $errors['keyword'] = 'Kata kunci maksimal 72 karakter.';
+        }
+        if (!password_verify($current, $user['password'])) {
+            $errors['keyword_pwd'] = 'Password aktif salah.';
+        }
+        if ($errors) {
+            $_SESSION['profile_kw_errors'] = $errors;
+            redirect('/geprek-geh/account?tab=security');
+        }
+
+        Auth::setRecoveryKeyword((int) $user['id'], $kw);
+        unset($_SESSION['skip_setup']);
+
+        flash_set('success', 'Kata kunci akun berhasil disimpan.');
+        redirect('/geprek-geh/account?tab=security');
+    }
+
     public function changeEmail() {
         Auth::requireLogin();
         if (!verify_csrf()) {
@@ -611,6 +646,7 @@ class ProfileController {
             'totp_enabled' => 0,
             'totp_secret' => null,
             'totp_recovery' => null,
+            'recovery_keyword' => null,
         ], 'id = ?', [$uid]);
 
         // Clear addresses + notifications linked

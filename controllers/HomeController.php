@@ -1,6 +1,10 @@
 <?php
 class HomeController {
     public function index() {
+        // Customer yang lupa set kata kunci recovery → arahkan ke setup (kecuali sengaja dilewati).
+        if (Auth::check() && ($_SESSION['role'] ?? '') !== 'admin' && empty($_SESSION['skip_setup']) && !Auth::keywordSet()) {
+            redirect('/geprek-geh/account/setup');
+        }
         $db = Database::getInstance();
         $featured = $db->fetchAll("SELECT p.*, c.name AS category_name,
               COALESCE(r.review_count, 0) AS review_count,
