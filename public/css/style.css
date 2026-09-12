@@ -4412,7 +4412,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     background: rgba(232,75,35,0.2); border: 1px solid rgba(255,138,92,0.4);
     display: grid; place-items: center;
 }
-.auth-panel { display: flex; align-items: center; justify-content: center; padding: clamp(48px, 7vh, 90px) 32px; }
+.auth-panel { display: flex; align-items: center; justify-content: center; padding: clamp(48px, 7vh, 90px) 32px; position: relative; }
 .auth-card {
     width: 100%; max-width: 480px; border-radius: var(--r-2xl); padding: 10px;
 }
@@ -4643,6 +4643,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .auth-card-core { padding: 24px 20px; }
     .reg-terms-text { font-size: 12px; }
     .reg-login-alt { font-size: 13px; }
+    .auth-back { top: 24px; left: 24px; z-index: 6; }
 }
 
 /* ═══════════════════════════════════════════════════════════
