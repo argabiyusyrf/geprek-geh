@@ -4,6 +4,8 @@ class PasswordResetController {
 
     public function requestForm() {
         if (Auth::check()) redirect('/geprek-geh/account');
+        $fr_old = $_SESSION['fr_old'] ?? null;
+        unset($_SESSION['fr_old']);
         $page_title = 'Lupa Password';
         require __DIR__ . '/../views/layouts/auth-header.php';
         require __DIR__ . '/../views/auth/forgot.php';
@@ -15,9 +17,49 @@ class PasswordResetController {
             flash_set('error', 'Sesi tidak valid, silakan coba lagi.');
             header('Location: /geprek-geh/auth/forgot'); exit;
         }
-        $email = strtolower(trim($_POST['email'] ?? ''));
+        $email  = strtolower(trim($_POST['email'] ?? ''));
+        $method = $_POST['method'] ?? 'email';
 
         $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['fr_old'] = ['email' => $email, 'method' => $method];
+            flash_set('error', 'Email tidak valid.');
+            header('Location: /geprek-geh/auth/forgot'); exit;
+        }
+
+        // ── Jalur 1: Kata kunci akun (tanpa email pihak ketiga) ──
+        if ($method === 'keyword') {
+            if (!RateLimiter::attempt('keyword:' . $email, 5, 300)) {
+                $_SESSION['fr_old'] = ['email' => $email, 'method' => 'keyword'];
+                flash_set('error', 'Terlalu banyak percobaan. Coba lagi dalam 5 menit.');
+                header('Location: /geprek-geh/auth/forgot'); exit;
+            }
+            if (!RateLimiter::attempt('keyword-ip:' . $ip, 10, 600)) {
+                $_SESSION['fr_old'] = ['email' => $email, 'method' => 'keyword'];
+                flash_set('error', 'Terlalu banyak percobaan dari perangkat ini. Coba lagi nanti.');
+                header('Location: /geprek-geh/auth/forgot'); exit;
+            }
+
+            $db = Database::getInstance();
+            $user = $db->fetchOne("SELECT * FROM users WHERE email = ?", [$email]);
+            $phrase = $_POST['keyword'] ?? '';
+
+            // Respon generik — jangan bocorkan apakah email terdaftar.
+            if ($user && Auth::verifyRecoveryKeyword((int) $user['id'], $phrase)) {
+                $_SESSION['recovery_uid']   = (int) $user['id'];
+                $_SESSION['recovery_name']  = $user['name'];
+                $_SESSION['recovery_email'] = $user['email'];
+                $_SESSION['recovery_exp']   = time() + 600; // 10 menit
+                header('Location: /geprek-geh/auth/recovery'); exit;
+            }
+
+            $_SESSION['fr_old'] = ['email' => $email, 'method' => 'keyword'];
+            flash_set('error', 'Email atau kata kunci salah. Coba lagi, atau pilih jalur link email.');
+            header('Location: /geprek-geh/auth/forgot'); exit;
+        }
+
+        // ── Jalur 2: link via email (perilaku semula) ──
         if (!RateLimiter::attempt('reset-ip:' . $ip, 5, 3600)) {
             flash_set('error', 'Terlalu banyak permintaan reset dari perangkat ini. Coba lagi dalam 1 jam.');
             header('Location: /geprek-geh/auth/forgot'); exit;
@@ -25,11 +67,6 @@ class PasswordResetController {
 
         if (!RateLimiter::attempt('reset:' . $email, 3, 3600)) {
             flash_set('error', 'Terlalu banyak permintaan reset. Coba lagi dalam 1 jam.');
-            header('Location: /geprek-geh/auth/forgot'); exit;
-        }
-
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            flash_set('error', 'Email tidak valid.');
             header('Location: /geprek-geh/auth/forgot'); exit;
         }
 
