@@ -60,6 +60,19 @@ function fval(?array $old, array $src, string $key, $def = '') {
     return $src[$key] ?? $def;
 }
 
+/** Batasi konten deskripsi hanya ke tag format dasar (B/I/U) + bersihkan atribut. */
+function sanitize_rich_text(?string $html): string {
+    $html = trim((string) $html);
+    $html = strip_tags($html, '<b><strong><i><em><u>');
+    $html = preg_replace('/<(\/?)(?:b|strong|i|em|u)\s[^>]*>/i', '<$1$2>', $html);
+    return $html;
+}
+
+/** Render deskripsi aman: B/I/U opsional + ganti newline jadi <br>. */
+function rich_text(?string $html): string {
+    return nl2br(sanitize_rich_text($html));
+}
+
 function csrf_token() {
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
