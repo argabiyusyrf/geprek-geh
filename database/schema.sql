@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `totp_secret` VARCHAR(80) DEFAULT NULL,
     `totp_enabled` TINYINT(1) NOT NULL DEFAULT 0,
     `totp_recovery` TEXT DEFAULT NULL,
+    `recovery_keyword` VARCHAR(255) DEFAULT NULL,
     `role` ENUM('customer','admin') DEFAULT 'customer',
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
