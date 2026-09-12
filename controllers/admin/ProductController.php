@@ -4,7 +4,9 @@ class ProductController {
     public function index() {
         \Auth::requireAdmin();
         $db = \Database::getInstance();
-        $categories = $db->fetchAll("SELECT * FROM categories ORDER BY name");
+        $categories = $db->fetchAll(
+            "SELECT c.*, (SELECT COUNT(*) FROM products p WHERE p.category_id = c.id) AS product_count
+               FROM categories c ORDER BY c.name");
 
         // ── Cari / filter / urutkan (whitelisted) ──
         $q        = trim((string) ($_GET['q'] ?? ''));
