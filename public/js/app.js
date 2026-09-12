@@ -1111,7 +1111,332 @@ document.addEventListener('click', (e) => {
     }
 })();
 
+/* ── Admin Kategori: drawer tambah/edit ── */
+(function categoryDrawer() {
+    const drawer = document.getElementById('category-drawer');
+    if (!drawer) return;
+    const overlay = document.getElementById('category-drawer-overlay');
+    const body = document.body;
+    const form = drawer.querySelector('form#category-form');
+    const titleEl = drawer.querySelector('#category-drawer-title');
+    const submitBtn = drawer.querySelector('#category-submit');
+    const items = window.__gehCategories || [];
+
+    function resetForm() {
+        form.reset();
+        form.setAttribute('action', '/geprek-geh/admin/categories');
+        form.querySelectorAll('.is-invalid').forEach((el) => el.classList.remove('is-invalid'));
+        form.querySelectorAll('.field-error').forEach((el) => el.remove());
+        if (titleEl) titleEl.textContent = 'Tambah Kategori';
+        if (submitBtn) submitBtn.textContent = 'Tambah Kategori';
+    }
+
+    function open() {
+        drawer.classList.add('is-open');
+        drawer.setAttribute('aria-hidden', 'false');
+        if (overlay) overlay.classList.add('is-open');
+        body.style.overflow = 'hidden';
+        if (window.__lenis) window.__lenis.stop();
+        const first = drawer.querySelector('input, textarea, select, button[type="submit"]');
+        if (first) setTimeout(() => first.focus({ preventScroll: true }), 220);
+    }
+
+    function close() {
+        drawer.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        if (overlay) overlay.classList.remove('is-open');
+        body.style.overflow = '';
+        if (window.__lenis) window.__lenis.start();
+        setTimeout(() => {
+            resetForm();
+            if (submitBtn) { submitBtn.classList.remove('is-loading'); submitBtn.disabled = false; }
+        }, 350);
+    }
+
+    function openForAdd() { resetForm(); open(); }
+
+    function setEditState(id) {
+        form.setAttribute('action', '/geprek-geh/admin/categories/' + id);
+        if (titleEl) titleEl.textContent = 'Edit Kategori';
+        if (submitBtn) submitBtn.textContent = 'Simpan Perubahan';
+    }
+
+    function openForEdit(data) {
+        resetForm();
+        form.querySelector('[name="name"]').value = data.name || '';
+        form.querySelector('[name="description"]').value = data.description || '';
+        form.querySelector('[name="sort_order"]').value = data.sort_order || 0;
+        setEditState(data.id);
+        open();
+    }
+
+    window.openCategoryDrawer = openForAdd;
+    window.closeCategoryDrawer = close;
+    document.querySelectorAll('[data-open-category-drawer]').forEach((b) => b.addEventListener('click', openForAdd));
+    document.querySelectorAll('[data-close-category-drawer]').forEach((b) => b.addEventListener('click', close));
+    document.querySelectorAll('[data-edit-category]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openForEdit(JSON.parse(btn.dataset.editCategory));
+        });
+    });
+    if (overlay) overlay.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('is-open')) close();
+    });
+    if (form) form.addEventListener('submit', () => {
+        if (submitBtn && !submitBtn.classList.contains('is-loading')) {
+            submitBtn.classList.add('is-loading');
+            submitBtn.disabled = true;
+        }
+    });
+
+    const qs = new URLSearchParams(window.location.search);
+    const drawerError = window.__gehDrawerError || null;
+    if (qs.get('create')) {
+        if (drawerError && drawerError.mode === 'create') open();
+        else openForAdd();
+    } else if (qs.get('edit')) {
+        const targetId = parseInt(qs.get('edit'), 10);
+        if (drawerError && drawerError.mode === 'edit' && drawerError.id === targetId) {
+            setEditState(targetId);
+            open();
+        } else {
+            const found = items.find((c) => parseInt(c.id) === targetId);
+            if (found) openForEdit(found);
+        }
+    }
+})();
+
+/* ── Admin Kode Promo: drawer tambah/edit ── */
+(function promoDrawer() {
+    const drawer = document.getElementById('promo-drawer');
+    if (!drawer) return;
+    const overlay = document.getElementById('promo-drawer-overlay');
+    const body = document.body;
+    const form = drawer.querySelector('form#promo-form');
+    const titleEl = drawer.querySelector('#promo-drawer-title');
+    const submitBtn = drawer.querySelector('#promo-submit');
+    const items = window.__gehPromos || [];
+
+    function resetForm() {
+        form.reset();
+        form.setAttribute('action', '/geprek-geh/admin/promos');
+        form.querySelectorAll('.is-invalid').forEach((el) => el.classList.remove('is-invalid'));
+        form.querySelectorAll('.field-error').forEach((el) => el.remove());
+        if (titleEl) titleEl.textContent = 'Buat Kode Promo';
+        if (submitBtn) submitBtn.textContent = 'Buat Kode';
+    }
+
+    function open() {
+        drawer.classList.add('is-open');
+        drawer.setAttribute('aria-hidden', 'false');
+        if (overlay) overlay.classList.add('is-open');
+        body.style.overflow = 'hidden';
+        if (window.__lenis) window.__lenis.stop();
+        const first = drawer.querySelector('input, textarea, select, button[type="submit"]');
+        if (first) setTimeout(() => first.focus({ preventScroll: true }), 220);
+    }
+
+    function close() {
+        drawer.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        if (overlay) overlay.classList.remove('is-open');
+        body.style.overflow = '';
+        if (window.__lenis) window.__lenis.start();
+        setTimeout(() => {
+            resetForm();
+            if (submitBtn) { submitBtn.classList.remove('is-loading'); submitBtn.disabled = false; }
+        }, 350);
+    }
+
+    function openForAdd() { resetForm(); open(); }
+
+    function setEditState(id) {
+        form.setAttribute('action', '/geprek-geh/admin/promos/' + id);
+        if (titleEl) titleEl.textContent = 'Edit Kode Promo';
+        if (submitBtn) submitBtn.textContent = 'Simpan Perubahan';
+    }
+
+    function openForEdit(data) {
+        resetForm();
+        form.querySelector('[name="code"]').value = data.code || '';
+        const typeSel = form.querySelector('[name="type"]');
+        if (typeSel) typeSel.value = data.type || 'percentage';
+        form.querySelector('[name="value"]').value = data.value;
+        form.querySelector('[name="min_order"]').value = data.min_order || 0;
+        form.querySelector('[name="max_uses"]').value = data.max_uses || '';
+        form.querySelector('[name="starts_at"]').value = data.starts_at || '';
+        form.querySelector('[name="expires_at"]').value = data.expires_at || '';
+        const active = form.querySelector('[name="is_active"]');
+        if (active) active.checked = parseInt(data.is_active) === 1;
+        setEditState(data.id);
+        open();
+    }
+
+    window.openPromoDrawer = openForAdd;
+    window.closePromoDrawer = close;
+    document.querySelectorAll('[data-open-promo-drawer]').forEach((b) => b.addEventListener('click', openForAdd));
+    document.querySelectorAll('[data-close-promo-drawer]').forEach((b) => b.addEventListener('click', close));
+    document.querySelectorAll('[data-edit-promo]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openForEdit(JSON.parse(btn.dataset.editPromo));
+        });
+    });
+    if (overlay) overlay.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('is-open')) close();
+    });
+    if (form) form.addEventListener('submit', () => {
+        if (submitBtn && !submitBtn.classList.contains('is-loading')) {
+            submitBtn.classList.add('is-loading');
+            submitBtn.disabled = true;
+        }
+    });
+
+    const qs = new URLSearchParams(window.location.search);
+    const drawerError = window.__gehDrawerError || null;
+    if (qs.get('create')) {
+        if (drawerError && drawerError.mode === 'create') open();
+        else openForAdd();
+    } else if (qs.get('edit')) {
+        const targetId = parseInt(qs.get('edit'), 10);
+        if (drawerError && drawerError.mode === 'edit' && drawerError.id === targetId) {
+            setEditState(targetId);
+            open();
+        } else {
+            const found = items.find((p) => parseInt(p.id) === targetId);
+            if (found) openForEdit(found);
+        }
+    }
+})();
+
+/* ── Admin Pengguna: drawer tambah/edit ── */
+(function userDrawer() {
+    const drawer = document.getElementById('user-drawer');
+    if (!drawer) return;
+    const overlay = document.getElementById('user-drawer-overlay');
+    const body = document.body;
+    const form = drawer.querySelector('form#user-form');
+    const titleEl = drawer.querySelector('#user-drawer-title');
+    const submitBtn = drawer.querySelector('#user-submit');
+    const passInput = drawer.querySelector('[name="password"]');
+    const passHint = drawer.querySelector('#user-pass-hint');
+    const passReq = drawer.querySelector('#user-pass-required');
+    const items = window.__gehUsers || [];
+
+    function setPassMode(edit) {
+        if (!passInput) return;
+        if (edit) {
+            passInput.removeAttribute('required');
+            if (passHint) passHint.textContent = 'Kosongkan agar password tidak berubah.';
+            if (passReq) passReq.style.visibility = 'hidden';
+        } else {
+            passInput.setAttribute('required', 'required');
+            if (passHint) passHint.textContent = '';
+            if (passReq) passReq.style.visibility = 'visible';
+        }
+    }
+
+    function resetForm() {
+        form.reset();
+        form.setAttribute('action', '/geprek-geh/admin/users');
+        form.querySelectorAll('.is-invalid').forEach((el) => el.classList.remove('is-invalid'));
+        form.querySelectorAll('.field-error').forEach((el) => el.remove());
+        if (titleEl) titleEl.textContent = 'Tambah Pengguna';
+        if (submitBtn) submitBtn.textContent = 'Tambah Pengguna';
+        setPassMode(false);
+    }
+
+    function open() {
+        drawer.classList.add('is-open');
+        drawer.setAttribute('aria-hidden', 'false');
+        if (overlay) overlay.classList.add('is-open');
+        body.style.overflow = 'hidden';
+        if (window.__lenis) window.__lenis.stop();
+        const first = drawer.querySelector('input, textarea, select, button[type="submit"]');
+        if (first) setTimeout(() => first.focus({ preventScroll: true }), 220);
+    }
+
+    function close() {
+        drawer.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        if (overlay) overlay.classList.remove('is-open');
+        body.style.overflow = '';
+        if (window.__lenis) window.__lenis.start();
+        setTimeout(() => {
+            resetForm();
+            if (submitBtn) { submitBtn.classList.remove('is-loading'); submitBtn.disabled = false; }
+        }, 350);
+    }
+
+    function openForAdd() { resetForm(); open(); }
+
+    function setEditState(id) {
+        form.setAttribute('action', '/geprek-geh/admin/users/' + id);
+        if (titleEl) titleEl.textContent = 'Edit Pengguna';
+        if (submitBtn) submitBtn.textContent = 'Simpan Perubahan';
+        setPassMode(true);
+    }
+
+    function openForEdit(data) {
+        resetForm();
+        form.querySelector('[name="name"]').value = data.name || '';
+        form.querySelector('[name="email"]').value = data.email || '';
+        form.querySelector('[name="phone"]').value = data.phone || '';
+        const roleSel = form.querySelector('[name="role"]');
+        if (roleSel) roleSel.value = data.role || 'customer';
+        const notify = form.querySelector('[name="notify_email"]');
+        if (notify) notify.checked = parseInt(data.notify_email) === 1;
+        setEditState(data.id);
+        open();
+    }
+
+    window.openUserDrawer = openForAdd;
+    window.closeUserDrawer = close;
+    document.querySelectorAll('[data-open-user-drawer]').forEach((b) => b.addEventListener('click', openForAdd));
+    document.querySelectorAll('[data-close-user-drawer]').forEach((b) => b.addEventListener('click', close));
+    document.querySelectorAll('[data-edit-user]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openForEdit(JSON.parse(btn.dataset.editUser));
+        });
+    });
+    if (overlay) overlay.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('is-open')) close();
+    });
+    if (form) form.addEventListener('submit', () => {
+        if (submitBtn && !submitBtn.classList.contains('is-loading')) {
+            submitBtn.classList.add('is-loading');
+            submitBtn.disabled = true;
+        }
+    });
+
+    const qs = new URLSearchParams(window.location.search);
+    const drawerError = window.__gehDrawerError || null;
+    if (qs.get('create')) {
+        if (drawerError && drawerError.mode === 'create') {
+            open();
+            setPassMode(false);
+        } else {
+            openForAdd();
+        }
+    } else if (qs.get('edit')) {
+        const targetId = parseInt(qs.get('edit'), 10);
+        if (drawerError && drawerError.mode === 'edit' && drawerError.id === targetId) {
+            setEditState(targetId);
+            open();
+        } else {
+            const found = items.find((u) => parseInt(u.id) === targetId);
+            if (found) openForEdit(found);
+        }
+    }
+})();
+
 /* ── Checkout: tampilkan instruksi bayar sesuai metode yang dipilih ── */
+(function paymentInfo() {
     const wrap = document.querySelector('[data-pay-info-wrap]');
     if (!wrap) return;
     const radios = document.querySelectorAll('input[name="payment_method"]');
