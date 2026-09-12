@@ -1012,6 +1012,13 @@ document.addEventListener('click', (e) => {
         open();
     }
 
+    function setEditState(id) {
+        currentId = id;
+        form.setAttribute('action', '/geprek-geh/admin/products/' + id);
+        if (titleEl) titleEl.textContent = 'Edit Produk';
+        if (submitBtn) submitBtn.textContent = 'Simpan Perubahan';
+    }
+
     function openForEdit(data) {
         resetForm();
         currentId = data ? data.id : null;
@@ -1030,9 +1037,7 @@ document.addEventListener('click', (e) => {
         const featured = form.querySelector('[name="is_featured"]');
         if (active) active.checked = parseInt(data.is_active) === 1;
         if (featured) featured.checked = parseInt(data.is_featured) === 1;
-        form.setAttribute('action', '/geprek-geh/admin/products/' + data.id);
-        if (titleEl) titleEl.textContent = 'Edit Produk';
-        if (submitBtn) submitBtn.textContent = 'Simpan Perubahan';
+        setEditState(data.id);
         open();
     }
 
@@ -1088,19 +1093,25 @@ document.addEventListener('click', (e) => {
         });
     }
 
-    // auto-open via ?create=1 / ?edit={id}
+    // auto-open via ?create=1 / ?edit={id} (+ error-restore: keep server-rendered values)
     const qs = new URLSearchParams(window.location.search);
+    const drawerError = window.__gehDrawerError || null;
     if (qs.get('create')) {
-        openForAdd();
+        if (drawerError && drawerError.mode === 'create') open();       // values already rendered
+        else openForAdd();
     } else if (qs.get('edit')) {
         const targetId = parseInt(qs.get('edit'), 10);
-        const found = (window.__gehProducts || []).find((p) => parseInt(p.id) === targetId);
-        if (found) openForEdit(found);
+        if (drawerError && drawerError.mode === 'edit' && drawerError.id === targetId) {
+            setEditState(targetId);                                    // keep server-rendered values+errors
+            open();
+        } else {
+            const found = (window.__gehProducts || []).find((p) => parseInt(p.id) === targetId);
+            if (found) openForEdit(found);
+        }
     }
 })();
 
 /* ── Checkout: tampilkan instruksi bayar sesuai metode yang dipilih ── */
-(function paymentInfo() {
     const wrap = document.querySelector('[data-pay-info-wrap]');
     if (!wrap) return;
     const radios = document.querySelectorAll('input[name="payment_method"]');
