@@ -13,6 +13,8 @@ class OnboardingController {
         }
         $setup_errors = $_SESSION['setup_errors'] ?? null;
         unset($_SESSION['setup_errors']);
+        $setup_old = $_SESSION['setup_old'] ?? null;
+        unset($_SESSION['setup_old']);
         $page_title = 'Lengkapi Akun';
         require __DIR__ . '/../views/layouts/auth-header.php';
         require __DIR__ . '/../views/account/setup.php';
@@ -59,6 +61,7 @@ class OnboardingController {
 
         if ($errors) {
             $_SESSION['setup_errors'] = $errors;
+            $_SESSION['setup_old']    = array_merge($addr, ['keyword' => $keyword]);
             redirect('/geprek-geh/account/setup');
         }
 
