@@ -315,7 +315,7 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
 
 <div class="order-actions">
     <?php
-        $can_cancel = in_array($order['status'], ['pending', 'processing'], true);
+        $can_cancel = $order['status'] === 'pending';
         $can_receive = $order['status'] === 'shipped';
         $is_cancelled = $order['status'] === 'cancelled';
         $is_done = in_array($order['status'], ['delivered', 'cancelled'], true);

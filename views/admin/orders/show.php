@@ -51,6 +51,10 @@ $can_verify = in_array($method, ['transfer', 'ewallet'], true)
     && $order['payment_status'] !== 'refunded'
     && !empty($order['payment_proof'])
     && !in_array($order['status'], ['cancelled', 'delivered'], true);
+
+$weekly_cancels = (int) ($weekly_cancels ?? 0);
+$weekly_remaining = max(0, 3 - $weekly_cancels);
+$weekly_out = $weekly_remaining <= 0;
 ?>
 
 <a href="/geprek-geh/admin/orders" class="back-link">
@@ -349,10 +353,19 @@ $can_verify = in_array($method, ['transfer', 'ewallet'], true)
                 </div>
 
                 <?php if (in_array('cancelled', $transitions, true)): ?>
+                <?php if ($weekly_remaining > 0): ?>
                 <button type="button" class="btn btn-outline-danger btn-block status-cancel-btn" data-open-extra="cancelled" data-label="Batalkan Pesanan">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
                     Batalkan Pesanan
                 </button>
+                <p class="cancel-quota">Sisa kuota pembatalan minggu ini: <strong><?= $weekly_remaining ?></strong> dari 3.</p>
+                <?php else: ?>
+                <button type="button" class="btn btn-outline-danger btn-block status-cancel-btn" disabled title="Batas pembatalan mingguan tercapai (3 dalam 7 hari)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+                    Batalkan Pesanan
+                </button>
+                <p class="cancel-quota cancel-quota--out">Batas pembatalan mingguan (3 dalam 7 hari) sudah tercapai.</p>
+                <?php endif; ?>
                 <?php endif; ?>
 
                 <div class="status-panel" data-status-panel hidden>
