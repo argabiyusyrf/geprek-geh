@@ -4447,6 +4447,37 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 .auth-card-core .input { width: 100%; }
 .is-code { text-align: center; letter-spacing: 0.35em; font-size: 1.25rem; font-weight: 700; }
 
+.field-label {
+    display: block; margin: 0 0 8px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted);
+}
+.auth-card fieldset.form-group { margin: 0 0 18px; padding: 0; border: 0; }
+.option-extra { display: none; }
+.option-extra.is-visible { display: block; margin-top: -6px; animation: fade-up .35s var(--ease-soft); }
+@keyframes fade-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.recovery-email { display: block; margin-top: 4px; color: var(--accent-deep); font-weight: 700; word-break: break-all; }
+.setup-steps { display: flex; flex-direction: column; gap: 10px; margin: 0 0 16px; }
+.setup-step { display: flex; align-items: center; gap: 12px; }
+.setup-step-num {
+    width: 34px; height: 34px; flex: none; border-radius: 11px;
+    display: grid; place-items: center; font-size: 11px; font-weight: 800;
+    color: var(--muted); background: var(--bg-soft); border: 1px solid var(--hairline);
+}
+.setup-step.is-active .setup-step-num { background: var(--accent); color: #fff; border-color: var(--accent); }
+.setup-step-txt { display: flex; flex-direction: column; }
+.setup-step-txt strong { font-size: 13.5px; color: var(--ink-2); }
+.setup-step-txt small { font-size: 11.5px; color: var(--muted); }
+.setup-addr { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; margin-bottom: 20px; }
+.setup-addr .form-group:nth-child(3),
+.setup-addr .form-group:nth-child(4) { grid-column: 1 / -1; }
+.setup-addr textarea.input { resize: vertical; min-height: 64px; }
+@media (max-width: 420px) {
+    .setup-addr { grid-template-columns: 1fr; }
+    .setup-addr .form-group:nth-child(3),
+    .setup-addr .form-group:nth-child(4) { grid-column: auto; }
+}
+.auth-card-core > form + form .btn-ghost { margin-top: 10px; }
+
 /* ─── Register form: field icons ──────────────────────────── */
 .reg-fields { display: flex; flex-direction: column; gap: 2px; }
 .reg-field-icon label { display: flex; align-items: center; gap: 6px; }
