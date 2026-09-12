@@ -245,25 +245,31 @@ class OrderController {
             redirect('/geprek-geh/orders');
         }
 
-        if (!in_array($order['status'], ['pending', 'processing'], true)) {
-            flash_set('error', 'Pesanan tidak dapat dibatalkan karena statusnya "' . $order['status'] . '".');
+        if ($order['status'] !== 'pending') {
+            flash_set('error', 'Pesanan hanya bisa dibatalkan selama masih berstatus "Menunggu".');
             redirect('/geprek-geh/orders/' . $id);
         }
 
-        $data = ['status'      => 'cancelled',
-                 'cancel_reason' => 'Dibatalkan oleh pembeli'];
+        $reason = trim($_POST['cancel_reason'] ?? '');
+        if ($reason === '') {
+            flash_set('error', 'Alasan pembatalan wajib diisi.');
+            redirect('/geprek-geh/orders/' . $id);
+        }
+
+        $data = ['status'        => 'cancelled',
+                 'cancel_reason' => mb_substr($reason, 0, 255)];
         if ($order['payment_status'] === 'paid') {
             $data['payment_status'] = 'refunded';
         }
         $db->update('orders', $data, 'id = ?', [$id]);
         order_restore_stock($db, $id);
-        order_log($db, $id, 'customer', 'Pesanan dibatalkan oleh pembeli — stok dikembalikan'
-            . ($order['payment_status'] === 'paid' ? ', pembayaran di-refund' : ''));
+        order_log($db, $id, 'customer', 'Pesanan dibatalkan oleh pembeli — alasan: ' . mb_substr($reason, 0, 150)
+            . ($order['payment_status'] === 'paid' ? ', pembayaran di-refund' : ', stok dikembalikan'));
         $refund_note = $order['payment_status'] === 'paid' ? ' Pembayaran yang sudah lunas akan di-refund.' : '';
         NotificationController::pushToAdmins(
             'order',
             "Pesanan {$order['invoice_no']} dibatalkan",
-            'Oleh ' . ($_SESSION['user_name'] ?? 'Pelanggan') . '. Stok dikembalikan.' . $refund_note,
+            'Oleh ' . ($_SESSION['user_name'] ?? 'Pelanggan') . '. Alasan: ' . mb_substr($reason, 0, 180) . '. Stok dikembalikan.' . $refund_note,
             "/geprek-geh/admin/orders/{$id}"
         );
 

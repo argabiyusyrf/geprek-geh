@@ -201,7 +201,11 @@ class OrderController {
                 \flash_set('error', 'Alasan pembatalan wajib diisi.');
                 $this->redirectBack($id);
             }
-            $data['cancel_reason'] = $reason;
+            if ($this->weeklyCancelCount($db) >= self::CANCEL_LIMIT) {
+                \flash_set('error', 'Batas pembatalan mingguan tercapai (maks. ' . self::CANCEL_LIMIT . ' dalam ' . self::CANCEL_WINDOW_DAYS . ' hari).');
+                $this->redirectBack($id);
+            }
+            $data['cancel_reason'] = mb_substr($reason, 0, 255);
             if ($order['payment_status'] === 'paid') $data['payment_status'] = 'refunded';
         }
 
