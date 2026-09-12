@@ -2060,3 +2060,43 @@ document.addEventListener('click', (e) => {
         if (cancelBtn) cancelBtn.addEventListener('click', () => { if (cancelTa) cancelTa.required = false; panel.hidden = true; });
     });
 })();
+
+/* ── Customer orders: cancel with required reason ── */
+(function orderCancelForm() {
+    const forms = document.querySelectorAll('[data-cancel-form]');
+    if (!forms.length) return;
+
+    forms.forEach((form) => {
+        const ta = form.querySelector('[data-cancel-reason]');
+        const err = form.querySelector('[data-cancel-error]');
+        const btn = form.querySelector('[type="submit"]');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const value = (ta.value || '').trim();
+            if (!value) {
+                if (ta) ta.classList.add('is-invalid');
+                if (err) { err.textContent = 'Alasan pembatalan wajib diisi.'; err.hidden = false; }
+                if (ta) ta.focus();
+                return;
+            }
+            if (err) err.hidden = true;
+            if (ta) ta.classList.remove('is-invalid');
+
+            const msg = form.dataset.confirmMsg || 'Yakin ingin membatalkan pesanan ini?';
+            const run = () => {
+                if (btn) { btn.disabled = true; btn.classList.add('is-loading'); }
+                form.submit();
+            };
+            if (typeof gehAlert === 'function') {
+                gehAlert({ message: msg }).then((ok) => { if (ok) run(); });
+            } else if (!window.confirm(msg)) {
+                return;
+            } else {
+                run();
+            }
+        });
+    });
+})();
