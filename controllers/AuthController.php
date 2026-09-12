@@ -2,16 +2,27 @@
 class AuthController {
     public function loginForm() {
         if (Auth::check()) redirect('/geprek-geh/');
+        $login_old = $_SESSION['login_old'] ?? null;
+        unset($_SESSION['login_old']);
         require __DIR__ . '/../views/layouts/auth-header.php';
         require __DIR__ . '/../views/auth/login.php';
         require __DIR__ . '/../views/layouts/auth-footer.php';
     }
 
     public function login() {
-        $email = trim($_POST['email'] ?? '');
+        $email    = strtolower(trim($_POST['email'] ?? ''));
         $password = $_POST['password'] ?? '';
+        $remember = isset($_POST['remember']) && $_POST['remember'] === '1';
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 190) {
+            $_SESSION['login_old'] = ['email' => $email];
+            flash_set('error', 'Format email tidak valid.');
+            header('Location: /geprek-geh/auth/login');
+            exit;
+        }
 
         if (!RateLimiter::attempt('login:' . $email, 5, 300)) {
+            $_SESSION['login_old'] = ['email' => $email];
             flash_set('error', 'Terlalu banyak percobaan. Coba lagi dalam 5 menit.');
             header('Location: /geprek-geh/auth/login');
             exit;
@@ -19,22 +30,35 @@ class AuthController {
 
         $user = Auth::login($email, $password);
         if (!$user) {
+            $_SESSION['login_old'] = ['email' => $email];
             flash_set('error', 'Email atau password salah.');
             header('Location: /geprek-geh/auth/login');
             exit;
         }
 
-        // 2FA aktif → lanjut ke langkah verifikasi
+        // 2FA aktif → lanjut ke langkah verifikasi; bawa niat "remember" ke sesi.
         if ((int) $user['totp_enabled'] === 1) {
-            $_SESSION['twofa_uid']   = $user['id'];
-            $_SESSION['twofa_name']  = $user['name'];
-            $_SESSION['twofa_role']  = $user['role'];
+            $_SESSION['twofa_uid']      = $user['id'];
+            $_SESSION['twofa_name']     = $user['name'];
+            $_SESSION['twofa_role']     = $user['role'];
+            $_SESSION['twofa_remember'] = $remember ? 1 : 0;
             flash_set('info', 'Masukkan kode verifikasi 2FA untuk melanjutkan.');
             header('Location: /geprek-geh/auth/2fa');
             exit;
         }
 
+        self::finalizeLogin($user, $remember);
+    }
+
+    /** Selesaikan login: bersihkan token remember lama, terbitkan yang baru bila diminta. */
+    private static function finalizeLogin(array $user, bool $remember): void {
+        Auth::purgeRememberTokens((int) $user['id']);
         Auth::establishSession($user);
+        if ($remember) {
+            Auth::issueRememberToken((int) $user['id']);
+        } else {
+            Auth::clearRememberCookie();
+        }
         flash_set('success', 'Selamat datang, ' . $user['name'] . '!');
         $redirect = $user['role'] === 'admin' ? '/geprek-geh/admin' : '/geprek-geh/';
         header("Location: {$redirect}");
@@ -75,22 +99,14 @@ class AuthController {
 
         // Kode TOTP dari aplikasi authenticator
         if (Totp::verify($user['totp_secret'], $code)) {
-            Auth::establishSession($user);
-            flash_set('success', 'Login berhasil!');
-            $redirect = $user['role'] === 'admin' ? '/geprek-geh/admin' : '/geprek-geh/';
-            header("Location: {$redirect}");
-            exit;
+            self::finalizeLogin($user, !empty($_SESSION['twofa_remember']));
         }
 
         // Recovery code sekali pakai
         $remaining = Totp::matchRecovery($user['totp_recovery'], $code);
         if ($remaining !== null) {
             $db->update('users', ['totp_recovery' => json_encode($remaining)], 'id = ?', [$user['id']]);
-            Auth::establishSession($user);
-            flash_set('success', 'Login berhasil via kode pemulihan (kode tidak dapat dipakai lagi).');
-            $redirect = $user['role'] === 'admin' ? '/geprek-geh/admin' : '/geprek-geh/';
-            header("Location: {$redirect}");
-            exit;
+            self::finalizeLogin($user, !empty($_SESSION['twofa_remember']));
         }
 
         flash_set('error', 'Kode 2FA salah atau sudah kedaluwarsa.');

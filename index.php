@@ -75,6 +75,11 @@ require_once __DIR__ . '/core/Mail.php';
 require_once __DIR__ . '/core/RateLimiter.php';
 require_once __DIR__ . '/core/helpers.php';
 
+// Remember-me: pulihkan sesi dari cookie persist tanpa perlu login ulang.
+if (!isset($_SESSION['user_id'])) {
+    Auth::autoLoginFromRemember();
+}
+
 spl_autoload_register(function ($class) {
     $prefix = 'Admin\\';
     if (strncmp($class, $prefix, strlen($prefix)) === 0) {
