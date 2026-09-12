@@ -214,7 +214,7 @@
             <label class="switch">
                 <input type="checkbox" name="is_featured" class="switch-input" <?= $featDefault ? 'checked' : '' ?>>
                 <span class="switch-ui" aria-hidden="true"><span class="switch-knob"></span></span>
-                <span class="switch-meta"><strong>★ Favorit</strong><small>Tampil di blok “Menu populer” beranda</small></span>
+                <span class="switch-meta"><strong><span class="sw-star">★</span> Favorit</strong><small>Tampil di blok “Menu populer” beranda</small></span>
             </label>
         </fieldset>
     </form>

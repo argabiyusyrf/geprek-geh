@@ -3210,24 +3210,25 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .editor-area:empty::before { content: attr(data-placeholder); color: var(--muted); pointer-events: none; }
 
 /* switch status & favorit */
-.fieldset-switches { border: 0; padding: 0; margin: 0; display: grid; gap: 9px; }
-.switch { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 12px 14px; border: 1px solid var(--hairline); border-radius: 14px; background: rgba(255,253,249,0.5); transition: border-color .35s var(--ease-soft), background .35s var(--ease-soft); }
-.switch:hover { border-color: var(--accent); background: rgba(232,75,35,0.03); }
+.fieldset-switches { display: grid; border: 1px solid var(--hairline); border-radius: 15px; overflow: hidden; background: #fffdf9; }
+.fieldset-switches > legend { display: none; }
+.switch { display: flex; align-items: center; gap: 13px; cursor: pointer; padding: 13px 15px; background: transparent; transition: background .35s var(--ease-soft); }
+.switch + .switch { border-top: 1px solid var(--hairline); }
+.switch:hover { background: rgba(232,75,35,0.04); }
 .switch-input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.switch-ui {
-    position: relative; flex: none; width: 42px; height: 24px; border-radius: 99px;
-    background: rgba(29,26,21,0.16); transition: background .3s var(--ease-soft);
-}
+.switch-ui { position: relative; flex: none; width: 40px; height: 23px; border-radius: 99px; background: rgba(29,26,21,0.14); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4); transition: background .3s var(--ease-soft); }
 .switch-knob {
-    position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%;
-    background: #fff; box-shadow: 0 1px 4px rgba(29,26,21,0.25);
+    position: absolute; top: 2.5px; left: 2.5px; width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 4px rgba(29,26,21,0.28);
     transition: transform .3s var(--ease-spring);
 }
 .switch-input:checked + .switch-ui { background: var(--good); }
-.switch-input:checked + .switch-ui .switch-knob { transform: translateX(18px); }
-.switch-input:focus-visible + .switch-ui { box-shadow: 0 0 0 4px rgba(232,75,35,0.18); }
-.switch-meta { display: flex; flex-direction: column; gap: 1px; text-transform: none; letter-spacing: 0; font-size: 14px; font-weight: 700; color: var(--ink); }
-.switch-meta small { font-size: 12px; font-weight: 500; color: var(--muted); }
+.switch-input:checked + .switch-ui .switch-knob { transform: translateX(17px); }
+.switch-input:focus-visible + .switch-ui { box-shadow: 0 0 0 4px rgba(232,75,35,0.16); }
+.switch-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; text-transform: none; letter-spacing: 0; font-size: 13.5px; font-weight: 800; color: var(--ink); line-height: 1.3; }
+.switch-meta .sw-star { color: var(--accent); font-weight: 800; margin-right: 1px; }
+.switch-meta small { font-size: 12px; font-weight: 500; color: var(--muted); line-height: 1.4; }
+.switch-ui:disabled { opacity: .5; cursor: not-allowed; }
 
 /* ─── Orders ───────────────────────────────────────────────── */
 .order-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
