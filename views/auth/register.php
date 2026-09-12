@@ -191,6 +191,16 @@
         strengthLabel.className = 'pass-strength-label ' + (classes[score] || '');
     });
 
+    // ── Live check: konfirmasi password cocok / tidak ──
+    var confirmInput = $('#reg-confirm');
+    function checkMatch(){
+        var cv = confirmInput.value;
+        if (!cv){ setErr(confirmInput, null); return; }
+        setErr(confirmInput, cv === passInput.value ? null : 'Konfirmasi password tidak cocok.');
+    }
+    confirmInput.addEventListener('input', checkMatch);
+    passInput.addEventListener('input', checkMatch);
+
     // ── Client-side validation & submit loading ──
     var form = $('#registerForm');
     var submitBtn = $('#regSubmit');

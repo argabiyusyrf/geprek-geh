@@ -146,6 +146,18 @@ $valid = (new PasswordResetController())->isValidLink($selector, $token);
         errEl.textContent = msg || '';
     }
 
+    // ── Live check: konfirmasi password cocok / tidak ──
+    var confirmInput = $('#rp-confirm');
+    function checkMatch(){
+        var cv = confirmInput.value;
+        if (!cv){ setInline(''); confirmInput.classList.remove('is-invalid'); return; }
+        var ok = cv === passInput.value;
+        setInline(ok ? '' : 'Konfirmasi password tidak cocok.');
+        confirmInput.classList.toggle('is-invalid', !ok);
+    }
+    confirmInput.addEventListener('input', checkMatch);
+    passInput.addEventListener('input', checkMatch);
+
     form.addEventListener('submit', function(e){
         var passV = passInput.value;
         var confirmV = $('#rp-confirm').value;
