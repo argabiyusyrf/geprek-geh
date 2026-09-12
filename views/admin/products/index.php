@@ -20,117 +20,185 @@
 </div>
 
 <div class="admin-grid-2 chart-grid">
-    <div class="card chart-card">
-        <div class="admin-card-head">
-            <div class="admin-title min">
-                <h3>Produk Terlaris</h3>
+    <article class="card chart-card">
+        <div class="chart-inner">
+            <div class="chart-head">
+                <div>
+                    <h3>Produk Terlaris</h3>
+                    <p class="chart-head-sub">Peringkat unit terjual dari semua pesanan</p>
+                </div>
+                <?php if ($top_total > 0): ?><span class="chart-meta"><?= $top_total ?> unit</span><?php endif; ?>
             </div>
-            <span class="text-muted" style="font-size:12px;font-weight:700;"><?= $top_total ? $top_total . ' unit terjual' : 'Belum ada penjualan' ?></span>
+            <?php if (empty($top_sellers)): ?>
+                <div class="chart-empty"><p>Belum ada penjualan tercatat. Chart ini otomatis terisi saat pesanan mulai masuk.</p></div>
+            <?php else: ?>
+            <div class="sellers">
+                <div class="sellers-colhead">
+                    <span class="sch-gap"></span>
+                    <span class="sch-menu">Menu</span>
+                    <span class="sch-qty">Terjual</span>
+                </div>
+                <?php foreach ($top_sellers as $i => $t):
+                    $pct   = $top_max > 0 ? round($t['qty'] / $top_max * 100) : 0;
+                    $share = $top_total > 0 ? round($t['qty'] / $top_total * 100) : 0;
+                    $rank  = $i + 1;
+                ?>
+                <div class="seller">
+                    <span class="seller-rank r<?= min(3, $rank) ?>"><?= str_pad((string) $rank, 2, '0', STR_PAD_LEFT) ?></span>
+                    <?php if ($t['image']): ?>
+                        <img class="seller-thumb" src="/geprek-geh/assets/uploads/products/<?= e($t['image']) ?>" loading="lazy" alt="">
+                    <?php else: ?>
+                        <?= product_art($t['name'], $t['category_name'], 'seller-thumb seller-art') ?>
+                    <?php endif; ?>
+                    <span class="seller-main">
+                        <strong class="seller-name" title="<?= e($t['name']) ?>"><?= e($t['name']) ?></strong>
+                        <span class="seller-cat"><?= $t['category_name'] !== '' ? e($t['category_name']) : 'Tanpa kategori' ?></span>
+                        <span class="seller-track"><span class="seller-fill" style="--w:<?= $pct ?>%;--i:<?= $i ?>"></span></span>
+                    </span>
+                    <span class="seller-num">
+                        <b><?= $t['qty'] ?> unit</b>
+                        <small><?= $share ?>% dari penjualan</small>
+                    </span>
+                </div>
+                <?php endforeach; ?>
+                <div class="sellers-foot">
+                    <span>Total unit terjual</span>
+                    <strong><?= $top_total ?> unit</strong>
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
-        <?php if (empty($top_sellers)): ?>
-            <div class="admin-empty" style="margin:0;">
-                <p>Belum ada penjualan tercatat. Chart ini otomatis terisi setelah pesanan berjalan.</p>
-            </div>
-        <?php else: ?>
-        <div class="topbars">
-            <?php foreach ($top_sellers as $i => $t): $pct = $top_max > 0 ? round($t['qty'] / $top_max * 100, 1) : 0; ?>
-            <div class="topbar-row">
-                <span class="topbar-rank r<?= min(3, $i + 1) ?>"><?= $i + 1 ?></span>
-                <?php if ($t['image']): ?>
-                    <img class="topbar-thumb" src="/geprek-geh/assets/uploads/products/<?= e($t['image']) ?>" loading="lazy" alt="">
-                <?php else: ?>
-                    <?= product_art($t['name'], $t['category_name'], 'topbar-thumb topbar-art') ?>
-                <?php endif; ?>
-                <span class="topbar-main">
-                    <strong class="topbar-name"><?= e($t['name']) ?></strong>
-                    <span class="topbar-sub"><?= $t['category_name'] !== '' ? e($t['category_name']) : 'Tanpa kategori' ?></span>
-                </span>
-                <span class="topbar-track"><span class="topbar-fill" style="--w:<?= $pct ?>%"></span></span>
-                <span class="topbar-qty"><b><?= $t['qty'] ?></b><small>terjual</small></span>
-                <span class="topbar-rev"><?= rupiah($t['revenue']) ?></span>
-            </div>
-            <?php endforeach; ?>
-        </div>
-        <?php endif; ?>
-    </div>
+    </article>
 
-    <div class="card chart-card">
-        <div class="admin-card-head">
-            <div class="admin-title min">
-                <h3>Perlu Perhatian</h3>
+    <article class="card chart-card">
+        <div class="chart-inner">
+            <div class="chart-head">
+                <div>
+                    <h3>Perlu Perhatian</h3>
+                    <p class="chart-head-sub">Stok menipis atau habis, segera restok</p>
+                </div>
+                <?php if ($lowStockCount > 0): ?><span class="chart-meta chart-meta--warn"><?= $lowStockCount ?> item</span><?php endif; ?>
             </div>
-            <span class="text-muted" style="font-size:12px;font-weight:700;">Stok menipis</span>
-        </div>
-        <?php if (empty($low_stock_items)): ?>
-            <div class="admin-empty" style="margin:0;"><p>Semua stok dalam keadaan sehat.</p></div>
-        <?php else: ?>
-        <div class="stock-alert-list">
-            <?php foreach ($low_stock_items as $ls): ?>
-            <div class="stock-alert-item">
-                <?php if ($ls['image']): ?>
-                    <img class="stock-alert-thumb" src="/geprek-geh/assets/uploads/products/<?= e($ls['image']) ?>" loading="lazy" alt="">
-                <?php else: ?>
-                    <?= product_art($ls['name'], $ls['category_name'], 'stock-alert-thumb stock-alert-art') ?>
+            <div class="watchlist">
+                <?php if (empty($low_stock_items)): ?>
+                    <div class="chart-empty"><p>Semua stok dalam kondisi sehat. Tidak ada produk yang perlu ditindaklanjuti.</p></div>
+                <?php else: foreach ($low_stock_items as $ls): $_ls_out = (int) $ls['stock'] === 0; ?>
+                <div class="watch-item">
+                    <?php if ($ls['image']): ?>
+                        <img class="watch-item-art" src="/geprek-geh/assets/uploads/products/<?= e($ls['image']) ?>" loading="lazy" alt="">
+                    <?php else: ?>
+                        <?= product_art($ls['name'], $ls['category_name'], 'watch-item-art watch-art') ?>
+                    <?php endif; ?>
+                    <span class="watch-item-main">
+                        <strong class="watch-item-name" title="<?= e($ls['name']) ?>"><?= e($ls['name']) ?></strong>
+                        <span class="watch-item-cat"><?= e($ls['category_name']) ?></span>
+                    </span>
+                    <span class="watch-item-num">
+                        <span class="badge <?= $_ls_out ? 'badge-danger' : 'badge-warning' ?>"><?= $_ls_out ? 'Habis' : 'Sisa ' . (int) $ls['stock'] ?></span>
+                    </span>
+                </div>
+                <?php endforeach; ?>
+                <a class="watch-item-more" href="/geprek-geh/admin/products?sort=stock_low">
+                    Kelola stok produk
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+                </a>
                 <?php endif; ?>
-                <span class="stock-alert-main">
-                    <strong class="stock-alert-name"><?= e($ls['name']) ?></strong>
-                    <span class="stock-alert-sub"><?= e($ls['category_name']) ?></span>
-                </span>
-                <span class="badge <?= (int) $ls['stock'] === 0 ? 'badge-danger' : 'badge-warning' ?>"><?= (int) $ls['stock'] === 0 ? 'Habis' : (int) $ls['stock'] . ' sisa' ?></span>
             </div>
-            <?php endforeach; ?>
-            <a class="admin-link stock-alert-more" href="/geprek-geh/admin/products?sort=stock_low">Lihat urut berdasarkan stok
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
-            </a>
         </div>
-        <?php endif; ?>
-    </div>
+    </article>
 </div>
-
-<form method="GET" action="/geprek-geh/admin/products" class="table-toolbar" id="product-toolbar">
-    <label class="search-field">
-        <span class="search-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg></span>
-        <input type="text" name="q" class="input" value="<?= e($q) ?>" placeholder="Cari nama atau slug…" autocomplete="off" aria-label="Cari produk">
-        <?php if ($q !== ''): ?>
-            <a class="search-clear" href="/geprek-geh/admin/products" aria-label="Bersihkan pencarian"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></a>
-        <?php endif; ?>
-    </label>
-    <div class="toolbar-selects">
-        <select name="category" class="input" aria-label="Filter kategori" onchange="this.form.submit()">
-            <option value="">Semua kategori</option>
-            <?php foreach ($categories as $c): ?>
-                <option value="<?= $c['id'] ?>" <?= $category === (int) $c['id'] ? 'selected' : '' ?>><?= e($c['name']) ?></option>
-            <?php endforeach; ?>
-        </select>
-        <select name="sort" class="input" aria-label="Urutkan produk" onchange="this.form.submit()">
-            <option value="newest" <?= $sort === 'newest' ? 'selected' : '' ?>>Terbaru</option>
-            <option value="oldest" <?= $sort === 'oldest' ? 'selected' : '' ?>>Terlama</option>
-            <option value="name_asc" <?= $sort === 'name_asc' ? 'selected' : '' ?>>Nama A–Z</option>
-            <option value="name_desc" <?= $sort === 'name_desc' ? 'selected' : '' ?>>Nama Z–A</option>
-            <option value="price_asc" <?= $sort === 'price_asc' ? 'selected' : '' ?>>Harga termurah</option>
-            <option value="price_desc" <?= $sort === 'price_desc' ? 'selected' : '' ?>>Harga termahal</option>
-            <option value="stock_low" <?= $sort === 'stock_low' ? 'selected' : '' ?>>Stok menipis</option>
-            <option value="stock_high" <?= $sort === 'stock_high' ? 'selected' : '' ?>>Stok terbanyak</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-outline btn-sm">Cari</button>
-    <?php if ($filter_active): ?>
-        <a href="/geprek-geh/admin/products" class="btn btn-ghost btn-sm">Reset</a>
-    <?php endif; ?>
-</form>
 
 <?php
-$tabLink = function (string $st) use ($filter) {
-    return '/geprek-geh/admin/products?' . http_build_query(array_merge($filter, ['status' => $st]));
+$sortOptions = [
+    'newest'     => 'Terbaru',
+    'oldest'     => 'Terlama',
+    'name_asc'   => 'Nama A–Z',
+    'name_desc'  => 'Nama Z–A',
+    'price_asc'  => 'Harga Terendah',
+    'price_desc' => 'Harga Tertinggi',
+    'stock_low'  => 'Stok Menipis',
+    'stock_high' => 'Stok Terbanyak',
+];
+$sortLabel = $sortOptions[$sort] ?? 'Terbaru';
+$keep = [];
+foreach (['q', 'sort'] as $k) {
+    if (isset($filter[$k]) && $filter[$k] !== '') $keep[$k] = $filter[$k];
+}
+$catHref = function ($cid) use ($keep, $status) {
+    $qs = $keep;
+    if ($cid > 0) $qs['category'] = $cid;
+    if ($status !== '') $qs['status'] = $status;
+    return '/geprek-geh/admin/products' . ($qs ? '?' . http_build_query($qs) : '');
 };
-$allLink = '/geprek-geh/admin/products?' . http_build_query(array_filter($filter, function ($k) { return $k !== 'status'; }, ARRAY_FILTER_USE_KEY));
+$statusHref = function ($st) use ($keep, $category) {
+    $qs = $keep;
+    if ($category > 0) $qs['category'] = $category;
+    if ($st !== '') $qs['status'] = $st;
+    return '/geprek-geh/admin/products' . ($qs ? '?' . http_build_query($qs) : '');
+};
 ?>
-<div class="filter-tabs">
-    <a href="<?= e($allLink) ?>" class="btn btn-sm <?= $status === '' ? 'btn-primary' : 'btn-outline' ?>">Semua <span class="order-filter-count"><?= $total ?></span></a>
-    <a href="<?= e($tabLink('active')) ?>" class="btn btn-sm <?= $status === 'active' ? 'btn-success' : 'btn-outline' ?>">Aktif <span class="order-filter-count"><?= $status_counts['active'] ?></span></a>
-    <a href="<?= e($tabLink('inactive')) ?>" class="btn btn-sm <?= $status === 'inactive' ? 'btn-danger' : 'btn-outline' ?>">Nonaktif <span class="order-filter-count"><?= $status_counts['inactive'] ?></span></a>
-    <a href="<?= e($tabLink('featured')) ?>" class="btn btn-sm <?= $status === 'featured' ? 'btn-warning' : 'btn-outline' ?>">Favorit <span class="order-filter-count"><?= $status_counts['featured'] ?></span></a>
-</div>
+<section class="menu-filters" aria-label="Filter produk">
+    <div class="menu-toolbar">
+        <form method="GET" action="/geprek-geh/admin/products" class="menu-filter-row">
+            <div class="menu-toolbar-top">
+                <div class="menu-search">
+                    <svg class="menu-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+                    <input type="text" name="q" placeholder="Cari produk atau slug…" value="<?= e($q) ?>" class="menu-search-input" autocomplete="off" aria-label="Cari produk">
+                    <?php if ($q !== ''): ?><a href="/geprek-geh/admin/products" class="menu-search-clear" aria-label="Bersihkan pencarian">&times;</a><?php endif; ?>
+                </div>
+                <span class="menu-sort">
+                    <span class="menu-sort-label">Urutkan</span>
+                    <span class="menu-sort-box menu-dropdown" data-dropdown data-form-submit>
+                        <button type="button" class="menu-dropdown-trigger" data-dropdown-trigger aria-haspopup="listbox" aria-expanded="false">
+                            <span data-dropdown-label><?= e($sortLabel) ?></span>
+                            <svg class="menu-sort-chev menu-sort-chev--js" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                        <div class="menu-dropdown-menu" data-dropdown-menu role="listbox">
+                            <?php foreach ($sortOptions as $sv => $sl): ?>
+                            <button type="button" class="menu-dropdown-item" data-value="<?= e($sv) ?>" role="option"><?= e($sl) ?></button>
+                            <?php endforeach; ?>
+                        </div>
+                        <select name="sort" class="menu-sort-select menu-sort-native" data-dropdown-select onchange="this.form.submit()" aria-label="Urutkan produk">
+                            <?php foreach ($sortOptions as $sv => $sl): ?>
+                            <option value="<?= e($sv) ?>"<?= $sort === $sv ? ' selected' : '' ?>><?= e($sl) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <svg class="menu-sort-chev menu-sort-chev--native" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </span>
+                </span>
+            </div>
+
+            <div class="menu-cat-scroll">
+                <div class="menu-category-pills" aria-label="Filter kategori">
+                    <a href="<?= e($catHref(0)) ?>" class="menu-pill <?= $category === 0 ? 'active' : '' ?>">Semua</a>
+                    <?php foreach ($categories as $c): ?>
+                        <a href="<?= e($catHref((int) $c['id'])) ?>" class="menu-pill <?= $category === (int) $c['id'] ? 'active' : '' ?>">
+                            <?= e($c['name']) ?> <span class="menu-pill-count"><?= (int) ($c['product_count'] ?? 0) ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="filter-tabs">
+                <a href="<?= e($statusHref('')) ?>" class="btn btn-sm <?= $status === '' ? 'btn-primary' : 'btn-outline' ?>">Semua <span class="order-filter-count"><?= $total ?></span></a>
+                <a href="<?= e($statusHref('active')) ?>" class="btn btn-sm <?= $status === 'active' ? 'btn-success' : 'btn-outline' ?>">Aktif <span class="order-filter-count"><?= $status_counts['active'] ?></span></a>
+                <a href="<?= e($statusHref('inactive')) ?>" class="btn btn-sm <?= $status === 'inactive' ? 'btn-danger' : 'btn-outline' ?>">Nonaktif <span class="order-filter-count"><?= $status_counts['inactive'] ?></span></a>
+                <a href="<?= e($statusHref('featured')) ?>" class="btn btn-sm <?= $status === 'featured' ? 'btn-warning' : 'btn-outline' ?>">Favorit <span class="order-filter-count"><?= $status_counts['featured'] ?></span></a>
+            </div>
+        </form>
+
+        <div class="menu-results">
+            <span class="menu-results-text">
+                <?php if ($total > 0): ?>
+                    Menampilkan <strong><?= $offset + 1 ?>–<?= min($total, $offset + $per_page) ?></strong> dari <strong><?= $total ?></strong> produk
+                <?php else: ?>
+                    Tidak ada produk yang cocok dengan filter
+                <?php endif; ?>
+                <?php if ($filter_active): ?> — <a href="/geprek-geh/admin/products" class="menu-results-reset">Reset filter</a><?php endif; ?>
+            </span>
+        </div>
+    </div>
+</section>
 
 <?php if ($total > 0): ?>
 <div class="table-wrap">
@@ -213,22 +281,19 @@ $allLink = '/geprek-geh/admin/products?' . http_build_query(array_filter($filter
     </table>
 </div>
 
-<div class="table-foot">
-    <span class="pagination-info">Menampilkan <?= $offset + 1 ?>–<?= min($total, $offset + $per_page) ?> dari <?= $total ?> produk</span>
-    <?php if ($total_pages > 1): ?>
-    <nav class="order-pagination" aria-label="Navigasi halaman produk" style="margin-top:0;">
-        <?php if ($page > 1): ?>
-            <a class="menu-page-btn" href="/geprek-geh/admin/products?<?= e(http_build_query(array_merge($filter, ['page' => $page - 1]))) ?>" aria-label="Halaman sebelumnya">&laquo;</a>
-        <?php endif; ?>
-        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <a class="menu-page-btn <?= $i === $page ? 'active' : '' ?>" href="/geprek-geh/admin/products?<?= e(http_build_query(array_merge($filter, ['page' => $i]))) ?>"><?= $i ?></a>
-        <?php endfor; ?>
-        <?php if ($page < $total_pages): ?>
-            <a class="menu-page-btn" href="/geprek-geh/admin/products?<?= e(http_build_query(array_merge($filter, ['page' => $page + 1]))) ?>" aria-label="Halaman berikutnya">&raquo;</a>
-        <?php endif; ?>
-    </nav>
+<?php if ($total_pages > 1): ?>
+<nav class="menu-pagination" aria-label="Navigasi halaman produk">
+    <?php if ($page > 1): ?>
+        <a class="menu-page-btn" href="/geprek-geh/admin/products?<?= e(http_build_query(array_merge($filter, ['page' => $page - 1]))) ?>" aria-label="Halaman sebelumnya">&laquo;</a>
     <?php endif; ?>
-</div>
+    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+        <a class="menu-page-btn <?= $i === $page ? 'active' : '' ?>" href="/geprek-geh/admin/products?<?= e(http_build_query(array_merge($filter, ['page' => $i]))) ?>"><?= $i ?></a>
+    <?php endfor; ?>
+    <?php if ($page < $total_pages): ?>
+        <a class="menu-page-btn" href="/geprek-geh/admin/products?<?= e(http_build_query(array_merge($filter, ['page' => $page + 1]))) ?>" aria-label="Halaman berikutnya">&raquo;</a>
+    <?php endif; ?>
+</nav>
+<?php endif; ?>
 <?php else: ?>
     <?php if ($filter_active): ?>
         <div class="admin-empty">
