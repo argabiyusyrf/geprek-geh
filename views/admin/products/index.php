@@ -166,7 +166,7 @@
 </aside>
 
 <?php
-$_jsonOpts = JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOTES | JSON_HEX_TAG;
+$_jsonOpts = JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_TAG;
 $__productsData = array_map(function ($p) {
     return [
         'id'          => (int) $p['id'],
