@@ -1,4 +1,4 @@
-<?php $page_title = 'Lengkapi Akun'; $setup_errors = $setup_errors ?? []; ?>
+<?php $page_title = 'Lengkapi Akun'; $setup_errors = $setup_errors ?? []; $setup_old = $setup_old ?? []; ?>
 
 <div class="auth-page">
     <div class="auth-shell">
@@ -44,7 +44,7 @@
                             <label for="su-keyword">Kata Kunci Akun</label>
                             <div class="reg-input-wrap reg-input-pass">
                                 <svg class="reg-input-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-8 8M18 5l3 3M16 7l1 1M12 6l-4 4a4 4 0 0 0-6 6l14 4 4-4a4 4 0 0 0-4-4l-4-4z" transform="rotate(90 12 12)"/></svg>
-                                <input id="su-keyword" type="password" name="keyword" class="input reg-input <?= !empty($setup_errors['keyword']) ? 'is-invalid' : '' ?>" minlength="6" maxlength="72" placeholder="Bukan password, tapi frasa rahasia" autocomplete="off" autofocus>
+                                <input id="su-keyword" type="password" name="keyword" class="input reg-input <?= !empty($setup_errors['keyword']) ? 'is-invalid' : '' ?>" minlength="6" maxlength="72" placeholder="Bukan password, tapi frasa rahasia" autocomplete="off" autofocus value="<?= e($setup_old['keyword'] ?? '') ?>">
                                 <button type="button" class="pass-toggle" data-toggle-pass="su-keyword" aria-label="Tampilkan kata kunci">
                                     <svg class="eye-open" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                     <svg class="eye-closed" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -64,29 +64,29 @@
                         <div class="setup-addr">
                             <div class="form-group">
                                 <label for="su-name">Nama Penerima</label>
-                                <input id="su-name" type="text" name="recipient_name" class="input <?= !empty($setup_errors['recipient_name']) ? 'is-invalid' : '' ?>" maxlength="100" placeholder="Nama lengkap penerima">
+                                <input id="su-name" type="text" name="recipient_name" class="input <?= !empty($setup_errors['recipient_name']) ? 'is-invalid' : '' ?>" maxlength="100" placeholder="Nama lengkap penerima" value="<?= e($setup_old['recipient_name'] ?? '') ?>">
                                 <?php if (!empty($setup_errors['recipient_name'])): ?><span class="field-error"><?= e($setup_errors['recipient_name']) ?></span><?php endif; ?>
                             </div>
                             <div class="form-group">
                                 <label for="su-phone">Telepon</label>
-                                <input id="su-phone" type="tel" name="phone" class="input" maxlength="20" placeholder="08xxxxxxxxxx">
+                                <input id="su-phone" type="tel" name="phone" class="input" maxlength="20" placeholder="08xxxxxxxxxx" value="<?= e($setup_old['phone'] ?? '') ?>">
                             </div>
                             <div class="form-group">
                                 <label for="su-address">Alamat Lengkap</label>
-                                <textarea id="su-address" name="address" class="input" rows="2" maxlength="500" placeholder="Jalan, gang, no. rumah, patokan..."><?= !empty($setup_errors['address']) ? '' : '' ?></textarea>
+                                <textarea id="su-address" name="address" class="input <?= !empty($setup_errors['address']) ? 'is-invalid' : '' ?>" rows="2" maxlength="500" placeholder="Jalan, gang, no. rumah, patokan..."><?= e($setup_old['address'] ?? '') ?></textarea>
                                 <?php if (!empty($setup_errors['address'])): ?><span class="field-error"><?= e($setup_errors['address']) ?></span><?php endif; ?>
                             </div>
                             <div class="form-group">
                                 <label for="su-city">Kota / Kabupaten</label>
-                                <input id="su-city" type="text" name="city" class="input" maxlength="100" placeholder="Kota">
+                                <input id="su-city" type="text" name="city" class="input" maxlength="100" placeholder="Kota" value="<?= e($setup_old['city'] ?? '') ?>">
                             </div>
                             <div class="form-group">
                                 <label for="su-district">Kecamatan</label>
-                                <input id="su-district" type="text" name="district" class="input" maxlength="100" placeholder="Kecamatan">
+                                <input id="su-district" type="text" name="district" class="input" maxlength="100" placeholder="Kecamatan" value="<?= e($setup_old['district'] ?? '') ?>">
                             </div>
                             <div class="form-group">
                                 <label for="su-postal">Kode Pos</label>
-                                <input id="su-postal" type="text" name="postal_code" class="input <?= !empty($setup_errors['postal_code']) ? 'is-invalid' : '' ?>" maxlength="5" placeholder="12345" inputmode="numeric">
+                                <input id="su-postal" type="text" name="postal_code" class="input <?= !empty($setup_errors['postal_code']) ? 'is-invalid' : '' ?>" maxlength="5" placeholder="12345" inputmode="numeric" value="<?= e($setup_old['postal_code'] ?? '') ?>">
                                 <?php if (!empty($setup_errors['postal_code'])): ?><span class="field-error"><?= e($setup_errors['postal_code']) ?></span><?php endif; ?>
                             </div>
                         </div>
