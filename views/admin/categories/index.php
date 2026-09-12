@@ -87,14 +87,14 @@
                     </div>
                 </td>
                 <td>
-                    <span class="cat-desc"><?= $c['description'] !== '' && $c['description'] !== null ? nl2br(e($c['description'])) : '<em>Tidak ada deskripsi.</em>' ?></span>
+                    <span class="cat-desc"><?= $c['description'] !== '' && $c['description'] !== null ? e($c['description']) : '<em>Tidak ada deskripsi.</em>' ?></span>
                 </td>
                 <td><span class="count-pill <?= $cCount === 0 ? 'count-pill--zero' : '' ?>"><?= $cCount ?></span></td>
                 <td class="stock-cell cat-sort"><?= (int) ($c['sort_order'] ?? 0) ?></td>
                 <td>
                     <div class="table-actions">
                         <button type="button" class="btn btn-sm btn-outline" data-edit-category='<?= $cJson ?>'>Edit</button>
-                        <form method="POST" action="/geprek-geh/admin/categories/<?= $c['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus kategori ini? Produk di dalamnya berpindah ke &ldquo;Tanpa Kategori&rdquo;.">
+                        <form method="POST" action="/geprek-geh/admin/categories/<?= $c['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="<?= $cCount > 0 ? 'Hapus kategori &ldquo;' . e($c['name']) . '&rdquo;? ' . $cCount . ' produk di dalamnya ikut terhapus (tidak bisa dibatalkan).' : 'Hapus kategori &ldquo;' . e($c['name']) . '&rdquo;?' ?>">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
                         </form>
