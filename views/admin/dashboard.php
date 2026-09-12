@@ -96,18 +96,18 @@
                     </linearGradient>
                 </defs>
                 <?php for ($k = 0; $k <= 4; $k++): $gy = round($padT + $ph * (1 - $k / 4)); $gv = $mx * $k / 4; ?>
-                    <line x1="<?= $padL ?>" y1="<?= $gy ?>" x2="<?= $W - $padR ?>" y2="<?= $gy ?>" stroke="rgba(20,17,12,0.07)" stroke-width="1"/>
-                    <text x="<?= $padL - 8 ?>" y="<?= $gy + 4 ?>" text-anchor="end" font-size="11" fill="#8A7A65" font-weight="600"><?= $fmtIdr($gv) ?></text>
+                    <line class="chart-gridline" x1="<?= $padL ?>" y1="<?= $gy ?>" x2="<?= $W - $padR ?>" y2="<?= $gy ?>" stroke="rgba(20,17,12,0.07)" stroke-width="1" style="--d:<?= round(0.1 + $k * 0.06, 2) ?>s"/>
+                    <text class="chart-tick" x="<?= $padL - 8 ?>" y="<?= $gy + 4 ?>" text-anchor="end" font-size="11" fill="#8A7A65" font-weight="600" style="--d:<?= round(0.25 + $k * 0.07, 2) ?>s"><?= $fmtIdr($gv) ?></text>
                 <?php endfor; ?>
-                <path d="<?= $area ?>" fill="url(#salesFill)"/>
-                <polyline points="<?= trim($line) ?>" fill="none" stroke="#D43E1B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <?php foreach ($pts as $p): ?>
-                    <circle cx="<?= round($p['x'], 1) ?>" cy="<?= round($p['y'], 1) ?>" r="4" fill="#FBF5E7" stroke="#D43E1B" stroke-width="2.5">
+                <path class="chart-area" d="<?= $area ?>" fill="url(#salesFill)"/>
+                <polyline class="chart-line" pathLength="1" points="<?= trim($line) ?>" fill="none" stroke="#D43E1B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <?php foreach ($pts as $i => $p): ?>
+                    <circle class="chart-dot" cx="<?= round($p['x'], 1) ?>" cy="<?= round($p['y'], 1) ?>" r="4" fill="#FBF5E7" stroke="#D43E1B" stroke-width="2.5" style="--d:<?= round(0.45 + $i * 0.12, 2) ?>s">
                         <title><?= $p['s']['day'] ?> · <?= rupiah($p['s']['revenue']) ?> · <?= $p['s']['orders'] ?> pesanan</title>
                     </circle>
                 <?php endforeach; ?>
                 <?php foreach ($sales7 as $i => $s): $x = round($padL + $i * ($pw / 6), 1); ?>
-                    <text x="<?= $x ?>" y="<?= $H - 6 ?>" text-anchor="middle" font-size="11" fill="#8A7A65" font-weight="600"><?= $s['day'] ?></text>
+                    <text class="chart-tick" x="<?= $x ?>" y="<?= $H - 6 ?>" text-anchor="middle" font-size="11" fill="#8A7A65" font-weight="600" style="--d:<?= round(0.25 + $i * 0.13, 2) ?>s"><?= $s['day'] ?></text>
                 <?php endforeach; ?>
             </svg>
         </div>
@@ -132,13 +132,14 @@
                     <?php if ($status_total > 0): foreach (['pending','processing','shipped','delivered','cancelled'] as $st):
                         $n = $status_dist[$st]; if ($n < 1) continue;
                         $seg = $n / $status_total * $C; ?>
-                        <circle cx="100" cy="100" r="64" fill="none" stroke="<?= $statusColor[$st] ?>" stroke-width="26"
+                        <circle class="donut-seg" cx="100" cy="100" r="64" fill="none" stroke="<?= $statusColor[$st] ?>" stroke-width="26"
                                 stroke-dasharray="<?= round($seg, 2) ?> <?= round($C - $seg, 2) ?>"
-                                stroke-dashoffset="<?= round(-$off, 2) ?>"/>
+                                stroke-dashoffset="<?= round(-$off, 2) ?>"
+                                style="--seg:<?= round($seg, 2) ?>; --off:<?= round(-$off, 2) ?>; --d:<?= round(0.15 + $off / $C * 0.9, 2) ?>s"/>
                     <?php $off += $seg; endforeach; endif; ?>
                 </g>
-                <text x="100" y="97" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-size="34" font-weight="700" fill="#14110C"><?= $status_total ?></text>
-                <text x="100" y="119" text-anchor="middle" font-size="11" font-weight="700" letter-spacing="0.08em" fill="#8A7A65">PESANAN</text>
+                <text class="donut-count" x="100" y="97" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-size="34" font-weight="700" fill="#14110C"><?= $status_total ?></text>
+                <text class="donut-cap" x="100" y="119" text-anchor="middle" font-size="11" font-weight="700" letter-spacing="0.08em" fill="#8A7A65">PESANAN</text>
             </svg>
             <div class="chart-legend">
                 <?php if ($status_total > 0): foreach (['pending','processing','shipped','delivered','cancelled'] as $st):
