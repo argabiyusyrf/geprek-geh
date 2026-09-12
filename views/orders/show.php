@@ -321,7 +321,7 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
         $is_done = in_array($order['status'], ['delivered', 'cancelled'], true);
     ?>
     <?php if ($can_cancel): ?>
-        <form method="POST" action="/geprek-geh/orders/<?= $order['id'] ?>/cancel" class="card order-cancel-box" data-cancel-form data-confirm-msg="Yakin ingin membatalkan pesanan ini?">
+        <form method="POST" action="/geprek-geh/orders/<?= $order['id'] ?>/cancel" class="card order-cancel-box" data-cancel-form data-confirm-msg="Yakin ingin membatalkan pesanan ini?" novalidate>
             <?= csrf_field() ?>
             <div class="cancel-reason-field">
                 <label class="cancel-reason-label" for="cancel-reason-<?= $order['id'] ?>">Alasan Pembatalan <span class="text-muted">* wajib</span></label>
