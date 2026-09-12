@@ -7,7 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="/geprek-geh/public/favicon.svg">
     <link rel="stylesheet" href="/geprek-geh/public/fonts/fonts.css">
     <link rel="stylesheet" href="/geprek-geh/vendor/css/lenis.css">
-    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260912w">
+    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260912x">
     <script>document.documentElement.classList.add('js');</script>
 </head>
 <body class="admin-body">

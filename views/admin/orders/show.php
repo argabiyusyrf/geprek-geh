@@ -11,6 +11,30 @@ $created = date('d M Y, H:i', strtotime($order['created_at']));
 $total_qty = array_sum(array_map(fn($it) => (int) $it['quantity'], $items));
 $wa = !empty($order['customer_phone']) ? \wa_link($order['customer_phone']) : null;
 $proof_exists = !empty($order['payment_proof']) && file_exists(dirname(__DIR__, 3) . '/assets/uploads/payments/' . $order['payment_proof']);
+$summary_lines = [];
+$summary_lines[] = 'INVOICE ' . $order['invoice_no'];
+$summary_lines[] = 'Dibuat: ' . $created;
+$summary_lines[] = 'Status: ' . $status_label;
+$summary_lines[] = 'Pembayaran: ' . $method_label . ' (' . $payment_status_label . ')';
+if (!empty($order['tracking_no'])) $summary_lines[] = 'Resi: ' . $order['tracking_no'];
+$summary_lines[] = '';
+$summary_lines[] = $order['customer_name'];
+if (!empty($order['customer_phone'])) $summary_lines[] = $order['customer_phone'];
+if (!empty($order['customer_email'])) $summary_lines[] = $order['customer_email'];
+if (!empty($order['shipping_address'])) $summary_lines[] = str_replace(["\r\n", "\r"], "\n", $order['shipping_address']);
+if (!empty($order['notes'])) $summary_lines[] = 'Catatan: ' . $order['notes'];
+$summary_lines[] = '';
+$summary_lines[] = '— ITEM —';
+foreach ($items as $item) {
+    $summary_lines[] = '- ' . $item['name'] . ' (' . (int) $item['quantity'] . ' x ' . rupiah($item['price']) . ') = ' . rupiah((int) $item['price'] * (int) $item['quantity']);
+}
+$summary_lines[] = '';
+$summary_lines[] = 'Subtotal : ' . rupiah($order['total']);
+if ((int) $order['discount'] > 0) $summary_lines[] = 'Diskon   : -' . rupiah($order['discount']);
+$summary_lines[] = 'Ongkir   : ' . rupiah($order['shipping_cost']);
+$summary_lines[] = 'Pajak    : ' . rupiah($order['tax']);
+$summary_lines[] = 'GRAND TOTAL: ' . rupiah($grand);
+$order_summary = implode("\n", $summary_lines);
 
 $timeline = [
     'pending'    => ['Menunggu Konfirmasi', 'Pesanan masuk — cek bukti pembayaran'],
