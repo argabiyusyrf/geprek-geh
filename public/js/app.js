@@ -1339,6 +1339,7 @@ document.addEventListener('click', (e) => {
         form.querySelectorAll('.field-error').forEach((el) => el.remove());
         if (titleEl) titleEl.textContent = 'Tambah Kategori';
         if (submitBtn) submitBtn.textContent = 'Tambah Kategori';
+        updateSlugPreview('');
     }
 
     function open() {
@@ -1376,6 +1377,7 @@ document.addEventListener('click', (e) => {
         form.querySelector('[name="name"]').value = data.name || '';
         form.querySelector('[name="description"]').value = data.description || '';
         form.querySelector('[name="sort_order"]').value = data.sort_order || 0;
+        updateSlugPreview(data.slug || data.name || '');
         setEditState(data.id);
         open();
     }
