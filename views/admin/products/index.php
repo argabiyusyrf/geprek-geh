@@ -164,3 +164,28 @@
         <button type="submit" form="product-form" class="btn btn-primary" id="product-submit">Tambah Produk</button>
     </div>
 </aside>
+
+<?php
+$_jsonOpts = JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOTES | JSON_HEX_TAG;
+$__productsData = array_map(function ($p) {
+    return [
+        'id'          => (int) $p['id'],
+        'name'        => $p['name'],
+        'slug'        => $p['slug'],
+        'category_id' => (int) $p['category_id'],
+        'price'       => (int) $p['price'],
+        'stock'       => (int) $p['stock'],
+        'description' => $p['description'] ?? '',
+        'image'       => $p['image'] ?? '',
+        'is_active'   => (int) $p['is_active'],
+        'is_featured' => (int) $p['is_featured'],
+    ];
+}, $products);
+$__categoriesData = array_map(function ($c) {
+    return ['id' => (int) $c['id'], 'name' => $c['name']];
+}, $categories);
+?>
+<script>
+window.__gehProducts = <?= json_encode($__productsData, $_jsonOpts) ?>;
+window.__gehCategories = <?= json_encode($__categoriesData, $_jsonOpts) ?>;
+</script>

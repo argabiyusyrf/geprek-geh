@@ -922,6 +922,183 @@ document.addEventListener('click', (e) => {
     }
 })();
 
+/* ── Product drawer (admin CRUD) ── */
+(function productDrawer() {
+    const drawer = document.getElementById('product-drawer');
+    const overlay = document.getElementById('product-drawer-overlay');
+    if (!drawer) return;
+
+    const body = document.body;
+    const form = drawer.querySelector('form#product-form');
+    const titleEl = drawer.querySelector('#product-drawer-title');
+    const submitBtn = drawer.querySelector('#product-submit');
+    const nameInput = drawer.querySelector('#product-name');
+    const slugPreview = drawer.querySelector('#product-slug-preview');
+    const priceInput = drawer.querySelector('[name="price"]');
+    const stockInput = drawer.querySelector('[name="stock"]');
+    const imgInput = drawer.querySelector('#product-image-input');
+    const imgPreviewWrap = drawer.querySelector('#product-image-preview-wrap');
+    const imgPreview = drawer.querySelector('#product-image-preview');
+    const imgNote = drawer.querySelector('#product-image-note');
+
+    const addAction = '/geprek-geh/admin/products';
+    const categories = window.__gehCategories || [];
+    const PRODUCT_IMG_BASE = '/geprek-geh/assets/uploads/products/';
+    let currentId = null;
+
+    function slugify(v) {
+        return String(v || '').toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .trim().replace(/\s+/g, '-').replace(/-+/g, '-');
+    }
+
+    function fillCategorySelect(selectedId) {
+        const sel = form.querySelector('[name="category_id"]');
+        if (!sel) return;
+        sel.innerHTML = '<option value="">Pilih</option>' + categories.map((c) =>
+            '<option value="' + c.id + '">' + c.name + '</option>'
+        ).join('');
+        if (selectedId) sel.value = String(selectedId);
+    }
+
+    function previewImage(src) {
+        if (src) {
+            imgPreview.src = src;
+            imgPreviewWrap.hidden = false;
+        } else {
+            imgPreview.removeAttribute('src');
+            imgPreviewWrap.hidden = true;
+        }
+    }
+
+    function resetForm() {
+        if (!form) return;
+        form.reset();
+        form.setAttribute('action', addAction);
+        form.querySelectorAll('.is-invalid').forEach((el) => el.classList.remove('is-invalid'));
+        form.querySelectorAll('.field-error').forEach((el) => el.remove());
+        currentId = null;
+        if (titleEl) titleEl.textContent = 'Tambah Produk';
+        if (submitBtn) submitBtn.textContent = 'Tambah Produk';
+        if (slugPreview) slugPreview.textContent = '/nama-produk';
+        previewImage(null);
+        fillCategorySelect(0);
+    }
+
+    function open() {
+        drawer.classList.add('is-open');
+        drawer.setAttribute('aria-hidden', 'false');
+        if (overlay) overlay.classList.add('is-open');
+        body.style.overflow = 'hidden';
+        if (window.__lenis) window.__lenis.stop();
+        const first = drawer.querySelector('input, textarea, select, button[type="submit"]');
+        if (first) setTimeout(() => first.focus({ preventScroll: true }), 220);
+    }
+
+    function close() {
+        drawer.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        if (overlay) overlay.classList.remove('is-open');
+        body.style.overflow = '';
+        if (window.__lenis) window.__lenis.start();
+        setTimeout(() => {
+            resetForm();
+            if (submitBtn) { submitBtn.classList.remove('is-loading'); submitBtn.disabled = false; }
+        }, 350);
+    }
+
+    function openForAdd() {
+        resetForm();
+        open();
+    }
+
+    function openForEdit(data) {
+        resetForm();
+        currentId = data ? data.id : null;
+        nameInput.value = data.name || '';
+        if (slugPreview) slugPreview.textContent = '/' + (data.slug || slugify(data.name));
+        fillCategorySelect(data.category_id);
+        if (priceInput) priceInput.value = data.price;
+        if (stockInput) stockInput.value = data.stock;
+        const desc = form.querySelector('[name="description"]');
+        if (desc) desc.value = data.description || '';
+        if (data.image) {
+            imgNote.textContent = 'Gambar: ' + data.image + ' (pilih file untuk mengganti)';
+            previewImage(PRODUCT_IMG_BASE + data.image);
+        }
+        const active = form.querySelector('[name="is_active"]');
+        const featured = form.querySelector('[name="is_featured"]');
+        if (active) active.checked = parseInt(data.is_active) === 1;
+        if (featured) featured.checked = parseInt(data.is_featured) === 1;
+        form.setAttribute('action', '/geprek-geh/admin/products/' + data.id);
+        if (titleEl) titleEl.textContent = 'Edit Produk';
+        if (submitBtn) submitBtn.textContent = 'Simpan Perubahan';
+        open();
+    }
+
+    window.openProductDrawer = openForAdd;
+    window.closeProductDrawer = close;
+
+    // name → live slug preview
+    if (nameInput && slugPreview) {
+        nameInput.addEventListener('input', () => {
+            const s = slugify(nameInput.value);
+            slugPreview.textContent = s ? '/' + s : '/nama-produk';
+        });
+    }
+
+    // image file → local preview
+    if (imgInput && imgPreview) {
+        imgInput.addEventListener('change', () => {
+            const file = imgInput.files && imgInput.files[0];
+            if (file) {
+                imgNote.textContent = file.name;
+                previewImage(URL.createObjectURL(file));
+            }
+        });
+    }
+
+    // openers / closers
+    document.querySelectorAll('[data-open-product-drawer]').forEach((b) => b.addEventListener('click', openForAdd));
+    document.querySelectorAll('[data-close-product-drawer]').forEach((b) => b.addEventListener('click', close));
+    document.querySelectorAll('[data-edit-product]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            try {
+                openForEdit(JSON.parse(btn.dataset.editProduct));
+            } catch (_) {
+                const editId = btn.getAttribute('data-edit-product');
+                window.location.href = '/geprek-geh/admin/products?edit=' + encodeURIComponent(editId);
+            }
+        });
+    });
+
+    if (overlay) overlay.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('is-open')) close();
+    });
+
+    // loading state on submit
+    if (form) {
+        form.addEventListener('submit', () => {
+            if (submitBtn && !submitBtn.classList.contains('is-loading')) {
+                submitBtn.classList.add('is-loading');
+                submitBtn.disabled = true;
+            }
+        });
+    }
+
+    // auto-open via ?create=1 / ?edit={id}
+    const qs = new URLSearchParams(window.location.search);
+    if (qs.get('create')) {
+        openForAdd();
+    } else if (qs.get('edit')) {
+        const targetId = parseInt(qs.get('edit'), 10);
+        const found = (window.__gehProducts || []).find((p) => parseInt(p.id) === targetId);
+        if (found) openForEdit(found);
+    }
+})();
+
 /* ── Checkout: tampilkan instruksi bayar sesuai metode yang dipilih ── */
 (function paymentInfo() {
     const wrap = document.querySelector('[data-pay-info-wrap]');
