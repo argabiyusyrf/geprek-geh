@@ -2040,12 +2040,14 @@ document.addEventListener('click', (e) => {
             labelEl.textContent = btn.dataset.label || '';
             panel.querySelectorAll('[data-panel-extra]').forEach((x) => { x.hidden = x.dataset.panelExtra !== to; });
             panel.hidden = false;
+            if (cancelTa) cancelTa.required = (to === 'cancelled');
             const el = panel.querySelector('[data-panel-extra="' + to + '"] input, [data-panel-extra="' + to + '"] textarea');
             if (el) setTimeout(() => el.focus(), 0);
         };
 
         const direct = form.querySelectorAll('[data-step]');
         direct.forEach((b) => b.addEventListener('click', () => {
+            if (cancelTa) cancelTa.required = false;
             statusInput.value = b.dataset.step;
             form.requestSubmit();
         }));
@@ -2054,6 +2056,6 @@ document.addEventListener('click', (e) => {
         extras.forEach((b) => b.addEventListener('click', () => openExtra(b)));
 
         const cancelBtn = panel.querySelector('[data-panel-cancel]');
-        if (cancelBtn) cancelBtn.addEventListener('click', () => { panel.hidden = true; });
+        if (cancelBtn) cancelBtn.addEventListener('click', () => { if (cancelTa) cancelTa.required = false; panel.hidden = true; });
     });
 })();
