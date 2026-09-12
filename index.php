@@ -200,6 +200,7 @@ $router->post('/admin/categories/{id}',    ['Admin\CategoryController', 'update'
 $router->post('/admin/categories/{id}/delete',['Admin\CategoryController', 'delete']);
 $router->get('/admin/orders',              ['Admin\OrderController', 'index']);
 $router->get('/admin/orders/{id}',         ['Admin\OrderController', 'show']);
+$router->get('/admin/orders/{id}/print',   ['Admin\OrderController', 'printOrder']);
 $router->post('/admin/orders/{id}/status', ['Admin\OrderController', 'updateStatus']);
 $router->post('/admin/orders/{id}/verify-payment', ['Admin\OrderController', 'verifyPayment']);
 $router->get('/admin/users',               ['Admin\UserController', 'index']);
