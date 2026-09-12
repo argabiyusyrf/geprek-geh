@@ -321,8 +321,13 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
         $is_done = in_array($order['status'], ['delivered', 'cancelled'], true);
     ?>
     <?php if ($can_cancel): ?>
-        <form method="POST" action="/geprek-geh/orders/<?= $order['id'] ?>/cancel" data-confirm="Yakin ingin membatalkan pesanan ini?">
+        <form method="POST" action="/geprek-geh/orders/<?= $order['id'] ?>/cancel" class="card order-cancel-box" data-cancel-form data-confirm-msg="Yakin ingin membatalkan pesanan ini?">
             <?= csrf_field() ?>
+            <div class="cancel-reason-field">
+                <label class="cancel-reason-label" for="cancel-reason-<?= $order['id'] ?>">Alasan Pembatalan <span class="text-muted">* wajib</span></label>
+                <textarea id="cancel-reason-<?= $order['id'] ?>" name="cancel_reason" class="input" rows="2" maxlength="255" required placeholder="Ceritakan alasanmu — membantu kami memperbaiki layanan" data-cancel-reason></textarea>
+                <span class="cancel-field-error" data-cancel-error hidden></span>
+            </div>
             <button type="submit" class="btn btn-ghost btn-dangerghost btn-block">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
                 Batalkan Pesanan
