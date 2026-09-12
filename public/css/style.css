@@ -5100,7 +5100,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 .stat-card--cust    { grid-column: span 2; }
 
 /* Sales chart wider than donut */
-.admin-grid-2.chart-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+.admin-grid-2.chart-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: stretch; }
 
 /* Queue (worklist) wider than quick actions */
 .admin-grid-2:has(.orders-queue) { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
