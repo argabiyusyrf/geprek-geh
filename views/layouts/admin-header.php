@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin — Geprek Geh</title>
+    <link rel="icon" type="image/svg+xml" href="/geprek-geh/public/favicon.svg">
     <link rel="stylesheet" href="/geprek-geh/public/fonts/fonts.css">
     <link rel="stylesheet" href="/geprek-geh/vendor/css/lenis.css">
     <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260912u">
