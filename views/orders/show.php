@@ -31,7 +31,7 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
         <h1><?= e($order['invoice_no']) ?></h1>
         <p class="sub">
             <?php if ($order['status'] === 'cancelled'): ?>
-                <?= $order['cancel_reason'] ? e($order['cancel_reason']) . '.' : 'Pesanan ini telah dibatalkan.' ?>
+                <?= $order['cancel_reason'] ? e($order['cancel_reason']) . (preg_match('/[.!?]$/', trim($order['cancel_reason'])) ? '' : '.') : 'Pesanan ini telah dibatalkan.' ?>
                 <?php if ($order['payment_status'] === 'refunded'): ?> Pembayaran yang sudah lunas akan di-refund.<?php endif; ?>
             <?php else: ?>
                 Pesanan dibuat pada <?= $created ?>. Kami akan segera memproses pesananmu.
