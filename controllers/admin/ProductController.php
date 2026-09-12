@@ -34,32 +34,33 @@ class ProductController {
         $db = \Database::getInstance();
         $name = trim($_POST['name'] ?? '');
         $category_id = (int)($_POST['category_id'] ?? 0);
-        $price = max(0, (int)($_POST['price'] ?? 0));
-        $stock = max(0, (int)($_POST['stock'] ?? 0));
-        $description = trim($_POST['description'] ?? '');
+        $price = max(0, (int) preg_replace('/[^0-9]/', '', (string) ($_POST['price'] ?? '')));
+        $stock = max(0, (int) preg_replace('/[^0-9]/', '', (string) ($_POST['stock'] ?? '')));
+        $description = \sanitize_rich_text($_POST['description'] ?? '');
         $is_active = isset($_POST['is_active']) ? 1 : 0;
         $is_featured = isset($_POST['is_featured']) ? 1 : 0;
 
+        $stash = [
+            'name' => $name, 'category_id' => $category_id, 'price' => $price,
+            'stock' => $stock, 'description' => $description,
+            'is_active' => $is_active, 'is_featured' => $is_featured,
+        ];
+
         if ($name === '') {
-            \form_stash(['name' => 'Nama produk tidak boleh kosong.'], [
-                'name' => $name, 'category_id' => $category_id, 'price' => $price,
-                'stock' => $stock, 'description' => $description,
-                'is_active' => $is_active, 'is_featured' => $is_featured,
-            ]);
+            \form_stash(['name' => 'Nama produk tidak boleh kosong.'], $stash);
             \flash_set('error', 'Mohon periksa kembali isian form produk.');
             header('Location: /geprek-geh/admin/products?create=1&error=1'); exit;
         }
         if (!$db->fetchOne("SELECT id FROM categories WHERE id = ?", [$category_id])) {
-            \form_stash(['category_id' => 'Kategori tidak valid.'], [
-                'name' => $name, 'category_id' => $category_id, 'price' => $price,
-                'stock' => $stock, 'description' => $description,
-                'is_active' => $is_active, 'is_featured' => $is_featured,
-            ]);
+            \form_stash(['category_id' => 'Kategori tidak valid.'], $stash);
             \flash_set('error', 'Mohon periksa kembali isian form produk.');
             header('Location: /geprek-geh/admin/products?create=1&error=1'); exit;
         }
         $image = $this->validImageUpload();
-        if ($image === false) { header('Location: /geprek-geh/admin/products?create=1&error=1'); exit; }
+        if ($image === false) {
+            \form_stash([], $stash);
+            header('Location: /geprek-geh/admin/products?create=1&error=1'); exit;
+        }
 
         $db->insert('products', [
             'name'        => $name,
@@ -134,32 +135,33 @@ class ProductController {
         }
         $name = trim($_POST['name'] ?? '');
         $category_id = (int)($_POST['category_id'] ?? 0);
-        $price = max(0, (int)($_POST['price'] ?? 0));
-        $stock = max(0, (int)($_POST['stock'] ?? 0));
-        $description = trim($_POST['description'] ?? '');
+        $price = max(0, (int) preg_replace('/[^0-9]/', '', (string) ($_POST['price'] ?? '')));
+        $stock = max(0, (int) preg_replace('/[^0-9]/', '', (string) ($_POST['stock'] ?? '')));
+        $description = \sanitize_rich_text($_POST['description'] ?? '');
         $is_active = isset($_POST['is_active']) ? 1 : 0;
         $is_featured = isset($_POST['is_featured']) ? 1 : 0;
 
+        $stash = [
+            'name' => $name, 'category_id' => $category_id, 'price' => $price,
+            'stock' => $stock, 'description' => $description,
+            'is_active' => $is_active, 'is_featured' => $is_featured,
+        ];
+
         if ($name === '') {
-            \form_stash(['name' => 'Nama produk tidak boleh kosong.'], [
-                'name' => $name, 'category_id' => $category_id, 'price' => $price,
-                'stock' => $stock, 'description' => $description,
-                'is_active' => $is_active, 'is_featured' => $is_featured,
-            ]);
+            \form_stash(['name' => 'Nama produk tidak boleh kosong.'], $stash);
             \flash_set('error', 'Mohon periksa kembali isian form produk.');
             header('Location: /geprek-geh/admin/products?edit=' . $id . '&error=1'); exit;
         }
         if (!$db->fetchOne("SELECT id FROM categories WHERE id = ?", [$category_id])) {
-            \form_stash(['category_id' => 'Kategori tidak valid.'], [
-                'name' => $name, 'category_id' => $category_id, 'price' => $price,
-                'stock' => $stock, 'description' => $description,
-                'is_active' => $is_active, 'is_featured' => $is_featured,
-            ]);
+            \form_stash(['category_id' => 'Kategori tidak valid.'], $stash);
             \flash_set('error', 'Mohon periksa kembali isian form produk.');
             header('Location: /geprek-geh/admin/products?edit=' . $id . '&error=1'); exit;
         }
         $image = $this->validImageUpload();
-        if ($image === false) { header('Location: /geprek-geh/admin/products?edit=' . $id . '&error=1'); exit; }
+        if ($image === false) {
+            \form_stash([], $stash);
+            header('Location: /geprek-geh/admin/products?edit=' . $id . '&error=1'); exit;
+        }
 
         $data = [
             'name'        => $name,
