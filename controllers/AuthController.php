@@ -116,28 +116,87 @@ class AuthController {
 
     public function registerForm() {
         if (Auth::check()) redirect('/geprek-geh/');
+        $reg_old = $_SESSION['reg_old'] ?? null;
+        $reg_errors = $_SESSION['reg_errors'] ?? null;
+        unset($_SESSION['reg_old'], $_SESSION['reg_errors']);
         require __DIR__ . '/../views/layouts/auth-header.php';
         require __DIR__ . '/../views/auth/register.php';
         require __DIR__ . '/../views/layouts/auth-footer.php';
     }
 
     public function register() {
-        $name = trim($_POST['name'] ?? '');
-        $email = trim($_POST['email'] ?? '');
+        $name     = trim($_POST['name'] ?? '');
+        $email    = strtolower(trim($_POST['email'] ?? ''));
+        $phone    = trim($_POST['phone'] ?? '');
         $password = $_POST['password'] ?? '';
-        $phone = trim($_POST['phone'] ?? '');
+        $confirm  = $_POST['password_confirm'] ?? '';
+        $terms    = $_POST['terms'] ?? '';
 
-        if (strlen($name) < 2 || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 6) {
-            flash_set('error', 'Data tidak valid. Minimal 6 karakter untuk password.');
+        $db = Database::getInstance();
+        $errors = [];
+        $fatal  = null; // error rate-limit → hentikan validasi lain + jangan konsumsi formulir detail
+
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        if (!RateLimiter::attempt('register:' . $ip, 10, 3600)) {
+            $errors['_global'] = 'Terlalu banyak upaya pendaftaran dari perangkat ini. Coba lagi dalam 1 jam.';
+            $fatal = true;
+        }
+
+        if ($fatal) {
+            $_SESSION['reg_old'] = ['name' => $name, 'email' => $email, 'phone' => $phone];
+            $_SESSION['reg_errors'] = $errors;
+            header('Location: /geprek-geh/auth/register');
+            exit;
+        }
+
+        if (mb_strlen($name) < 2) {
+            $errors['name'] = 'Nama lengkap minimal 2 karakter.';
+        } elseif (mb_strlen($name) > 100) {
+            $errors['name'] = 'Nama terlalu panjang (maks 100 karakter).';
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 190) {
+            $errors['email'] = 'Format email tidak valid.';
+        } elseif ($db->fetchOne("SELECT id FROM users WHERE email = ?", [$email])) {
+            $errors['email'] = 'Email sudah terdaftar. Gunakan email lain atau silakan login.';
+        }
+
+        if ($phone !== '') {
+            $phoneDigits = preg_replace('/\D/', '', $phone);
+            if (str_starts_with($phoneDigits, '62')) $phoneDigits = '0' . substr($phoneDigits, 2);
+            $phone = $phoneDigits;
+            if (!preg_match('/^08\d{8,11}$/', $phone)) {
+                $errors['phone'] = 'Nomor telepon tidak valid. Contoh: 081234567890.';
+            }
+        }
+
+        if (strlen($password) < 6) {
+            $errors['password'] = 'Password minimal 6 karakter.';
+        } elseif (strlen($password) > 72) {
+            $errors['password'] = 'Password maksimal 72 karakter.';
+        }
+        if ($password !== $confirm) {
+            $errors['password_confirm'] = 'Konfirmasi password tidak cocok.';
+        }
+
+        if ($terms !== '1') {
+            $errors['terms'] = 'Harap setujui Syarat & Ketentuan dan Kebijakan Privasi.';
+        }
+
+        if ($errors) {
+            $_SESSION['reg_old']     = ['name' => $name, 'email' => $email, 'phone' => $phone];
+            $_SESSION['reg_errors']  = $errors;
             header('Location: /geprek-geh/auth/register');
             exit;
         }
 
         if (Auth::register($name, $email, $password, $phone)) {
-            flash_set('success', 'Registrasi berhasil!');
+            flash_set('success', 'Registrasi berhasil! Selamat datang, ' . $name . '!');
             header('Location: /geprek-geh/');
         } else {
-            flash_set('error', 'Email sudah terdaftar.');
+            $errors['email'] = 'Email sudah terdaftar. Gunakan email lain atau silakan login.';
+            $_SESSION['reg_old']     = ['name' => $name, 'email' => $email, 'phone' => $phone];
+            $_SESSION['reg_errors']  = $errors;
             header('Location: /geprek-geh/auth/register');
         }
         exit;

@@ -17,6 +17,12 @@ class PasswordResetController {
         }
         $email = strtolower(trim($_POST['email'] ?? ''));
 
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        if (!RateLimiter::attempt('reset-ip:' . $ip, 5, 3600)) {
+            flash_set('error', 'Terlalu banyak permintaan reset dari perangkat ini. Coba lagi dalam 1 jam.');
+            header('Location: /geprek-geh/auth/forgot'); exit;
+        }
+
         if (!RateLimiter::attempt('reset:' . $email, 3, 3600)) {
             flash_set('error', 'Terlalu banyak permintaan reset. Coba lagi dalam 1 jam.');
             header('Location: /geprek-geh/auth/forgot'); exit;
@@ -94,6 +100,10 @@ class PasswordResetController {
             flash_set('error', 'Password minimal 6 karakter.');
             header('Location: /geprek-geh/auth/reset?selector=' . urlencode($selector) . '&token=' . urlencode($token)); exit;
         }
+        if (strlen($password) > 72) {
+            flash_set('error', 'Password maksimal 72 karakter.');
+            header('Location: /geprek-geh/auth/reset?selector=' . urlencode($selector) . '&token=' . urlencode($token)); exit;
+        }
         if ($password !== $confirm) {
             flash_set('error', 'Konfirmasi password tidak cocok.');
             header('Location: /geprek-geh/auth/reset?selector=' . urlencode($selector) . '&token=' . urlencode($token)); exit;
@@ -110,6 +120,11 @@ class PasswordResetController {
             'password' => password_hash($password, PASSWORD_DEFAULT),
         ], 'id = ?', [$row['user_id']]);
         $db->update('password_resets', ['used_at' => date('Y-m-d H:i:s')], 'id = ?', [$row['id']]);
+
+        // Password berubah → token "remember me" & sesi aktif lain tidak berlaku lagi.
+        Auth::purgeRememberTokens((int) $row['user_id']);
+        Auth::clearRememberCookie();
+        $db->delete('sessions', 'user_id = ?', [(int) $row['user_id']]);
 
         flash_set('success', 'Password berhasil diperbarui. Silakan login dengan password baru.');
         header('Location: /geprek-geh/auth/login'); exit;

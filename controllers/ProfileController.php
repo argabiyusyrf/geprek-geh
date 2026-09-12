@@ -159,6 +159,11 @@ class ProfileController {
         }
 
         $db->update('users', ['password' => password_hash($new, PASSWORD_DEFAULT)], 'id = ?', [$user['id']]);
+
+        // Password berubah → semua token remember me tidak berlaku lagi.
+        Auth::purgeRememberTokens((int) $user['id']);
+        Auth::clearRememberCookie();
+
         flash_set('success', 'Password berhasil diubah.');
         redirect('/geprek-geh/account?tab=security');
     }
