@@ -119,6 +119,7 @@ class OrderController {
 
         [$payment_status_label, $payment_badge] = \format_payment_status($order['payment_status']);
         $transitions = $this->transitions($order['status']);
+        $weekly_cancels = $this->weeklyCancelCount($db);
 
         require __DIR__ . '/../../views/layouts/admin-header.php';
         require __DIR__ . '/../../views/admin/orders/show.php';
@@ -144,10 +145,21 @@ class OrderController {
         require __DIR__ . '/../../views/admin/orders/print.php';
     }
 
+    const CANCEL_LIMIT = 3;
+    const CANCEL_WINDOW_DAYS = 7;
+
+    private function weeklyCancelCount($db) {
+        return (int) $db->fetchColumn(
+            "SELECT COUNT(*) FROM order_logs
+             WHERE actor = 'admin' AND message LIKE '%dibatalkan oleh admin%'
+             AND created_at >= DATE_SUB(NOW(), INTERVAL " . self::CANCEL_WINDOW_DAYS . " DAY)"
+        );
+    }
+
     private function transitions($status) {
         $map = [
             'pending'    => ['processing', 'cancelled'],
-            'processing' => ['shipped', 'cancelled'],
+            'processing' => ['shipped'],
             'shipped'    => ['delivered'],
             'delivered'  => [],
             'cancelled'  => [],
