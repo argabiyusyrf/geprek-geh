@@ -195,7 +195,7 @@ class AuthController {
             header('Location: /geprek-geh/');
         } else {
             $errors['email'] = 'Email sudah terdaftar. Gunakan email lain atau silakan login.';
-            $_SESSION['reg_old']     = ['name' => $name, 'email' => $email, 'phone' => $phone];
+            $_SESSION['reg_old']     = ['name' => $name, 'email' => $email, 'phone' => $phone, 'terms' => $terms === '1' ? '1' : ''];
             $_SESSION['reg_errors']  = $errors;
             header('Location: /geprek-geh/auth/register');
         }

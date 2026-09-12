@@ -39,7 +39,12 @@
                             <label for="twofa-code">Kode Verifikasi</label>
                             <input id="twofa-code" type="text" name="code" class="input twofa-code-input is-code" inputmode="numeric" pattern="[0-9a-zA-Z]{6,8}" placeholder="••••••" autocomplete="one-time-code" maxlength="8" required autofocus>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block btn-lg">Verifikasi &amp; Masuk</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg reg-submit" id="twofaSubmit">
+                            <span class="reg-submit-text">Verifikasi &amp; Masuk</span>
+                            <span class="reg-submit-loading" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                            </span>
+                        </button>
                     </form>
 
                     <p class="auth-link">Kode tidak berhasil? Gunakan <a href="/geprek-geh/auth/login">recovery code</a> yang disimpan saat aktivasi.</p>
@@ -49,3 +54,21 @@
         </div>
     </div>
 </div>
+
+<script>
+(function(){
+    var form = document.getElementById('twofa-form');
+    var btn = document.getElementById('twofaSubmit');
+    var code = document.getElementById('twofa-code');
+
+    form.addEventListener('submit', function(){
+        btn.classList.add('is-loading');
+        btn.disabled = true;
+    });
+
+    // Hapus karakter selain angka/huruf saat mengetik (recovery code alfanumerik).
+    code.addEventListener('input', function(){
+        this.value = this.value.toUpperCase().replace(/[^0-9A-Z]/g, '');
+    });
+})();
+</script>
