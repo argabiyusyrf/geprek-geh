@@ -6291,3 +6291,133 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 
 .stat-card--cat .stat-icon { background: rgba(13,148,136,.12); color: #0d9488; }
 .stat-card--cat::after { background: radial-gradient(circle, #0d9488 0%, transparent 70%); }
+
+/* ─── Admin Pesanan: daftar & detail ──────────────────────── */
+.admin-orders-filters .menu-toolbar { margin-bottom: 0; }
+.admin-orders-filters .menu-toolbar .menu-results { margin-bottom: 0; }
+.stats-grid--orders { margin-bottom: 2px; }
+.stats-grid--orders .stat-card--rev     { grid-column: span 4; }
+.stats-grid--orders .stat-card--order   { grid-column: span 3; }
+.stats-grid--orders .stat-card--pending { grid-column: span 3; }
+.stats-grid--orders .stat-card--prod    { grid-column: span 2; }
+
+/* Status pill tones (active). */
+.menu-pill--warn.active   { background: var(--warn);   border-color: var(--warn);   box-shadow: 0 6px 22px -8px rgba(242,176,29,.5); }
+.menu-pill--info.active   { background: var(--info);   border-color: var(--info);   box-shadow: 0 6px 22px -8px rgba(31,95,168,.5); }
+.menu-pill--good.active   { background: var(--good);   border-color: var(--good);   box-shadow: 0 6px 22px -8px rgba(44,110,63,.5); }
+.menu-pill--bad.active    { background: var(--bad);    border-color: var(--bad);    box-shadow: 0 6px 22px -8px rgba(179,38,30,.5); }
+.menu-pill--accent.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 6px 22px -8px rgba(232,75,35,.5); }
+.menu-pill--all.active    { background: var(--ink);    border-color: var(--ink);    box-shadow: 0 6px 22px -8px rgba(29,26,21,.5); }
+
+/* Orders table */
+.table--orders th { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.ocell-invoice, .ocell-cust-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.ocell-no { font-family: var(--font-mono, ui-monospace, monospace); font-size: 13.5px; font-weight: 750; color: var(--ink); letter-spacing: .01em; }
+.ocell-sub { font-size: 12px; color: var(--muted); }
+.ocell-cust { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.ocell-avatar, .ocust-avatar {
+    width: 34px; height: 34px; flex: 0 0 34px; border-radius: 11px;
+    display: grid; place-items: center;
+    background: rgba(29,26,21,.06); color: var(--ink-2);
+    font-size: 13px; font-weight: 800;
+}
+.ocell-name { font-weight: 700; color: var(--ink); font-size: 14px; }
+.ocell-item { font-variant-numeric: tabular-nums; font-weight: 800; color: var(--ink-2); }
+.ocell-total { font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ocell-pay { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.ocell-method { font-size: 12px; color: var(--muted); font-weight: 600; }
+.ocell-pay, .ocell-total { white-space: nowrap; }
+.pay-due-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--warn); margin-right: 7px; vertical-align: 2px; animation: pulso 2s var(--ease-soft) infinite; box-shadow: 0 0 0 0 rgba(242,176,29,.45); }
+@keyframes pulso { 0% { box-shadow: 0 0 0 0 rgba(242,176,29,.5); } 70% { box-shadow: 0 0 0 6px rgba(242,176,29,0); } 100% { box-shadow: 0 0 0 0 rgba(242,176,29,0); } }
+.order-open { gap: 6px; white-space: nowrap; }
+.order-open svg { transition: transform .3s var(--ease-soft); }
+.order-open:hover svg { transform: translateX(3px); }
+.empty-state--compact { padding: 54px 20px; }
+
+/* Detail: layout & identity */
+.admin-grid-2.order-detail { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: start; }
+.order-main-col, .order-side-col { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.order-heading { display: flex; align-items: center; gap: 10px; font-variant-numeric: tabular-nums; letter-spacing: .01em; }
+.order-heading .btn-copy { width: 30px; height: 30px; }
+.order-head-actions { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.order-badge-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: -6px 0 20px; }
+.track-chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 6px 13px; border-radius: 999px;
+    background: rgba(13,148,136,.1); color: #0f766e;
+    font-size: 12.5px; font-weight: 700; font-family: var(--font-mono, ui-monospace, monospace);
+}
+.order-card { padding: 20px; background: var(--card); border: 1px solid var(--hairline); border-radius: var(--r-lg); }
+.order-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
+.order-card-head h3 { margin: 0; }
+.cancel-banner {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 16px 18px; margin-bottom: 20px; border-radius: var(--r-lg);
+    background: rgba(179,38,30,.07); border: 1px solid rgba(179,38,30,.22);
+    color: var(--ink); font-size: 14px; line-height: 1.55;
+}
+.cancel-banner svg { flex: none; color: var(--bad); margin-top: 2px; }
+.cancel-banner em { color: var(--bad); }
+.ocust-ident { display: flex; align-items: center; gap: 13px; margin-bottom: 18px; }
+.ocust-avatar--lg { width: 46px; height: 46px; flex-basis: 46px; border-radius: 14px; font-size: 16px; background: rgba(232,75,35,.12); color: var(--accent-deep); }
+.ocust-ident-meta { display: flex; flex-direction: column; gap: 2px; }
+.ocust-ident-meta strong { font-size: 15.5px; color: var(--ink); }
+.ocust-ident-meta a, .ocust-ident-meta span { font-size: 13px; color: var(--muted); }
+.ocust-ident-meta a:hover { color: var(--accent); }
+.meta-cell--full { grid-column: 1 / -1; }
+.promo-chip {
+    display: inline-block; padding: 3px 10px; border-radius: 8px;
+    background: rgba(122,90,184,.12); color: #6d4895;
+    font-family: var(--font-mono, ui-monospace, monospace); font-size: 12px; font-weight: 700;
+}
+
+/* Detail items */
+.oitems { display: flex; flex-direction: column; }
+.oitem {
+    display: flex; align-items: center; gap: 13px;
+    padding: 12px 0; border-bottom: 1px solid var(--hairline-s);
+}
+.oitem:first-child { padding-top: 2px; }
+.oitem:last-child { border-bottom: none; }
+.oitem-thumb { width: 48px; height: 48px; flex: 0 0 48px; border-radius: 12px; overflow: hidden; background: var(--bg-soft); border: 1px solid var(--hairline); }
+.oitem-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.oitem-ph { width: 100%; height: 100%; display: grid; place-items: center; font-weight: 800; color: var(--muted); font-size: 15px; }
+.oitem-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.oitem-name { font-weight: 700; color: var(--ink); font-size: 14px; }
+.oitem-meta { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.oitem-sub { font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; font-size: 14px; white-space: nowrap; }
+
+/* Detail payment */
+.pay-amount-banner { margin-bottom: 16px; }
+.proof-box { margin-top: 6px; }
+.proof-preview {
+    position: relative; display: block; margin-top: 10px; overflow: hidden;
+    border-radius: 14px; border: 1px solid var(--hairline);
+}
+.proof-preview img { width: 100%; max-height: 340px; object-fit: cover; display: block; }
+.proof-zoom {
+    position: absolute; inset: auto 10px 10px auto;
+    padding: 6px 12px; border-radius: 999px;
+    background: rgba(29,26,21,.72); color: #fff; font-size: 12px; font-weight: 700;
+    backdrop-filter: blur(4px);
+}
+.proof-missing {
+    margin-top: 12px; padding: 11px 14px; border-radius: 12px;
+    background: rgba(242,176,29,.1); border: 1px dashed rgba(242,176,29,.45);
+    color: #8a5a06; font-size: 13px;
+}
+.order-action { margin-top: 14px; }
+.order-action .btn { width: 100%; justify-content: center; }
+.status-now { font-size: 13.5px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+.status-now strong { color: var(--ink); }
+.status-terminal {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 12px 14px; border-radius: 12px;
+    background: var(--bg-soft); color: var(--ink-2); font-size: 13.5px; line-height: 1.5;
+}
+.status-terminal svg { flex: none; color: var(--ink-2); margin-top: 2px; }
+.order-card .status-extra { margin-top: 10px; }
+
+@media (max-width: 1024px) {
+    .stats-grid--orders .stat-card { grid-column: auto !important; }
+}
