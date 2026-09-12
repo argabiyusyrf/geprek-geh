@@ -1100,10 +1100,7 @@ document.addEventListener('click', (e) => {
         if (editor) editor.innerHTML = descInput && descInput.value ? descInput.value.replace(/\n/g, '<br>') : '';
         if (savedImage) renderImgSaved(); else renderImgEmpty();
         const first = drawer.querySelector('input, textarea, select, button[type="submit"]');
-        if (first) setTimeout(() => {
-            if (first === priceInput) first.focus({ preventScroll: true });
-            else first.focus({ preventScroll: true });
-        }, 220);
+        if (first) setTimeout(() => first.focus({ preventScroll: true }), 220);
     }
 
     function close() {
