@@ -936,21 +936,42 @@ document.addEventListener('click', (e) => {
     const slugPreview = drawer.querySelector('#product-slug-preview');
     const priceInput = drawer.querySelector('[name="price"]');
     const stockInput = drawer.querySelector('[name="stock"]');
-    const imgInput = drawer.querySelector('#product-image-input');
-    const imgPreviewWrap = drawer.querySelector('#product-image-preview-wrap');
-    const imgPreview = drawer.querySelector('#product-image-preview');
-    const imgNote = drawer.querySelector('#product-image-note');
+    const stockRange = drawer.querySelector('[data-stock-range]');
+    const descInput = drawer.querySelector('[name="description"]');
+    const editor = drawer.querySelector('[data-editor]');
+    const editorToolbar = drawer.querySelector('.editor-toolbar');
+    const imgField = drawer.querySelector('[data-pimg-field]');
+    const imgInput = drawer.querySelector('[data-pimg-input]');
+    const imgEmpty = drawer.querySelector('[data-pimg-empty]');
+    const imgPreview = drawer.querySelector('[data-pimg-preview]');
+    const imgImg = drawer.querySelector('[data-pimg-img]');
+    const imgName = drawer.querySelector('[data-pimg-name]');
+    const imgNote = drawer.querySelector('[data-pimg-note]');
+    const imgActions = drawer.querySelector('[data-pimg-actions]');
+    const imgReplace = drawer.querySelector('[data-pimg-replace]');
+    const imgClear = drawer.querySelector('[data-pimg-clear]');
+    const imgError = drawer.querySelector('[data-pimg-error]');
 
     const addAction = '/geprek-geh/admin/products';
     const categories = window.__gehCategories || [];
+    const products = window.__gehProducts || [];
     const PRODUCT_IMG_BASE = '/geprek-geh/assets/uploads/products/';
+    const IMG_MAX = 5 * 1024 * 1024;
+    const IMG_ALLOWED = ['image/png', 'image/jpeg', 'image/webp'];
+    const IMG_EXT = ['png', 'jpg', 'jpeg', 'webp'];
+    const STOCK_MAX = 500;
     let currentId = null;
+    let savedImage = null;
 
+    // ── helpers ────────────────────────────────────────────────
     function slugify(v) {
         return String(v || '').toLowerCase()
             .replace(/[^a-z0-9\s-]/g, '')
             .trim().replace(/\s+/g, '-').replace(/-+/g, '-');
     }
+    function digits(v) { return String(v || '').replace(/\D/g, ''); }
+    function fmtPrice(v) { return digits(v).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+    function show(el, on) { if (el) el.hidden = !on; }
 
     function fillCategorySelect(selectedId) {
         const sel = form.querySelector('[name="category_id"]');
@@ -961,16 +982,83 @@ document.addEventListener('click', (e) => {
         if (selectedId) sel.value = String(selectedId);
     }
 
-    function previewImage(src) {
-        if (src) {
-            imgPreview.src = src;
-            imgPreviewWrap.hidden = false;
-        } else {
-            imgPreview.removeAttribute('src');
-            imgPreviewWrap.hidden = true;
-        }
+    // ── stok: slider + stepper sinkron ──────────────────────
+    function syncStock() {
+        const v = Math.max(0, parseInt(stockInput.value, 10) || 0);
+        stockInput.value = v;
+        if (stockRange) stockRange.value = Math.min(v, STOCK_MAX);
     }
 
+    // ── gambar: kosong / tersimpan / file baru ──────────────
+    function imgAccept(file) {
+        const okMime = IMG_ALLOWED.includes(file.type);
+        const ext = (file.name || '').split('.').pop().toLowerCase();
+        if (!okMime && !IMG_EXT.includes(ext)) {
+            setImgError('Format tidak didukung. Gunakan PNG, JPG, atau WebP.');
+            return false;
+        }
+        if (file.size > IMG_MAX) {
+            setImgError('Ukuran file melebihi 5MB. Pilih gambar yang lebih kecil.');
+            return false;
+        }
+        return true;
+    }
+    function setImgError(msg) {
+        if (!imgError) return;
+        imgError.textContent = msg;
+        imgError.hidden = !msg;
+    }
+    function renderImgEmpty() {
+        show(imgEmpty, true);
+        show(imgPreview, false);
+        show(imgActions, false);
+    }
+    function renderImgSaved() {
+        if (!savedImage) { renderImgEmpty(); return; }
+        setImgError('');
+        show(imgEmpty, false);
+        show(imgPreview, true);
+        show(imgActions, true);
+        if (imgImg) imgImg.src = PRODUCT_IMG_BASE + savedImage;
+        if (imgName) imgName.textContent = savedImage;
+        if (imgNote) imgNote.textContent = 'Tersimpan · pilih “Ganti” untuk memperbarui';
+        show(imgClear, false);
+    }
+    function renderImgFile(file) {
+        setImgError('');
+        show(imgEmpty, false);
+        show(imgPreview, true);
+        show(imgActions, true);
+        if (imgImg && file) {
+            try { imgImg.src = URL.createObjectURL(file); }
+            catch (_) { imgImg.src = ''; }
+        }
+        if (imgName) imgName.textContent = file.name;
+        if (imgNote) imgNote.textContent = 'Gambar baru · mulai terpakai saat menyimpan';
+        show(imgClear, true);
+    }
+
+    // ── editor B/I/U ─────────────────────────────────────────
+    function refreshEditorState() {
+        if (!editorToolbar) return;
+        editorToolbar.querySelectorAll('.editor-btn').forEach((btn) => {
+            const cmd = btn.dataset.ed;
+            btn.classList.toggle('is-active', document.queryCommandState(cmd));
+        });
+    }
+    function editorToValue() {
+        if (!editor) return '';
+        const html = editor.innerHTML || '';
+        return html
+            .replace(/<div><br><\/div>/gi, '\n')
+            .replace(/<div>\s*<\/div>/gi, '\n')
+            .replace(/<br\s*\/?>/gi, '\n')
+            .replace(/<\/div>/gi, '')
+            .replace(/<div>/gi, '\n')
+            .trim();
+    }
+
+    // ── lifecycle ────────────────────────────────────────────
     function resetForm() {
         if (!form) return;
         form.reset();
@@ -978,10 +1066,17 @@ document.addEventListener('click', (e) => {
         form.querySelectorAll('.is-invalid').forEach((el) => el.classList.remove('is-invalid'));
         form.querySelectorAll('.field-error').forEach((el) => el.remove());
         currentId = null;
+        savedImage = null;
         if (titleEl) titleEl.textContent = 'Tambah Produk';
         if (submitBtn) submitBtn.textContent = 'Tambah Produk';
         if (slugPreview) slugPreview.textContent = '/nama-produk';
-        previewImage(null);
+        if (priceInput) priceInput.value = '';
+        syncStock();
+        if (descInput) descInput.value = '';
+        if (editor) editor.innerHTML = '';
+        if (imgInput) imgInput.value = '';
+        setImgError('');
+        renderImgEmpty();
         fillCategorySelect(0);
     }
 
@@ -991,8 +1086,15 @@ document.addEventListener('click', (e) => {
         if (overlay) overlay.classList.add('is-open');
         body.style.overflow = 'hidden';
         if (window.__lenis) window.__lenis.stop();
+        if (priceInput) priceInput.value = fmtPrice(priceInput.value);
+        syncStock();
+        if (editor) editor.innerHTML = descInput && descInput.value ? descInput.value.replace(/\n/g, '<br>') : '';
+        if (savedImage) renderImgSaved(); else renderImgEmpty();
         const first = drawer.querySelector('input, textarea, select, button[type="submit"]');
-        if (first) setTimeout(() => first.focus({ preventScroll: true }), 220);
+        if (first) setTimeout(() => {
+            if (first === priceInput) first.focus({ preventScroll: true });
+            else first.focus({ preventScroll: true });
+        }, 220);
     }
 
     function close() {
@@ -1025,14 +1127,11 @@ document.addEventListener('click', (e) => {
         nameInput.value = data.name || '';
         if (slugPreview) slugPreview.textContent = '/' + (data.slug || slugify(data.name));
         fillCategorySelect(data.category_id);
-        if (priceInput) priceInput.value = data.price;
-        if (stockInput) stockInput.value = data.stock;
-        const desc = form.querySelector('[name="description"]');
-        if (desc) desc.value = data.description || '';
-        if (data.image) {
-            imgNote.textContent = 'Gambar: ' + data.image + ' (pilih file untuk mengganti)';
-            previewImage(PRODUCT_IMG_BASE + data.image);
-        }
+        if (priceInput) priceInput.value = data.price || '';
+        if (stockInput) stockInput.value = data.stock || 0;
+        if (descInput) descInput.value = data.description || '';
+        if (editor) editor.innerHTML = data.description ? String(data.description).replace(/\n/g, '<br>') : '';
+        savedImage = data.image || null;
         const active = form.querySelector('[name="is_active"]');
         const featured = form.querySelector('[name="is_featured"]');
         if (active) active.checked = parseInt(data.is_active) === 1;
@@ -1052,13 +1151,108 @@ document.addEventListener('click', (e) => {
         });
     }
 
-    // image file → local preview
-    if (imgInput && imgPreview) {
+    // harga: hanya angka + format titik ribuan
+    if (priceInput) {
+        priceInput.addEventListener('input', () => {
+            priceInput.value = fmtPrice(priceInput.value);
+        });
+    }
+
+    // stok: slider ⇄ stepper
+    if (stockInput && stockRange) {
+        stockRange.addEventListener('input', () => {
+            stockInput.value = Math.min(Math.max(0, parseInt(stockRange.value, 10) || 0), STOCK_MAX);
+        });
+        stockInput.addEventListener('input', () => {
+            const v = Math.max(0, parseInt(digits(stockInput.value), 10) || 0);
+            stockInput.value = v;
+            stockRange.value = Math.min(v, STOCK_MAX);
+        });
+    }
+    drawer.querySelectorAll('[data-stock-step]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const step = parseInt(btn.dataset.stockStep, 10) || 0;
+            const v = Math.max(0, (parseInt(stockInput.value, 10) || 0) + step);
+            stockInput.value = v;
+            if (stockRange) stockRange.value = Math.min(v, STOCK_MAX);
+            stockInput.focus();
+        });
+    });
+
+    // gambar: preview / ganti / batal / drag & drop
+    function handleImgFile(file) {
+        if (!file) return;
+        if (!imgAccept(file)) {
+            imgInput.value = '';
+            if (savedImage) renderImgSaved(); else renderImgEmpty();
+            return;
+        }
+        renderImgFile(file);
+    }
+    if (imgInput) {
         imgInput.addEventListener('change', () => {
-            const file = imgInput.files && imgInput.files[0];
-            if (file) {
-                imgNote.textContent = file.name;
-                previewImage(URL.createObjectURL(file));
+            handleImgFile(imgInput.files && imgInput.files[0]);
+        });
+    }
+    if (imgReplace) {
+        imgReplace.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            imgInput.click();
+        });
+    }
+    if (imgClear) {
+        imgClear.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            imgInput.value = '';
+            setImgError('');
+            if (savedImage) renderImgSaved(); else renderImgEmpty();
+        });
+    }
+    if (imgField && window.FileReader) {
+        ['dragenter', 'dragover'].forEach((ev) =>
+            imgField.addEventListener(ev, (e) => { e.preventDefault(); imgField.classList.add('is-dragover'); }));
+        ['dragleave', 'drop'].forEach((ev) =>
+            imgField.addEventListener(ev, (e) => { e.preventDefault(); imgField.classList.remove('is-dragover'); }));
+        imgField.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+            if (!file) return;
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            imgInput.files = dt.files;
+            handleImgFile(file);
+        });
+    }
+
+    // editor: toolbar B/I/U
+    drawer.querySelectorAll('.editor-btn').forEach((btn) => {
+        btn.addEventListener('mousedown', (e) => e.preventDefault());
+        btn.addEventListener('click', () => {
+            editor.focus();
+            document.execCommand(btn.dataset.ed, false, null);
+            refreshEditorState();
+        });
+    });
+    if (editor) {
+        ['keyup', 'mouseup', 'input'].forEach((ev) => editor.addEventListener(ev, refreshEditorState));
+    }
+    document.addEventListener('selectionchange', () => {
+        if (editor && editorToolbar && editor.contains(document.activeElement)) refreshEditorState();
+    });
+    if (editor && editor.firstChild && editor.firstChild.nodeName === '#text' && editor.getAttribute('data-placeholder')) {
+        // placeholder via CSS :empty — text nodes only appear after editing
+    }
+
+    // form submit → normalisasi editor, harga, tutup drawer
+    if (form) {
+        form.addEventListener('submit', () => {
+            if (descInput) descInput.value = editorToValue();
+            if (priceInput) priceInput.value = digits(priceInput.value);
+            if (submitBtn && !submitBtn.classList.contains('is-loading')) {
+                submitBtn.classList.add('is-loading');
+                submitBtn.disabled = true;
             }
         });
     }
@@ -1083,16 +1277,6 @@ document.addEventListener('click', (e) => {
         if (e.key === 'Escape' && drawer.classList.contains('is-open')) close();
     });
 
-    // loading state on submit
-    if (form) {
-        form.addEventListener('submit', () => {
-            if (submitBtn && !submitBtn.classList.contains('is-loading')) {
-                submitBtn.classList.add('is-loading');
-                submitBtn.disabled = true;
-            }
-        });
-    }
-
     // auto-open via ?create=1 / ?edit={id} (+ error-restore: keep server-rendered values)
     const qs = new URLSearchParams(window.location.search);
     const drawerError = window.__gehDrawerError || null;
@@ -1102,10 +1286,12 @@ document.addEventListener('click', (e) => {
     } else if (qs.get('edit')) {
         const targetId = parseInt(qs.get('edit'), 10);
         if (drawerError && drawerError.mode === 'edit' && drawerError.id === targetId) {
+            const found = products.find((p) => parseInt(p.id) === targetId);
+            if (found) savedImage = found.image || null;
             setEditState(targetId);                                    // keep server-rendered values+errors
             open();
         } else {
-            const found = (window.__gehProducts || []).find((p) => parseInt(p.id) === targetId);
+            const found = products.find((p) => parseInt(p.id) === targetId);
             if (found) openForEdit(found);
         }
     }
