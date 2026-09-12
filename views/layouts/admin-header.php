@@ -6,7 +6,7 @@
     <title>Admin — Geprek Geh</title>
     <link rel="stylesheet" href="/geprek-geh/public/fonts/fonts.css">
     <link rel="stylesheet" href="/geprek-geh/vendor/css/lenis.css">
-    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260912t">
+    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260912u">
     <script>document.documentElement.classList.add('js');</script>
 </head>
 <body class="admin-body">

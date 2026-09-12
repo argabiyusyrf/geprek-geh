@@ -1418,6 +1418,7 @@ document.addEventListener('click', (e) => {
             if (found) openForEdit(found);
         }
     }
+    if (nameInput) nameInput.addEventListener('input', () => updateSlugPreview(nameInput.value));
 })();
 
 /* ── Admin Kode Promo: drawer tambah/edit ── */
