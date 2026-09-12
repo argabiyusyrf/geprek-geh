@@ -1,5 +1,26 @@
 <?php $admin_page_title = 'Dashboard'; ?>
 
+<div class="admin-hero">
+    <div>
+        <span class="admin-hero-eyebrow">Panel Admin · <?= e($admin_welcome_date) ?></span>
+        <h2 class="admin-hero-title">Selamat bekerja, <?= e($_SESSION['user_name']) ?></h2>
+        <p class="admin-hero-sub">
+            <?php if ($stats['pending'] > 0): ?>
+                Ada <strong><?= $stats['pending'] ?></strong> pesanan menunggu konfirmasi · hari ini <?= $stats['today_orders'] ?> pesanan masuk (<?= rupiah($stats['today_revenue']) ?>).
+            <?php else: ?>
+                Semua pesanan terkonfirmasi. Hari ini <?= $stats['today_orders'] ?> pesanan masuk (<?= rupiah($stats['today_revenue']) ?>).
+            <?php endif; ?>
+        </p>
+    </div>
+    <div class="admin-hero-actions">
+        <a href="/geprek-geh/admin/products/create" class="btn btn-primary btn-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Produk Baru
+        </a>
+        <a href="/geprek-geh/admin/orders" class="btn btn-ghost btn-sm">Kelola Pesanan</a>
+    </div>
+</div>
+
 <div class="stats-grid">
     <div class="stat-card stat-card--rev">
         <span class="stat-icon">
