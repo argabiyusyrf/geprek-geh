@@ -2022,3 +2022,38 @@ document.addEventListener('click', (e) => {
         });
     });
 })();
+
+/* ── Admin orders: status stepper (buttons instead of select) ── */
+(function orderStatusStepper() {
+    const forms = document.querySelectorAll('[data-status-stepper]');
+    if (!forms.length) return;
+
+    forms.forEach((form) => {
+        const panel = form.querySelector('[data-status-panel]');
+        if (!panel) return;
+        const statusInput = panel.querySelector('[data-panel-status]');
+        const labelEl = panel.querySelector('[data-panel-label]');
+
+        const openExtra = (btn) => {
+            const to = btn.dataset.openExtra;
+            statusInput.value = to;
+            labelEl.textContent = btn.dataset.label || '';
+            panel.querySelectorAll('[data-panel-extra]').forEach((x) => { x.hidden = x.dataset.panelExtra !== to; });
+            panel.hidden = false;
+            const el = panel.querySelector('[data-panel-extra="' + to + '"] input, [data-panel-extra="' + to + '"] textarea');
+            if (el) setTimeout(() => el.focus(), 0);
+        };
+
+        const direct = form.querySelectorAll('[data-step]');
+        direct.forEach((b) => b.addEventListener('click', () => {
+            statusInput.value = b.dataset.step;
+            form.requestSubmit();
+        }));
+
+        const extras = form.querySelectorAll('[data-open-extra]');
+        extras.forEach((b) => b.addEventListener('click', () => openExtra(b)));
+
+        const cancelBtn = panel.querySelector('[data-panel-cancel]');
+        if (cancelBtn) cancelBtn.addEventListener('click', () => { panel.hidden = true; });
+    });
+})();
