@@ -198,7 +198,7 @@
                     <span class="editor-hint">Pilih teks lalu format: <b>B</b>, <i>I</i>, <u>U</u></span>
                 </div>
                 <div class="editor-area" contenteditable="true" data-editor role="textbox" aria-multiline="true" aria-label="Deskripsi produk" data-placeholder="Cara penyajian, level sambal, bahan, dll."></div>
-                <textarea name="description" hidden data-editor-input></textarea>
+                <textarea name="description" hidden data-editor-input><?= e(\fval($formOld, [], 'description', '')) ?></textarea>
             </div>
         </div>
 
