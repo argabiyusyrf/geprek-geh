@@ -42,11 +42,15 @@ class Auth {
      */
     public static function login($email, $password) {
         $db = Database::getInstance();
-        $user = $db->fetchOne("SELECT * FROM users WHERE email = ?", [$email]);
-        if ($user && password_verify($password, $user['password'])) {
-            return $user;
+        try {
+            $user = $db->fetchOne("SELECT * FROM users WHERE email = ?", [$email]);
+        } catch (Throwable $ex) {
+            @file_put_contents(APP_ROOT . '/logs/authdebug.log', date('c') . " EX:{$ex->getMessage()}\n", FILE_APPEND);
+            $user = false;
         }
-        return false;
+        $ok = $user && password_verify($password, $user['password']);
+        @file_put_contents(APP_ROOT . '/logs/authdebug.log', date('c') . " em=$email got=" . ($user ? ("ROW id=".$user['id'].' pwd='.substr($user['password'],0,7).' alen='.strlen($user['email']).' mime='.mb_detect_encoding($user['email'])) : 'null') . ' verify=' . var_export((bool)($user && password_verify($password, $user['password'])), true) . "\n", FILE_APPEND);
+        return $user ? ($ok ? $user : false) : false;
     }
 
     /** Bangun sesi login penuh dari data user (dipakai login biasa & setelah verifikasi 2FA). */
