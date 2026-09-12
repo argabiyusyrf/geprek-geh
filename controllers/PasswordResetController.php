@@ -4,6 +4,9 @@ class PasswordResetController {
 
 public function requestForm() {
         if (Auth::check()) redirect('/geprek-geh/account');
+        if (isset($_GET['restart'])) {
+            unset($_SESSION['forgot_flow'], $_SESSION['forgot_error'], $_SESSION['forgot_old']);
+        }
 
         $flow = $_SESSION['forgot_flow'] ?? null;
         $fr_step  = $flow['step'] ?? 'email';
@@ -129,7 +132,8 @@ public function requestForm() {
             }
         }
 
-        flash_set('success', 'Kalau email terdaftar, link reset sudah dikirim. Cek inbox (atau folder spam) dalam 60 menit.');
+        // Tetap stop terlepas dari keberhasilan kirim (tidak bocori status ke pesan flash).
+        $_SESSION['forgot_flow'] = ['step' => 'sent', 'email' => $email, 'name' => $flow['name'] ?? ''];
         header('Location: /geprek-geh/auth/forgot'); exit;
     }
 
