@@ -52,7 +52,7 @@ class Auth {
     /** Bangun sesi login penuh dari data user (dipakai login biasa & setelah verifikasi 2FA). */
     public static function establishSession(array $user) {
         session_regenerate_id(true);
-        unset($_SESSION['twofa_uid'], $_SESSION['twofa_name'], $_SESSION['twofa_role']);
+        unset($_SESSION['twofa_uid'], $_SESSION['twofa_name'], $_SESSION['twofa_role'], $_SESSION['twofa_remember']);
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['role'] = $user['role'];
@@ -184,11 +184,97 @@ class Auth {
         return true;
     }
 
+    /**
+     * REMEMBER ME — persistent login cookie (30 hari).
+     * Cookie `gg_remember` = selector(32 hex) + token(64 hex). Hanya hash token yang disimpan di DB.
+     */
+
+    private const REMEMBER_COOKIE = 'gg_remember';
+    private const REMEMBER_TTL    = 2592000; // 30 hari
+
+    /** Terbitkan token remember baru untuk user, tulis cookie. */
+    public static function issueRememberToken(int $userId): void {
+        $selector = bin2hex(random_bytes(16));
+        $token    = bin2hex(random_bytes(32));
+        Database::getInstance()->insert('remember_tokens', [
+            'user_id'    => $userId,
+            'selector'   => $selector,
+            'token_hash' => hash('sha256', $token),
+            'expires_at' => date('Y-m-d H:i:s', time() + self::REMEMBER_TTL),
+        ]);
+        self::setRememberCookie($selector . $token, self::REMEMBER_TTL);
+    }
+
+    /** Hapus semua token remember milik user (password diganti, logout, dll). */
+    public static function purgeRememberTokens(int $userId): void {
+        Database::getInstance()->delete('remember_tokens', 'user_id = ?', [$userId]);
+    }
+
+    /** Hapus baris token berdasarkan selector dari cookie (dipakai logout). */
+    public static function clearRememberTokenByCookie(): void {
+        $cookie = $_COOKIE[self::REMEMBER_COOKIE] ?? '';
+        if (strlen($cookie) === 96) {
+            Database::getInstance()->delete('remember_tokens', 'selector = ?', [substr($cookie, 0, 32)]);
+        }
+        self::clearRememberCookie();
+    }
+
+    /** Auto-login dari cookie remember. Dipanggil di bootstrap setiap request saat belum login. */
+    public static function autoLoginFromRemember(): bool {
+        $cookie = $_COOKIE[self::REMEMBER_COOKIE] ?? '';
+        if ($cookie === '') return false;
+        $user = self::consumeRememberToken($cookie);
+        if (!$user) {
+            self::clearRememberCookie();
+            return false;
+        }
+        self::establishSession($user);
+        return true;
+    }
+
+    /** Validasi cookie remember → return data user bila valid, else null. Token tetap berlaku (tidak dikonsumsi). */
+    private static function consumeRememberToken(string $cookie) {
+        if (strlen($cookie) !== 96) return null;
+        $selector = substr($cookie, 0, 32);
+        $token    = substr($cookie, 32);
+        $row = Database::getInstance()->fetchOne(
+            "SELECT * FROM remember_tokens WHERE selector = ? AND expires_at > NOW()",
+            [$selector]
+        );
+        if (!$row) return null;
+        if (!hash_equals($row['token_hash'], hash('sha256', $token))) return null;
+        return Database::getInstance()->fetchOne("SELECT id, name, email, role, phone FROM users WHERE id = ?", [$row['user_id']]);
+    }
+
+    private static function setRememberCookie(string $value, int $ttl): void {
+        setcookie(self::REMEMBER_COOKIE, $value, [
+            'expires'  => time() + $ttl,
+            'path'     => '/',
+            'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+    }
+
+    public static function clearRememberCookie(): void {
+        if (isset($_COOKIE[self::REMEMBER_COOKIE])) {
+            unset($_COOKIE[self::REMEMBER_COOKIE]);
+        }
+        setcookie(self::REMEMBER_COOKIE, '', [
+            'expires'  => time() - 3600,
+            'path'     => '/',
+            'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+    }
+
     public static function logout() {
         if (self::check()) {
             $db = Database::getInstance();
             $db->delete('sessions', 'session_id = ?', [session_id()]);
         }
+        self::clearRememberTokenByCookie();
         session_destroy();
         header('Location: /geprek-geh/');
         exit;
