@@ -983,10 +983,19 @@ document.addEventListener('click', (e) => {
     }
 
     // ── stok: slider + stepper sinkron ──────────────────────
+    function paintRange() {
+        if (!stockRange) return;
+        const pct = (parseInt(stockRange.value, 10) / STOCK_MAX) * 100;
+        const color = 'var(--accent)';
+        stockRange.style.background =
+            'linear-gradient(to right, ' + color + ' 0%, ' + color + ' ' + pct +
+            '%, rgba(29,26,21,0.08) ' + pct + '%)';
+    }
     function syncStock() {
         const v = Math.max(0, parseInt(stockInput.value, 10) || 0);
         stockInput.value = v;
         if (stockRange) stockRange.value = Math.min(v, STOCK_MAX);
+        paintRange();
     }
 
     // ── gambar: kosong / tersimpan / file baru ──────────────
@@ -1162,11 +1171,13 @@ document.addEventListener('click', (e) => {
     if (stockInput && stockRange) {
         stockRange.addEventListener('input', () => {
             stockInput.value = Math.min(Math.max(0, parseInt(stockRange.value, 10) || 0), STOCK_MAX);
+            paintRange();
         });
         stockInput.addEventListener('input', () => {
             const v = Math.max(0, parseInt(digits(stockInput.value), 10) || 0);
             stockInput.value = v;
             stockRange.value = Math.min(v, STOCK_MAX);
+            paintRange();
         });
     }
     drawer.querySelectorAll('[data-stock-step]').forEach((btn) => {
@@ -1175,6 +1186,7 @@ document.addEventListener('click', (e) => {
             const v = Math.max(0, (parseInt(stockInput.value, 10) || 0) + step);
             stockInput.value = v;
             if (stockRange) stockRange.value = Math.min(v, STOCK_MAX);
+            paintRange();
             stockInput.focus();
         });
     });
