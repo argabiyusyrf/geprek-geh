@@ -49,7 +49,15 @@ class Auth {
             $user = false;
         }
         $ok = $user && password_verify($password, $user['password']);
-        @file_put_contents(dirname(__DIR__) . '/logs/authdebug.log', date('c') . " em=$email got=" . ($user ? ("ROW id=".$user['id'].' pwd='.substr($user['password'],0,7).' alen='.strlen($user['email']).' mime='.mb_detect_encoding($user['email'])) : 'null') . ' verify=' . var_export((bool)($user && password_verify($password, $user['password'])), true) . "\n", FILE_APPEND);
+        $dbg = "em=$email got=" . ($user ? 'ROW' : 'null') . ' verify=' . var_export((bool)$ok, true);
+        try {
+            $dbg .= ' | cnt=' . var_export($db->fetchOne("SELECT COUNT(*) c FROM users WHERE email = ?", [$email]), true);
+            $dbg .= ' id_only=' . var_export($db->fetchOne("SELECT id FROM users WHERE email = ?", [$email]), true);
+            $dbg .= ' id1=' . var_export($db->fetchOne("SELECT id FROM users WHERE id = 1"), true);
+            $dbg .= ' tx=' . var_export($db->getConnection()->inTransaction(), true);
+            $dbg .= ' ac=' . $db->fetchOne("SELECT @@autocommit")['@@autocommit'] . ' iso=' . $db->fetchOne("SELECT @@transaction_isolation")['@@transaction_isolation'];
+        } catch (Throwable $ex) { $dbg .= ' | proberr:' . $ex->getMessage(); }
+        @file_put_contents(dirname(__DIR__) . '/logs/authdebug.log', date('c') . ' ' . $dbg . "\n", FILE_APPEND);
         return $user ? ($ok ? $user : false) : false;
     }
 
