@@ -4773,6 +4773,36 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
     .chart-donut .chart-legend { width: 100%; }
 }
 
+/* ─── Admin v3 layout rhythm (asymmetric bento) ──────────── */
+/* Stats: bento spans — revenue & pending get the widest cells */
+.stats-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.stat-card--rev     { grid-column: span 3; }
+.stat-card--order   { grid-column: span 2; }
+.stat-card--pending { grid-column: span 3; }
+.stat-card--prod    { grid-column: span 2; }
+.stat-card--cust    { grid-column: span 2; }
+
+/* Sales chart wider than donut */
+.admin-grid-2.chart-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+
+/* Queue (worklist) wider than quick actions */
+.admin-grid-2:has(.orders-queue) { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+
+@media (max-width: 1024px) {
+    .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stats-grid .stat-card { grid-column: auto; }
+    .stats-grid .stat-card:last-child:nth-child(odd) { grid-column: span 2; }
+}
+@media (max-width: 960px) {
+    .admin-grid-2.chart-grid,
+    .admin-grid-2:has(.orders-queue) { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+    .stats-grid,
+    .stats-grid .stat-card,
+    .stats-grid .stat-card:last-child:nth-child(odd) { grid-template-columns: 1fr; grid-column: auto; }
+}
+
 /* ─── Responsive for v2 pass ─────────────────────────────── */
 @media (max-width: 960px) {
     .pd { grid-template-columns: 1fr; }
