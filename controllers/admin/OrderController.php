@@ -125,6 +125,25 @@ class OrderController {
         require __DIR__ . '/../../views/layouts/admin-footer.php';
     }
 
+    public function printOrder($id) {
+        \Auth::requireAdmin();
+        $db = \Database::getInstance();
+        $order = $this->order($id);
+        if (!$order) {
+            http_response_code(404);
+            exit;
+        }
+        $items = $db->fetchAll(
+            "SELECT oi.*, p.name, p.image, p.slug
+             FROM order_items oi JOIN products p ON oi.product_id = p.id
+             WHERE oi.order_id = ?",
+            [$id]
+        );
+        $app = require __DIR__ . '/../../config/app.php';
+        $payment_details = $app['payment'] ?? [];
+        require __DIR__ . '/../../views/admin/orders/print.php';
+    }
+
     private function transitions($status) {
         $map = [
             'pending'    => ['processing', 'cancelled'],
