@@ -18,31 +18,75 @@ class OrderController {
     public function index() {
         \Auth::requireAdmin();
         $db = \Database::getInstance();
-        $status = $_GET['status'] ?? '';
+
         $allowed = ['pending','processing','shipped','delivered','cancelled'];
+        $status = $_GET['status'] ?? '';
         if (!in_array($status, $allowed, true)) $status = '';
 
-        $page = max(1, (int)($_GET['page'] ?? 1));
+        $q = trim((string) ($_GET['q'] ?? ''));
+        $sort = $_GET['sort'] ?? 'terbaru';
+        $allowed_sort = ['terbaru','terlama','tertinggi','terendah'];
+        if (!in_array($sort, $allowed_sort, true)) $sort = 'terbaru';
+
+        $page = max(1, (int) ($_GET['page'] ?? 1));
         $per_page = 15;
         $offset = ($page - 1) * $per_page;
 
-        $where = "1=1";
+        $where = '1=1';
         $params = [];
         if ($status !== '') {
             $where .= " AND o.status = ?";
             $params[] = $status;
         }
+        if ($q !== '') {
+            $like = '%' . $q . '%';
+            $where .= " AND (o.invoice_no LIKE ? OR u.name LIKE ? OR u.email LIKE ? OR u.phone LIKE ? OR EXISTS (
+                SELECT 1 FROM order_items oi JOIN products p ON p.id = oi.product_id
+                WHERE oi.order_id = o.id AND p.name LIKE ?
+            ))";
+            array_push($params, $like, $like, $like, $like, $like);
+        }
+
+        $kpi = $db->fetchOne(
+            "SELECT
+                COUNT(*) AS total,
+                COALESCE(SUM(CASE WHEN o.payment_status = 'paid' THEN (o.total - o.discount + o.shipping_cost + o.tax) ELSE 0 END), 0) AS revenue,
+                COALESCE(SUM(CASE WHEN o.payment_status = 'unpaid' AND o.status NOT IN ('cancelled','delivered') THEN 1 ELSE 0 END), 0) AS unpaid,
+                COALESCE(SUM(CASE WHEN o.status IN ('processing','shipped') THEN 1 ELSE 0 END), 0) AS active
+             FROM orders o"
+        );
+        $kpis = [
+            'total'   => (int) $kpi['total'],
+            'revenue' => (int) $kpi['revenue'],
+            'unpaid'  => (int) $kpi['unpaid'],
+            'active'  => (int) $kpi['active'],
+        ];
+
+        $status_counts = [];
+        foreach ($db->fetchAll("SELECT status, COUNT(*) AS c FROM orders GROUP BY status") as $row) {
+            $status_counts[$row['status']] = (int) $row['c'];
+        }
+
         $total = (int) $db->fetchColumn(
-            "SELECT COUNT(*) FROM orders o WHERE {$where}",
+            "SELECT COUNT(*) FROM orders o JOIN users u ON u.id = o.user_id WHERE {$where}",
             $params
         );
         $total_pages = max(1, ceil($total / $per_page));
         if ($page > $total_pages) $page = $total_pages;
 
+        $order_dir = [
+            'terbaru'   => 'o.created_at DESC',
+            'terlama'   => 'o.created_at ASC',
+            'tertinggi' => '(o.total - o.discount + o.shipping_cost + o.tax) DESC',
+            'terendah'  => '(o.total - o.discount + o.shipping_cost + o.tax) ASC',
+        ];
+        $sort_sql = $order_dir[$sort];
+
         $orders = $db->fetchAll(
-            "SELECT o.*, u.name AS customer_name, u.email AS customer_email
-             FROM orders o JOIN users u ON o.user_id = u.id
-             WHERE {$where} ORDER BY o.created_at DESC LIMIT {$per_page} OFFSET {$offset}",
+            "SELECT o.*, u.name AS customer_name, u.email AS customer_email, u.phone AS customer_phone,
+                (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id = o.id) AS item_count
+             FROM orders o JOIN users u ON u.id = o.user_id
+             WHERE {$where} ORDER BY {$sort_sql} LIMIT {$per_page} OFFSET {$offset}",
             $params
         );
 
