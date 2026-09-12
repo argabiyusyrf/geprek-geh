@@ -81,19 +81,21 @@ $can_verify = in_array($method, ['transfer', 'ewallet'], true)
     </div>
 <?php else: ?>
     <div class="order-timeline">
-        <?php foreach ($timeline as $i => $step):
-            $done = $cur !== null && $i <= $cur;
-            $is_cur = $cur !== null && $i === $cur;
+        <?php $tl_i = 0;
+        foreach ($timeline as $step):
+            $done = $cur !== null && $tl_i <= $cur;
+            $is_cur = $tl_i === $cur;
         ?>
             <div class="tl-step <?= $done ? 'is-done' : '' ?> <?= $is_cur ? 'is-current' : '' ?>">
-                <span class="tl-dot"><?= $done ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' : ($i + 1) ?></span>
+                <span class="tl-dot"><?= $done ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' : ($tl_i + 1) ?></span>
                 <div class="tl-body">
                     <span class="tl-label"><?= e($step[0]) ?></span>
                     <span class="tl-desc"><?= e($step[1]) ?></span>
                 </div>
-                <?php if ($i < count($timeline) - 1): ?><span class="tl-connector <?= $done && !$is_cur ? 'is-fill' : '' ?>"></span><?php endif; ?>
+                <?php if ($tl_i < count($timeline) - 1): ?><span class="tl-connector <?= $done && !$is_cur ? 'is-fill' : '' ?>"></span><?php endif; ?>
             </div>
-        <?php endforeach; ?>
+        <?php $tl_i++;
+        endforeach; ?>
     </div>
 <?php endif; ?>
 
