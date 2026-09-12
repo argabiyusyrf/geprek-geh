@@ -13,6 +13,7 @@ $proof_exists = !empty($order['payment_proof']) && file_exists(dirname(__DIR__, 
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/geprek-geh/public/favicon.svg">
 <title>Cetak <?= e($order['invoice_no']) ?> — Geprek Geh</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
