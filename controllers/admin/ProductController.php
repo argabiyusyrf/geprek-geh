@@ -14,6 +14,9 @@ class ProductController {
             if ($p['is_active'] && (int) $p['stock'] <= 5) $lowStockCount++;
         }
 
+        $formErrors = \form_errors();
+        $formOld    = \form_old();
+
         require __DIR__ . '/../../views/layouts/admin-header.php';
         require __DIR__ . '/../../views/admin/products/index.php';
         require __DIR__ . '/../../views/layouts/admin-footer.php';
@@ -38,15 +41,25 @@ class ProductController {
         $is_featured = isset($_POST['is_featured']) ? 1 : 0;
 
         if ($name === '') {
-            flash_set('error', 'Nama produk tidak boleh kosong.');
-            header('Location: /geprek-geh/admin/products?create=1'); exit;
+            \form_stash(['name' => 'Nama produk tidak boleh kosong.'], [
+                'name' => $name, 'category_id' => $category_id, 'price' => $price,
+                'stock' => $stock, 'description' => $description,
+                'is_active' => $is_active, 'is_featured' => $is_featured,
+            ]);
+            \flash_set('error', 'Mohon periksa kembali isian form produk.');
+            header('Location: /geprek-geh/admin/products?create=1&error=1'); exit;
         }
         if (!$db->fetchOne("SELECT id FROM categories WHERE id = ?", [$category_id])) {
-            flash_set('error', 'Kategori tidak valid.');
-            header('Location: /geprek-geh/admin/products?create=1'); exit;
+            \form_stash(['category_id' => 'Kategori tidak valid.'], [
+                'name' => $name, 'category_id' => $category_id, 'price' => $price,
+                'stock' => $stock, 'description' => $description,
+                'is_active' => $is_active, 'is_featured' => $is_featured,
+            ]);
+            \flash_set('error', 'Mohon periksa kembali isian form produk.');
+            header('Location: /geprek-geh/admin/products?create=1&error=1'); exit;
         }
         $image = $this->validImageUpload();
-        if ($image === false) { header('Location: /geprek-geh/admin/products?create=1'); exit; }
+        if ($image === false) { header('Location: /geprek-geh/admin/products?create=1&error=1'); exit; }
 
         $db->insert('products', [
             'name'        => $name,
