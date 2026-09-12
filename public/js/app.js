@@ -1316,6 +1316,21 @@ document.addEventListener('click', (e) => {
     const titleEl = drawer.querySelector('#category-drawer-title');
     const submitBtn = drawer.querySelector('#category-submit');
     const items = window.__gehCategories || [];
+    const slugPreview = drawer.querySelector('#category-slug-preview');
+    const nameInput = drawer.querySelector('[name="name"]');
+
+    function slugify(v) {
+        return String(v || '').trim().toLowerCase()
+            .replace(/[^a-z0-9\s_-]/g, '')
+            .replace(/[\s_]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    }
+
+    function updateSlugPreview(v) {
+        if (!slugPreview) return;
+        const s = slugify(v);
+        slugPreview.textContent = s ? '/' + s : '/nama-kategori';
+    }
 
     function resetForm() {
         form.reset();
