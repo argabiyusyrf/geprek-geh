@@ -49,13 +49,16 @@ class Auth {
             $user = false;
         }
         $ok = $user && password_verify($password, $user['password']);
-        $dbg = "em=$email got=" . ($user ? 'ROW' : 'null') . ' verify=' . var_export((bool)$ok, true);
+        $dbg = "em=$email hex=" . bin2hex($email) . " got=" . ($user ? 'ROW' : 'null') . ' verify=' . var_export((bool)$ok, true);
         try {
             $dbg .= ' | cnt=' . var_export($db->fetchOne("SELECT COUNT(*) c FROM users WHERE email = ?", [$email]), true);
-            $dbg .= ' id_only=' . var_export($db->fetchOne("SELECT id FROM users WHERE email = ?", [$email]), true);
             $dbg .= ' id1=' . var_export($db->fetchOne("SELECT id FROM users WHERE id = 1"), true);
             $dbg .= ' tx=' . var_export($db->getConnection()->inTransaction(), true);
             $dbg .= ' ac=' . $db->fetchOne("SELECT @@autocommit")['@@autocommit'] . ' iso=' . $db->fetchOne("SELECT @@transaction_isolation")['@@transaction_isolation'];
+            $cfg = require dirname(__DIR__) . '/config/database.php';
+            $raw = new PDO("mysql:host={$cfg['host']};dbname={$cfg['dbname']};charset={$cfg['charset']}", $cfg['username'], $cfg['password'], [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC, PDO::ATTR_EMULATE_PREPARES=>false]);
+            $st = $raw->prepare("SELECT id,email FROM users WHERE email = ?"); $st->execute([$email]);
+            $dbg .= ' rawNewPDO=' . var_export($st->fetch(), true);
         } catch (Throwable $ex) { $dbg .= ' | proberr:' . $ex->getMessage(); }
         @file_put_contents(dirname(__DIR__) . '/logs/authdebug.log', date('c') . ' ' . $dbg . "\n", FILE_APPEND);
         return $user ? ($ok ? $user : false) : false;
