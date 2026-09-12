@@ -7,6 +7,12 @@ class ProductController {
         $products = $db->fetchAll(
             "SELECT p.*, c.name AS category_name FROM products p JOIN categories c ON p.category_id = c.id ORDER BY p.created_at DESC"
         );
+        $categories = $db->fetchAll("SELECT * FROM categories ORDER BY name");
+
+        $lowStockCount = 0;
+        foreach ($products as $p) {
+            if ($p['is_active'] && (int) $p['stock'] <= 5) $lowStockCount++;
+        }
 
         require __DIR__ . '/../../views/layouts/admin-header.php';
         require __DIR__ . '/../../views/admin/products/index.php';
@@ -15,12 +21,8 @@ class ProductController {
 
     public function create() {
         \Auth::requireAdmin();
-        $db = \Database::getInstance();
-        $categories = $db->fetchAll("SELECT * FROM categories ORDER BY name");
-
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/products/create.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        header('Location: /geprek-geh/admin/products?create=1');
+        exit;
     }
 
     public function store() {
@@ -76,17 +78,45 @@ class ProductController {
     public function edit($id) {
         \Auth::requireAdmin();
         $db = \Database::getInstance();
-        $product = $db->fetchOne("SELECT * FROM products WHERE id = ?", [$id]);
+        $product = $db->fetchOne("SELECT id FROM products WHERE id = ?", [$id]);
         if (!$product) {
             \flash_set('error', 'Produk tidak ditemukan.');
             header('Location: /geprek-geh/admin/products');
             exit;
         }
-        $categories = $db->fetchAll("SELECT * FROM categories ORDER BY name");
+        header('Location: /geprek-geh/admin/products?edit=' . (int) $id);
+        exit;
+    }
 
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/products/edit.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+    private function uniqueSlug(string $base, int $ignoreId = 0): string {
+        $db = \Database::getInstance();
+        $slug = $base;
+        $n = 2;
+        while ($db->fetchOne("SELECT id FROM products WHERE slug = ? AND id != ?", [$slug, $ignoreId])) {
+            $slug = $base . '-' . $n++;
+        }
+        return $slug;
+    }
+
+    private function validImageUpload(): ?string {
+        if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) return null;
+        $file = $_FILES['image'];
+        if ($file['size'] > 5 * 1024 * 1024) {
+            flash_set('error', 'Ukuran gambar maksimal 5MB.');
+            return false;
+        }
+        $imageInfo = @getimagesize($file['tmp_name']);
+        $typeToExt = [IMAGETYPE_PNG => 'png', IMAGETYPE_JPEG => 'jpg', IMAGETYPE_WEBP => 'webp'];
+        if (!$imageInfo || !isset($typeToExt[$imageInfo[2]])) {
+            flash_set('error', 'File gambar tidak valid (PNG/JPG/WebP saja).');
+            return false;
+        }
+        $ext = $typeToExt[$imageInfo[2]];
+        $image = 'product_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+        $upload_dir = __DIR__ . '/../../assets/uploads/products/';
+        if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
+        move_uploaded_file($file['tmp_name'], $upload_dir . $image);
+        return $image;
     }
 
     public function update($id) {
