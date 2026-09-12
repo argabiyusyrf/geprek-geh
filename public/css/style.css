@@ -3753,6 +3753,19 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .order-actions form { display: flex; width: 100%; }
 .order-actions .btn-block { margin-top: 0; }
 
+.order-cancel-box {
+    display: flex; flex-direction: column; gap: 12px;
+    padding: 16px; box-sizing: border-box;
+    border: 1px solid rgba(179,38,30,0.28);
+    background: linear-gradient(180deg, #fffdf9, rgba(179,38,30,0.04));
+    border-radius: 18px;
+}
+.cancel-reason-field { display: flex; flex-direction: column; gap: 7px; width: 100%; }
+.cancel-reason-label { font-size: 12.5px; font-weight: 700; color: var(--ink-2); }
+.order-cancel-box textarea.input { width: 100%; box-sizing: border-box; min-height: 62px; }
+.cancel-field-error { font-size: 12px; font-weight: 600; color: var(--bad); }
+.order-cancel-box .btn-block { margin-top: 0; }
+
 /* ─── About strip ──────────────────────────────────────────── */
 .about-strip {
     background: linear-gradient(160deg, var(--ink), #34603c 240%);
@@ -6459,6 +6472,10 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
     width: 7px; height: 7px; border-radius: 50%; background: var(--warn);
 }
 .status-cancel-btn { margin-top: 12px; }
+.status-cancel-btn[disabled] { opacity: 0.45; cursor: not-allowed; transform: none; }
+.cancel-quota { margin: 9px 0 0; font-size: 12px; color: var(--muted); text-align: center; line-height: 1.5; }
+.cancel-quota strong { color: var(--ink); }
+.cancel-quota--out { color: var(--bad); font-weight: 600; }
 .status-panel {
     margin-top: 12px; padding: 14px; border-radius: 14px;
     border: 1px solid var(--hairline); background: var(--bg-soft);
