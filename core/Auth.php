@@ -269,6 +269,47 @@ class Auth {
         ]);
     }
 
+    // ─────────────────────────── Kata kunci akun (recovery tanpa email) ───────────────────────────
+
+    /** True bila user aktif sudah menyetel kata kunci akun. */
+    public static function keywordSet(): bool {
+        if (!self::check()) return false;
+        $row = Database::getInstance()->fetchOne("SELECT recovery_keyword FROM users WHERE id = ?", [self::id()]);
+        return !empty($row['recovery_keyword']);
+    }
+
+    /** Set/ganti kata kunci akun (disimpan sebagai hash bcrypt). */
+    public static function setRecoveryKeyword(int $userId, string $phrase): void {
+        Database::getInstance()->update('users', ['recovery_keyword' => password_hash($phrase, PASSWORD_DEFAULT)], 'id = ?', [$userId]);
+    }
+
+    /** Verifikasi kata kunci akun. */
+    public static function verifyRecoveryKeyword(int $userId, string $phrase): bool {
+        $row = Database::getInstance()->fetchOne("SELECT recovery_keyword FROM users WHERE id = ?", [$userId]);
+        if (empty($row['recovery_keyword'])) return false;
+        return password_verify($phrase, $row['recovery_keyword']);
+    }
+
+    /** Hapus kata kunci akun (dipakai saat akun dihapus). */
+    public static function clearRecoveryKeyword(int $userId): void {
+        Database::getInstance()->update('users', ['recovery_keyword' => null], 'id = ?', [$userId]);
+    }
+
+    /** Finalize login: purge token lama, bangun sesi, terbitkan remember bila diminta. Exit. */
+    public static function finalizeLogin(array $user, bool $remember): void {
+        self::purgeRememberTokens((int) $user['id']);
+        self::establishSession($user);
+        if ($remember) {
+            self::issueRememberToken((int) $user['id']);
+        } else {
+            self::clearRememberCookie();
+        }
+        flash_set('success', 'Selamat datang, ' . $user['name'] . '!');
+        $redirect = ($user['role'] ?? '') === 'admin' ? '/geprek-geh/admin' : '/geprek-geh/';
+        header("Location: {$redirect}");
+        exit;
+    }
+
     public static function logout() {
         if (self::check()) {
             $db = Database::getInstance();

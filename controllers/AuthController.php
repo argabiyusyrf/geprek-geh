@@ -47,22 +47,7 @@ class AuthController {
             exit;
         }
 
-        self::finalizeLogin($user, $remember);
-    }
-
-    /** Selesaikan login: bersihkan token remember lama, terbitkan yang baru bila diminta. */
-    private static function finalizeLogin(array $user, bool $remember): void {
-        Auth::purgeRememberTokens((int) $user['id']);
-        Auth::establishSession($user);
-        if ($remember) {
-            Auth::issueRememberToken((int) $user['id']);
-        } else {
-            Auth::clearRememberCookie();
-        }
-        flash_set('success', 'Selamat datang, ' . $user['name'] . '!');
-        $redirect = $user['role'] === 'admin' ? '/geprek-geh/admin' : '/geprek-geh/';
-        header("Location: {$redirect}");
-        exit;
+        Auth::finalizeLogin($user, $remember);
     }
 
     public function twoFactorForm() {
@@ -99,14 +84,14 @@ class AuthController {
 
         // Kode TOTP dari aplikasi authenticator
         if (Totp::verify($user['totp_secret'], $code)) {
-            self::finalizeLogin($user, !empty($_SESSION['twofa_remember']));
+            Auth::finalizeLogin($user, !empty($_SESSION['twofa_remember']));
         }
 
         // Recovery code sekali pakai
         $remaining = Totp::matchRecovery($user['totp_recovery'], $code);
         if ($remaining !== null) {
             $db->update('users', ['totp_recovery' => json_encode($remaining)], 'id = ?', [$user['id']]);
-            self::finalizeLogin($user, !empty($_SESSION['twofa_remember']));
+            Auth::finalizeLogin($user, !empty($_SESSION['twofa_remember']));
         }
 
         flash_set('error', 'Kode 2FA salah atau sudah kedaluwarsa.');
