@@ -33,6 +33,33 @@ function flash_set($type, $msg) {
     $_SESSION['flash'] = ['type' => $type, 'msg' => $msg];
 }
 
+/**
+ * Simpan error validasi + input lama agar drawer bisa dibuka ulang
+ * dengan nilai dan pesan error per-field (redirect-only flow).
+ */
+function form_stash(array $errors = [], array $old = []): void {
+    $_SESSION['form_errors'] = $errors;
+    $_SESSION['form_old']    = $old;
+}
+
+function form_errors(): ?array {
+    $e = $_SESSION['form_errors'] ?? null;
+    unset($_SESSION['form_errors']);
+    return $e;
+}
+
+function form_old(): ?array {
+    $o = $_SESSION['form_old'] ?? null;
+    unset($_SESSION['form_old']);
+    return $o;
+}
+
+/** Nilai input: prioritas input lama (error restore) lalu data sumber/db. */
+function fval(?array $old, array $src, string $key, $def = '') {
+    if ($old !== null && array_key_exists($key, $old)) return $old[$key];
+    return $src[$key] ?? $def;
+}
+
 function csrf_token() {
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));

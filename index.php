@@ -196,15 +196,19 @@ $router->post('/admin/products/{id}',      ['Admin\ProductController', 'update']
 $router->post('/admin/products/{id}/delete',['Admin\ProductController', 'delete']);
 $router->get('/admin/categories',          ['Admin\CategoryController', 'index']);
 $router->post('/admin/categories',         ['Admin\CategoryController', 'store']);
+$router->post('/admin/categories/{id}',    ['Admin\CategoryController', 'update']);
 $router->post('/admin/categories/{id}/delete',['Admin\CategoryController', 'delete']);
 $router->get('/admin/orders',              ['Admin\OrderController', 'index']);
 $router->get('/admin/orders/{id}',         ['Admin\OrderController', 'show']);
 $router->post('/admin/orders/{id}/status', ['Admin\OrderController', 'updateStatus']);
 $router->post('/admin/orders/{id}/verify-payment', ['Admin\OrderController', 'verifyPayment']);
 $router->get('/admin/users',               ['Admin\UserController', 'index']);
+$router->post('/admin/users',              ['Admin\UserController', 'store']);
+$router->post('/admin/users/{id}',         ['Admin\UserController', 'update']);
 
 $router->get('/admin/promos',              ['Admin\PromoController', 'index']);
 $router->post('/admin/promos',             ['Admin\PromoController', 'store']);
+$router->post('/admin/promos/{id}',        ['Admin\PromoController', 'update']);
 $router->post('/admin/promos/{id}/toggle', ['Admin\PromoController', 'toggle']);
 $router->post('/admin/promos/{id}/delete', ['Admin\PromoController', 'delete']);
 
