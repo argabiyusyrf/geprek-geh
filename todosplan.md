@@ -4,12 +4,12 @@ Catatan rencana fitur Geprek Geh. Item dicentang bila sudah selesai.
 
 ## Kata kunci (recovery tanpa email) — selesai
 - [x] Kolom `users.recovery_keyword` (hash bcrypt) + migration + schema.sql
-- [x] Lupa password: pilihan metode radio (link email / kata kunci)
-- [x] Verifikasi kata kunci → halaman pemulihan (login langsung / ubah password)
-- [x] Login langsung hormati 2FA; konfirmasi password sama seperti reset
+- [x] Lupa password alur bertahap: email → cek terdaftar → pilih metode (link email / kata kunci)
+- [x] Kata kunci lulus → langsung form ubah password (tanpa halaman antara)
+- [x] Jalur email → layar "link terkirim ke <email>"
 - [x] Wizard setup pasca-register (kata kunci wajib + alamat opsional), bisa dilewati
 - [x] Form atur/ganti kata kunci di Akun → Keamanan
-- [x] Rate limit `keyword:<email>` 5/300 + `keyword-ip:<IP>` 10/600, respon anti-enumeration
+- [x] Rate limit: `forgot-check:<IP>` 15/300, `keyword:<email>` 5/300, `keyword-ip:<IP>` 10/600
 
 ## Pengiriman email — PENDING (belum diputuskan)
 Masalah: driver `php` (`mail()`) sering tidak sampai di environment tanpa MTA/SES. Tidak ada Composer di proyek ini.
