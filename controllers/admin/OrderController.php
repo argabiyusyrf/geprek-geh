@@ -210,7 +210,7 @@ class OrderController {
             if ($customer && !empty($customer['email']) && (int)($customer['notify_email'] ?? 1) === 1) {
                 \Mail::orderStatusChanged($customer['email'], $customer['name'], $order['invoice_no'], \format_status($target)[0], $msg);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             error_log('[AdminOrder] status email failed: ' . $e->getMessage());
         }
 
@@ -270,7 +270,7 @@ class OrderController {
             if ($customer && !empty($customer['email']) && (int)($customer['notify_email'] ?? 1) === 1) {
                 \Mail::orderStatusChanged($customer['email'], $customer['name'], $order['invoice_no'], 'Pembayaran LUNAS', 'Pesanan kamu sedang diproses dapur.');
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             error_log('[AdminOrder] payment email failed: ' . $e->getMessage());
         }
 
