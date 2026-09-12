@@ -4456,6 +4456,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 18px 0; }
 .option-extra.is-visible { display: block; margin-top: -6px; animation: fade-up .35s var(--ease-soft); }
 @keyframes fade-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .recovery-email { display: block; margin-top: 4px; color: var(--accent-deep); font-weight: 700; word-break: break-all; }
+.recovery-email-inline { color: var(--accent-deep); font-weight: 700; word-break: break-all; }
 .setup-steps { display: flex; flex-direction: column; gap: 10px; margin: 0 0 16px; }
 .setup-step { display: flex; align-items: center; gap: 12px; }
 .setup-step-num {
