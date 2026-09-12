@@ -10,6 +10,8 @@ Catatan rencana fitur Geprek Geh. Item dicentang bila sudah selesai.
 - [x] Wizard setup pasca-register (kata kunci wajib + alamat opsional), bisa dilewati
 - [x] Form atur/ganti kata kunci di Akun → Keamanan
 - [x] Rate limit: `forgot-check:<IP>` 15/300, `keyword:<email>` 5/300, `keyword-ip:<IP>` 10/600
+- [x] E2E Playwright 24/24 lolos (wizard step, keyword salah/benar, form ubah password, gating setup, reminder, admin, token remember bersih)
+- [x] Akun stok `argaabiyyu@email.com` kini: password `Argaabiyyu123` (dipulihkan), kata kunci `pedas-goreng-kuning-456`
 
 ## Pengiriman email — PENDING (belum diputuskan)
 Masalah: driver `php` (`mail()`) sering tidak sampai di environment tanpa MTA/SES. Tidak ada Composer di proyek ini.
