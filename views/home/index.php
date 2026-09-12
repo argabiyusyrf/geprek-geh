@@ -161,7 +161,7 @@ $hero_level = $categories[1] ?? null;
                         </div>
                         <?php endif; ?>
                         <?php if ($p['description']): ?>
-                            <p class="product-desc"><?= e(mb_strimwidth($p['description'], 0, 84, '…')) ?></p>
+                            <p class="product-desc"><?= e(mb_strimwidth(strip_tags((string) $p['description']), 0, 84, '…')) ?></p>
                         <?php endif; ?>
                         <div class="product-foot">
                             <b class="product-price"><?= rupiah($p['price']) ?></b>
@@ -246,7 +246,7 @@ $hero_level = $categories[1] ?? null;
                         </div>
                         <?php endif; ?>
                         <?php if ($p['description']): ?>
-                            <p class="product-desc"><?= e(mb_strimwidth($p['description'], 0, 84, '…')) ?></p>
+                            <p class="product-desc"><?= e(mb_strimwidth(strip_tags((string) $p['description']), 0, 84, '…')) ?></p>
                         <?php endif; ?>
                         <div class="product-foot">
                             <b class="product-price"><?= rupiah($p['price']) ?></b>

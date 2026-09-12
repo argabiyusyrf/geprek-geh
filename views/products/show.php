@@ -50,7 +50,7 @@ $out_stock = $product['stock'] <= 0;
             <h1 class="pd-title"><?= e($product['name']) ?></h1>
 
             <?php if ($product['description']): ?>
-                <p class="pd-desc"><?= nl2br(e($product['description'])) ?></p>
+                <p class="pd-desc"><?= rich_text($product['description']) ?></p>
             <?php endif; ?>
 
             <div class="pd-legenda">
@@ -304,7 +304,7 @@ $out_stock = $product['stock'] <= 0;
                         </div>
                         <?php endif; ?>
                         <?php if ($p['description']): ?>
-                            <p class="product-desc"><?= e(mb_strimwidth($p['description'], 0, 84, '…')) ?></p>
+                            <p class="product-desc"><?= e(mb_strimwidth(strip_tags((string) $p['description']), 0, 84, '…')) ?></p>
                         <?php endif; ?>
                         <div class="product-foot">
                             <b class="product-price"><?= rupiah($p['price']) ?></b>

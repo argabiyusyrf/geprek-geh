@@ -168,7 +168,7 @@ if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(
                         </div>
                         <?php endif; ?>
                         <?php if ($p['description']): ?>
-                            <p class="product-desc"><?= e(mb_strimwidth($p['description'], 0, 84, '…')) ?></p>
+                            <p class="product-desc"><?= e(mb_strimwidth(strip_tags((string) $p['description']), 0, 84, '…')) ?></p>
                         <?php endif; ?>
                         <div class="product-foot">
                             <b class="product-price"><?= rupiah($p['price']) ?></b>
