@@ -126,7 +126,7 @@ class PromoController {
             header('Location: /geprek-geh/admin/promos');
             exit;
         }
-        $db->update('promo_codes', ['is_active' => !$promo['is_active']], 'id = ?', [$id]);
+        $db->update('promo_codes', ['is_active' => $promo['is_active'] ? 0 : 1], 'id = ?', [$id]);
         \flash_set('success', 'Status kode promo "' . $promo['code'] . '" diperbarui.');
         header('Location: /geprek-geh/admin/promos');
         exit;
