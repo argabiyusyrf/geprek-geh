@@ -10,6 +10,7 @@ $is_cod = $method === 'cod';
 $created = date('d M Y, H:i', strtotime($order['created_at']));
 $total_qty = array_sum(array_map(fn($it) => (int) $it['quantity'], $items));
 $wa = !empty($order['customer_phone']) ? \wa_link($order['customer_phone']) : null;
+$proof_exists = !empty($order['payment_proof']) && file_exists(dirname(__DIR__, 3) . '/assets/uploads/payments/' . $order['payment_proof']);
 
 $timeline = [
     'pending'    => ['Menunggu Konfirmasi', 'Pesanan masuk — cek bukti pembayaran'],
@@ -234,7 +235,7 @@ $can_verify = in_array($method, ['transfer', 'ewallet'], true)
                 <?php endif; ?>
             </div>
 
-            <?php if (!empty($order['payment_proof'])): ?>
+            <?php if ($proof_exists): ?>
             <div class="proof-box">
                 <span class="meta-label">Bukti Pembayaran</span>
                 <a href="/geprek-geh/assets/uploads/payments/<?= e($order['payment_proof']) ?>" target="_blank" rel="noopener" class="proof-preview">
@@ -242,6 +243,8 @@ $can_verify = in_array($method, ['transfer', 'ewallet'], true)
                     <span class="proof-zoom">Perbesar bukti</span>
                 </a>
             </div>
+            <?php elseif (!empty($order['payment_proof'])): ?>
+                <p class="proof-missing">File bukti tidak ditemukan di server (<code><?= e($order['payment_proof']) ?></code>). Verifikasi manual via WhatsApp.</p>
             <?php elseif (!$is_cod && $order['payment_status'] === 'unpaid'): ?>
                 <p class="proof-missing">Belum ada bukti pembayaran dari pelanggan.</p>
             <?php endif; ?>
