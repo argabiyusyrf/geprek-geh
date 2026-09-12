@@ -45,11 +45,11 @@ class Auth {
         try {
             $user = $db->fetchOne("SELECT * FROM users WHERE email = ?", [$email]);
         } catch (Throwable $ex) {
-            @file_put_contents(APP_ROOT . '/logs/authdebug.log', date('c') . " EX:{$ex->getMessage()}\n", FILE_APPEND);
+            @file_put_contents(dirname(__DIR__) . '/logs/authdebug.log', date('c') . " EX:{$ex->getMessage()}\n", FILE_APPEND);
             $user = false;
         }
         $ok = $user && password_verify($password, $user['password']);
-        @file_put_contents(APP_ROOT . '/logs/authdebug.log', date('c') . " em=$email got=" . ($user ? ("ROW id=".$user['id'].' pwd='.substr($user['password'],0,7).' alen='.strlen($user['email']).' mime='.mb_detect_encoding($user['email'])) : 'null') . ' verify=' . var_export((bool)($user && password_verify($password, $user['password'])), true) . "\n", FILE_APPEND);
+        @file_put_contents(dirname(__DIR__) . '/logs/authdebug.log', date('c') . " em=$email got=" . ($user ? ("ROW id=".$user['id'].' pwd='.substr($user['password'],0,7).' alen='.strlen($user['email']).' mime='.mb_detect_encoding($user['email'])) : 'null') . ' verify=' . var_export((bool)($user && password_verify($password, $user['password'])), true) . "\n", FILE_APPEND);
         return $user ? ($ok ? $user : false) : false;
     }
 
