@@ -112,6 +112,11 @@ $router->get('/auth/forgot',               ['PasswordResetController', 'requestF
 $router->post('/auth/forgot',              ['PasswordResetController', 'request']);
 $router->get('/auth/reset',                ['PasswordResetController', 'resetForm']);
 $router->post('/auth/reset',               ['PasswordResetController', 'reset']);
+// Recovery via kata kunci (tanpa email)
+$router->get('/auth/recovery',             ['RecoveryController', 'choose']);
+$router->post('/auth/recovery/login',      ['RecoveryController', 'loginDirect']);
+$router->get('/auth/recovery/ubah',        ['RecoveryController', 'changeForm']);
+$router->post('/auth/recovery/ubah',       ['RecoveryController', 'change']);
 $router->post('/auth/logout',               ['AuthController', 'logout']);
 $router->get('/auth/2fa',                  ['AuthController', 'twoFactorForm']);
 $router->post('/auth/2fa',                 ['AuthController', 'twoFactorSubmit']);
@@ -144,6 +149,14 @@ $router->post('/account/sessions/revoke-all',   ['ProfileController', 'revokeAll
 // Account — notifications toggle + delete
 $router->post('/account/notifications/toggle', ['ProfileController', 'toggleNotifications']);
 $router->post('/account/delete',               ['ProfileController', 'deleteAccount']);
+
+// Account — setup awal (kata kunci + alamat opsional)
+$router->get('/account/setup',            ['OnboardingController', 'show']);
+$router->post('/account/setup',           ['OnboardingController', 'save']);
+$router->post('/account/setup/skip',      ['OnboardingController', 'skip']);
+
+// Account — kata kunci recovery (profil > keamanan)
+$router->post('/account/keyword',         ['ProfileController', 'changeKeyword']);
 
 // ─── Cart ─────────────────────────────────────────
 $router->get('/cart',                      ['CartController', 'index']);

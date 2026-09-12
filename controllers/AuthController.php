@@ -177,7 +177,7 @@ class AuthController {
 
         if (Auth::register($name, $email, $password, $phone)) {
             flash_set('success', 'Registrasi berhasil! Selamat datang, ' . $name . '!');
-            header('Location: /geprek-geh/');
+            header('Location: /geprek-geh/account/setup');
         } else {
             $errors['email'] = 'Email sudah terdaftar. Gunakan email lain atau silakan login.';
             $_SESSION['reg_old']     = ['name' => $name, 'email' => $email, 'phone' => $phone, 'terms' => $terms === '1' ? '1' : ''];

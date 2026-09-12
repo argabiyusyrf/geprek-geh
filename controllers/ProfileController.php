@@ -37,6 +37,9 @@ class ProfileController {
         $view_data['email_old'] = $_SESSION['email_old'] ?? '';
         $view_data['email_errors'] = $_SESSION['email_errors'] ?? [];
         unset($_SESSION['email_old'], $_SESSION['email_errors']);
+        $view_data['keyword_set'] = !empty($user['recovery_keyword']);
+        $view_data['kw_errors'] = $_SESSION['profile_kw_errors'] ?? [];
+        unset($_SESSION['profile_kw_errors']);
 
         // —— Addresses tab ——
         $view_data['addresses'] = $this->addresses(Auth::id());
