@@ -269,31 +269,74 @@ $can_verify = in_array($method, ['transfer', 'ewallet'], true)
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                     Status <strong><?= $status_label ?></strong> adalah tahap akhir — tidak ada transisi lanjutan.
                 </p>
-            <?php else: ?>
-            <p class="status-now">Saat ini <strong><?= $status_label ?></strong> &rarr; pilih langkah berikutnya.</p>
-            <form method="POST" action="/geprek-geh/admin/orders/<?= $order['id'] ?>/status" data-status-form>
+            <?php else:
+                $rank = ['pending' => 0, 'processing' => 1, 'shipped' => 2, 'delivered' => 3];
+                $cur_rank = $rank[$order['status']] ?? null;
+                $steps = [
+                    'pending'    => 'Menunggu',
+                    'processing' => 'Diproses',
+                    'shipped'    => 'Dikirim',
+                    'delivered'  => 'Selesai',
+                ];
+                $step_i = 0;
+            ?>
+            <p class="status-now">Saat ini <strong><?= $status_label ?></strong> — pilih langkah berikutnya. Langkah yang sudah terlewati <span class="text-muted">abu-abu &amp; nonaktif</span>.</p>
+            <form method="POST" action="/geprek-geh/admin/orders/<?= $order['id'] ?>/status" class="status-stepper-form" data-status-stepper>
                 <?= csrf_field() ?>
-                <select name="status" class="input" data-status-select required>
-                    <option value="" disabled selected>Pilih status berikutnya…</option>
-                    <?php foreach ($transitions as $t): [$tl] = format_status($t); ?>
-                        <option value="<?= $t ?>"><?= $tl ?></option>
-                    <?php endforeach; ?>
-                </select>
-
-                <div class="status-extra" data-status-extra="shipped" hidden>
-                    <label>Nomor Resi <span class="text-muted">(opsional)</span></label>
-                    <input type="text" name="tracking_no" class="input" placeholder="cth. JNE-FFC-000123456" maxlength="80">
+                <div class="status-stepper">
+                    <?php foreach ($steps as $key => $label):
+                        $cls = 'status-step';
+                        $attrs = '';
+                        if ($cur_rank === null || $step_i < $cur_rank) {
+                            $cls .= ' is-past';
+                            $attrs .= ' disabled';
+                        } elseif ($step_i === $cur_rank) {
+                            $cls .= ' is-current';
+                            $attrs .= ' disabled';
+                        } elseif (!in_array($key, $transitions, true)) {
+                            $cls .= ' is-locked';
+                            $attrs .= ' disabled title="Belum dapat dipilih — selesaikan langkah sebelumnya dulu"';
+                        } elseif ($key === 'shipped') {
+                            $cls .= ' is-next has-extra';
+                            $attrs .= ' type="button" data-open-extra="shipped" data-label="Dikirim"';
+                        } else {
+                            $cls .= ' is-next';
+                            $attrs .= ' type="button" data-step="' . $key . '" data-label="' . e($label) . '"';
+                        }
+                    ?>
+                        <button <?= $attrs ?> class="<?= $cls ?>">
+                            <span class="status-step-no"><?= $step_i + 1 ?></span>
+                            <span class="status-step-label"><?= e($label) ?></span>
+                        </button>
+                    <?php $step_i++; endforeach; ?>
                 </div>
 
-                <div class="status-extra" data-status-extra="cancelled" hidden>
-                    <label>Alasan Pembatalan <span class="text-muted">* wajib</span></label>
-                    <textarea name="cancel_reason" class="input" rows="2" placeholder="Alasan ini terlihat oleh pelanggan" maxlength="255"></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-                    Simpan Status
+                <?php if (in_array('cancelled', $transitions, true)): ?>
+                <button type="button" class="btn btn-outline-danger btn-block status-cancel-btn" data-open-extra="cancelled" data-label="Batalkan Pesanan">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+                    Batalkan Pesanan
                 </button>
+                <?php endif; ?>
+
+                <div class="status-panel" data-status-panel hidden>
+                    <span class="status-panel-tag">Langkah berikutnya: <strong data-panel-label></strong></span>
+                    <input type="hidden" name="status" data-panel-status>
+                    <div class="status-extra-field" data-panel-extra="shipped" hidden>
+                        <span class="status-extra-label">Nomor Resi <span class="text-muted">(opsional)</span></span>
+                        <input type="text" name="tracking_no" class="input" placeholder="cth. JNE-FFC-000123456" maxlength="80">
+                    </div>
+                    <div class="status-extra-field" data-panel-extra="cancelled" hidden>
+                        <span class="status-extra-label">Alasan Pembatalan <span class="text-muted">* wajib</span></span>
+                        <textarea name="cancel_reason" class="input" rows="2" placeholder="Alasan ini terlihat oleh pelanggan" maxlength="255" required></textarea>
+                    </div>
+                    <div class="status-panel-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                            Simpan Status
+                        </button>
+                        <button type="button" class="btn btn-ghost" data-panel-cancel>Batal</button>
+                    </div>
+                </div>
             </form>
             <?php endif; ?>
         </div>
