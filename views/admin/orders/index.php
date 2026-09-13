@@ -11,6 +11,61 @@ $status_tabs = [
 ];
 $status_label_map = [];
 foreach ($status_tabs as $k => $v) $status_label_map[$k] = $v[0];
+
+$today = date('Y-m-d');
+$yesterday = date('Y-m-d', strtotime('-1 day'));
+$date_active = $from !== '' || $to !== '';
+$presets = [
+    'Hari Ini'  => [$today, $today],
+    'Kemarin'   => [$yesterday, $yesterday],
+    '7 Hari'    => [date('Y-m-d', strtotime('-6 days')), $today],
+    '30 Hari'   => [date('Y-m-d', strtotime('-29 days')), $today],
+    'Bulan Ini' => [date('Y-m-01'), $today],
+];
+$extra_q = [];
+if ($q !== '') $extra_q['q'] = $q;
+if ($sort !== 'terbaru') $extra_q['sort'] = $sort;
+if ($per !== 15) $extra_q['per'] = $per;
+$period_display = '';
+if ($date_active) {
+    $period_display = ($from !== '' ? date('d M Y', strtotime($from)) : 'sebelumnya')
+        . ($from !== $to && $to !== '' ? ' — ' . date('d M Y', strtotime($to)) : '');
+}
+$clear_params = $extra_q;
+unset($clear_params['q']);
+if ($from !== '') $clear_params['from'] = $from;
+if ($to !== '') $clear_params['to'] = $to;
+if ($status !== '') $clear_params['status'] = $status;
+$search_clear_href = '/geprek-geh/admin/orders' . ($clear_params ? '?' . http_build_query($clear_params) : '');
+$date_reset_params = $extra_q;
+if ($status !== '') $date_reset_params['status'] = $status;
+$date_reset_href = '/geprek-geh/admin/orders' . ($date_reset_params ? '?' . http_build_query($date_reset_params) : '');
+$preset_href = function (string $pf, string $pt) use ($extra_q, $status) {
+    $qp = $extra_q;
+    $qp['from'] = $pf;
+    $qp['to'] = $pt;
+    if ($status !== '') $qp['status'] = $status;
+    return '/geprek-geh/admin/orders?' . http_build_query($qp);
+};
+$page_window = [];
+if ($total_pages <= 7) {
+    $page_window = range(1, $total_pages);
+} else {
+    $page_window[] = 1;
+    $ws = max(2, $page - 2);
+    $we = min($total_pages - 1, $page + 2);
+    if ($ws > 2) $page_window[] = null;
+    for ($i = $ws; $i <= $we; $i++) $page_window[] = $i;
+    if ($we < $total_pages - 1) $page_window[] = null;
+    $page_window[] = $total_pages;
+}
+$qp = $extra_q;
+if ($from !== '') $qp['from'] = $from;
+if ($to !== '') $qp['to'] = $to;
+if ($status !== '') $qp['status'] = $status;
+$page_href = function (int $p) use ($qp) {
+    return '/geprek-geh/admin/orders?' . http_build_query(['page' => $p] + $qp);
+};
 ?>
 
 <div class="page-header page-header--wrap">
@@ -65,7 +120,7 @@ foreach ($status_tabs as $k => $v) $status_label_map[$k] = $v[0];
                     <svg class="menu-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
                     <input type="search" name="q" placeholder="Cari invoice, pelanggan, atau produk…" value="<?= e($q) ?>" class="menu-search-input" autocomplete="off" aria-label="Cari pesanan">
                     <?php if ($q !== ''): ?>
-                        <a href="/geprek-geh/admin/orders<?= $status !== '' ? '?status=' . urlencode($status) : '' ?>" class="menu-search-clear" aria-label="Bersihkan pencarian">&times;</a>
+                        <a href="<?= e($search_clear_href) ?>" class="menu-search-clear" aria-label="Bersihkan pencarian">&times;</a>
                     <?php endif; ?>
                 </div>
 
@@ -93,13 +148,34 @@ foreach ($status_tabs as $k => $v) $status_label_map[$k] = $v[0];
                 </span>
             </div>
 
+            <div class="menu-date-row">
+                <div class="menu-date-presets" role="group" aria-label="Filter periode">
+                    <span class="menu-sort-label">Periode</span>
+                    <a href="<?= e($date_reset_href) ?>" class="menu-pill menu-pill--all <?= !$date_active ? 'active' : '' ?>">Semua</a>
+                    <?php foreach ($presets as $label => [$pf, $pt]): ?>
+                        <a href="<?= e($preset_href($pf, $pt)) ?>" class="menu-pill <?= $from === $pf && $to === $pt ? 'active' : '' ?>">
+                            <?= e($label) ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+                <div class="menu-date-custom">
+                    <input type="date" name="from" value="<?= e($from) ?>" class="input menu-date-input" aria-label="Tanggal mulai">
+                    <span class="menu-date-sep">s.d.</span>
+                    <input type="date" name="to" value="<?= e($to) ?>" class="input menu-date-input" aria-label="Tanggal akhir">
+                    <button type="submit" class="btn btn-sm btn-ghost menu-date-apply">Terapkan</button>
+                    <?php if ($date_active): ?>
+                        <a href="<?= e($date_reset_href) ?>" class="menu-search-clear menu-date-clear" aria-label="Reset tanggal">&times;</a>
+                    <?php endif; ?>
+                </div>
+            </div>
+
             <div class="menu-cat-scroll orders-status-scroll">
                 <div class="menu-category-pills">
                     <?php foreach ($status_tabs as $key => [$label, $tone]):
                         $count = $key === '' ? $kpis['total'] : ($status_counts[$key] ?? 0);
-                        $pill_params = [];
-                        if ($q !== '') $pill_params['q'] = $q;
-                        if ($sort !== 'terbaru') $pill_params['sort'] = $sort;
+                        $pill_params = $extra_q;
+                        if ($from !== '') $pill_params['from'] = $from;
+                        if ($to !== '') $pill_params['to'] = $to;
                         if ($key !== '') $pill_params['status'] = $key;
                         $pill_href = '/geprek-geh/admin/orders' . ($pill_params ? '?' . http_build_query($pill_params) : '');
                     ?>
@@ -114,10 +190,11 @@ foreach ($status_tabs as $k => $v) $status_label_map[$k] = $v[0];
 
             <div class="menu-results">
                 <span class="menu-results-text">
-                    <?php if ($q !== '' || $status !== ''): ?>
+                    <?php if ($q !== '' || $status !== '' || $date_active): ?>
                         <?= $total ?> pesanan
                         <?php if ($q !== ''): ?> untuk "<strong><?= e($q) ?></strong>"<?php endif; ?>
                         <?php if ($status !== ''): ?> di <strong><?= e($status_label_map[$status]) ?></strong><?php endif; ?>
+                        <?php if ($date_active): ?> periode <strong><?= e($period_display) ?></strong><?php endif; ?>
                         — <a href="/geprek-geh/admin/orders" class="menu-results-reset">Reset</a>
                     <?php else: ?>
                         Menampilkan <?= $total ?> pesanan terbaru
@@ -149,7 +226,7 @@ foreach ($status_tabs as $k => $v) $status_label_map[$k] = $v[0];
                         <div class="empty-state empty-state--compact">
                             <span class="ghost">📦</span>
                             <h3>Tidak ada pesanan</h3>
-                            <p><?= $q !== '' || $status !== '' ? 'Coba ubah kata kunci atau filter status.' : 'Belum ada pesanan masuk.' ?></p>
+                            <p><?= $q !== '' || $status !== '' || $date_active ? 'Coba ubah kata kunci, status, atau periode tanggal.' : 'Belum ada pesanan masuk.' ?></p>
                         </div>
                     </td>
                 </tr>
