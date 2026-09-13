@@ -216,10 +216,10 @@ $filter_bits = array_filter([$role_label, $blocked_label]);
                         <a href="/geprek-geh/admin/users/<?= $u['id'] ?>" class="btn btn-sm btn-outline">Detail</a>
                         <?php if (!$isSelf): ?>
                             <button type="button" class="btn btn-sm btn-ghost" data-edit-user='<?= $uJson ?>'>Edit</button>
-                            <form method="POST" action="/geprek-geh/admin/users/<?= $u['id'] ?>/block" class="inline-form">
-                                <?= csrf_field() ?>
-                                <button type="submit" class="btn btn-sm <?= $isBlocked ? 'btn-outline' : 'btn-ghost' ?>" data-confirm="<?= $isBlocked ? 'Buka blokir akun ' . e($u['name']) . '?' : 'Blokir akun ' . e($u['name']) . '? Pengguna tidak bisa login.' ?>"><?= $isBlocked ? 'Buka' : 'Blokir' ?></button>
-                            </form>
+<form method="POST" action="/geprek-geh/admin/users/<?= $u['id'] ?>/block" class="inline-form" data-confirm="<?= $isBlocked ? 'Buka blokir akun ' . e($u['name']) . '?' : 'Blokir akun ' . e($u['name']) . '? Pengguna tidak bisa login.' ?>">
+    <?= csrf_field() ?>
+    <button type="submit" class="btn btn-sm <?= $isBlocked ? 'btn-outline' : 'btn-ghost' ?>"><?= $isBlocked ? 'Buka' : 'Blokir' ?></button>
+</form>
                             <form method="POST" action="/geprek-geh/admin/users/<?= $u['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus akun <?= e($u['name']) ?>? Seluruh pesanan, alamat, dan notifikasinya ikut terhapus.">
                                 <?= csrf_field() ?>
                                 <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
