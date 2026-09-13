@@ -38,7 +38,7 @@ class UserController {
         $role   = $_GET['role'] ?? '';
         $blocked = $_GET['blocked'] ?? '';
         $sort   = $_GET['sort'] ?? 'terbaru';
-        $per    = in_array((int) ($_GET['per'] ?? 15), [10, 15, 25, 50]) ? (int) $_GET['per'] : 15;
+        $per    = ((int) ($_GET['per'] ?? 0)) > 0 && in_array((int) $_GET['per'], [10, 15, 25, 50]) ? (int) $_GET['per'] : 15;
         $sort   = in_array($sort, ['terbaru', 'terlama', 'nama', 'email', 'role']) ? $sort : 'terbaru';
         $page   = max(1, (int) ($_GET['page'] ?? 1));
 
