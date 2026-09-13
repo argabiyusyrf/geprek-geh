@@ -3057,7 +3057,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 /* ─── Admin: produk — chart Produk Terlaris ────────────────── */
 .chart-grid { align-items: stretch; }
 .chart-grid .card { margin-bottom: 0; }
-.chart-card { display: flex; }
+.chart-card { display: flex; flex-direction: column; }
 .chart-inner {
     flex: 1; display: flex; flex-direction: column;
     background: var(--card); border-radius: calc(var(--r-xl) - 12px);
