@@ -78,6 +78,18 @@ class UserController {
             $whereParams
         );
 
+        $targetEditId = (int) ($_GET['edit'] ?? 0);
+        $editTargetUser = null;
+        if ($targetEditId > 0 && !array_filter($users, function ($u) use ($targetEditId) {
+            return (int) $u['id'] === $targetEditId;
+        })) {
+            $editTargetUser = $db->fetchOne(
+                "SELECT u.*, (SELECT COUNT(*) FROM orders o WHERE o.user_id = u.id) AS order_count
+                 FROM users u WHERE u.id = ?",
+                [$targetEditId]
+            );
+        }
+
         $formErrors = \form_errors();
         $formOld    = \form_old();
 
