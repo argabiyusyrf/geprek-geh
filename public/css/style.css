@@ -3378,6 +3378,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
     gap: 6px;
     margin-top: 40px;
 }

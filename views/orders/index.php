@@ -171,16 +171,32 @@
         <?php
         $qp = $orders_qs_extra;
         if ($status !== '') $qp['status'] = $status;
+        $page_link = fn(int $p) => '?page=' . $p . ($qp ? '&' . http_build_query($qp) : '');
+        $window = [];
+        if ($total_pages <= 7) {
+            $window = range(1, $total_pages);
+        } else {
+            $window[] = 1;
+            $ws = max(2, $page - 2);
+            $we = min($total_pages - 1, $page + 2);
+            if ($ws > 2) $window[] = 0;
+            for ($i = $ws; $i <= $we; $i++) $window[] = $i;
+            if ($we < $total_pages - 1) $window[] = 0;
+            $window[] = $total_pages;
+        }
         ?>
         <?php if ($page > 1): ?>
-            <a href="?page=<?= $page - 1 ?>&<?= http_build_query($qp) ?>" class="menu-page-btn">&laquo;</a>
+            <a href="<?= e($page_link($page - 1)) ?>" class="menu-page-btn" aria-label="Halaman sebelumnya">&laquo;</a>
         <?php endif; ?>
-        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <a href="?page=<?= $i ?>&<?= http_build_query($qp) ?>"
-               class="menu-page-btn <?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
-        <?php endfor; ?>
+        <?php foreach ($window as $pw): ?>
+            <?php if ($pw === 0): ?>
+                <span class="menu-page-dots" aria-hidden="true">&hellip;</span>
+            <?php else: ?>
+                <a href="<?= e($page_link($pw)) ?>" class="menu-page-btn <?= $pw === $page ? 'active' : '' ?>"><?= $pw ?></a>
+            <?php endif; ?>
+        <?php endforeach; ?>
         <?php if ($page < $total_pages): ?>
-            <a href="?page=<?= $page + 1 ?>&<?= http_build_query($qp) ?>" class="menu-page-btn">&raquo;</a>
+            <a href="<?= e($page_link($page + 1)) ?>" class="menu-page-btn" aria-label="Halaman berikutnya">&raquo;</a>
         <?php endif; ?>
     </nav>
     <?php endif; ?>
