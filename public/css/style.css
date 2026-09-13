@@ -6352,6 +6352,7 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 .menu-pill--info.active   { background: var(--info);   border-color: var(--info);   box-shadow: 0 6px 22px -8px rgba(31,95,168,.5); }
 .menu-pill--good.active   { background: var(--good);   border-color: var(--good);   box-shadow: 0 6px 22px -8px rgba(44,110,63,.5); }
 .menu-pill--bad.active    { background: var(--bad);    border-color: var(--bad);    box-shadow: 0 6px 22px -8px rgba(179,38,30,.5); }
+.menu-pill--gray.active   { background: #6b645b;      border-color: #6b645b;      box-shadow: 0 6px 22px -8px rgba(107,100,91,.5); }
 .menu-pill--accent.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 6px 22px -8px rgba(232,75,35,.5); }
 .menu-pill--all.active    { background: var(--ink);    border-color: var(--ink);    box-shadow: 0 6px 22px -8px rgba(29,26,21,.5); }
 
