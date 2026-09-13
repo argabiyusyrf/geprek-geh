@@ -5393,6 +5393,28 @@ body.auth-body { margin: 0; overflow-x: hidden; }
 .auth-link--compact { margin-top: -12px; font-size: 13px; }
 .promo-code-input { text-transform: uppercase; letter-spacing: 0.06em; }
 .empty-state--compact { padding: 40px 0; }
+
+/* ─── Admin · Kode Promo ────────────────────────────────── */
+.stats-grid--promos .stat-card { padding-block: 20px; }
+.promo-quota { display: flex; flex-direction: column; gap: 5px; min-width: 118px; }
+.promo-quota-track { height: 5px; border-radius: 999px; background: rgba(0,0,0,0.08); overflow: hidden; }
+.promo-quota-fill {
+    display: block; height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-deep));
+}
+.promo-quota-fill.full { background: var(--bad, #b3261e); }
+.promo-quota-text { font-size: 12px; color: var(--ink-2); font-weight: 600; font-variant-numeric: tabular-nums; }
+.promo-quota-low { color: var(--bad, #b3261e); font-weight: 800; }
+.promo-quota-badge {
+    display: inline-block; margin-top: 4px; padding: 1px 7px;
+    border-radius: 999px; background: rgba(179,38,30,0.10); color: var(--bad, #b3261e);
+    font-size: 10.5px; font-weight: 800; letter-spacing: .02em;
+}
+.promo-sub { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+.table--promos td { vertical-align: middle; }
+@media (max-width: 720px) {
+    .stats-grid--promos { grid-template-columns: repeat(2, 1fr); }
+}
 .text-center { text-align: center; }
 .btn-warn.btn-success { margin-top: 8px; }
 
