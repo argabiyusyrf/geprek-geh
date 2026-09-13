@@ -3,7 +3,6 @@ $admin_page_title = 'Detail Pengguna';
 $self_id = \Auth::id();
 $isBlocked = (int) ($user['is_blocked'] ?? 0) === 1;
 $isSelf    = (int) $user['id'] === (int) $self_id;
-$grand_total = fn(array $o) => (int) $o['total'] + (int) $o['shipping_cost'] + (int) $o['tax'] - (int) $o['discount'];
 $status_meta = [
     'pending'    => ['Menunggu', 'warn'],
     'processing' => ['Diproses', 'info'],
@@ -13,20 +12,29 @@ $status_meta = [
 ];
 ?>
 
+<a href="/geprek-geh/admin/users" class="back-link">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Kembali ke Pengguna
+</a>
+<div class="breadcrumb">
+    <a href="/geprek-geh/admin">Dashboard</a>
+    <span>/</span>
+    <a href="/geprek-geh/admin/users">Pengguna</a>
+    <span>/</span>
+    <span><?= e($user['name']) ?></span>
+</div>
+
 <div class="page-header page-header--wrap">
     <div>
-        <span class="page-eyebrow">
-            <a href="/geprek-geh/admin/users" class="back-link">&larr; Kembali ke Pengguna</a>
-        </span>
-        <h1 class="d-flex align-center" style="gap:10px; flex-wrap:wrap;">
+        <h1 class="order-heading">
             <?= e($user['name']); ?>
-            <span class="badge <?= $user['role'] === 'admin' ? 'badge-primary' : 'badge-secondary' ?>"><?= ucfirst($user['role']) ?></span>
-            <?php if ($isBlocked): ?><span class="badge badge-danger">Diblokir</span><?php endif; ?>
+            <span class="badge <?= $user['role'] === 'admin' ? 'badge-primary' : 'badge-secondary' ?>" style="vertical-align:middle;"><?= ucfirst($user['role']) ?></span>
+            <?php if ($isBlocked): ?><span class="badge badge-danger" style="vertical-align:middle;">Diblokir</span><?php endif; ?>
         </h1>
         <p class="page-sub"><?= e($user['email']) ?> &middot; terdaftar <?= date('d M Y', strtotime($user['created_at'])) ?></p>
     </div>
-    <div class="page-header-actions">
-        <a href="/geprek-geh/admin/users?edit=<?= $user['id'] ?>" class="btn btn-outline">Edit</a>
+    <div class="order-head-actions">
+        <a href="/geprek-geh/admin/users?edit=<?= $user['id'] ?>" class="btn btn-sm btn-outline">Edit</a>
         <?php if (!$isSelf): ?>
             <form method="POST" action="/geprek-geh/admin/users/<?= $user['id'] ?>/block" class="inline-form">
                 <?= csrf_field() ?>
@@ -154,7 +162,7 @@ $status_meta = [
                     <td class="stock-cell"><?= date('d M Y H:i', strtotime($o['created_at'])) ?></td>
                     <td><span class="badge <?= $stBadge ?>"><?= $stLabel ?></span></td>
                     <td><span class="badge <?= $pmBadge ?>"><?= $pmLabel ?></span></td>
-                    <td class="stock-cell"><?= rupiah($grand_total($o)) ?></td>
+                    <td class="stock-cell"><?= rupiah(grand_total($o)) ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
