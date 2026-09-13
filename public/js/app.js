@@ -1432,6 +1432,36 @@ document.addEventListener('click', (e) => {
     const submitBtn = drawer.querySelector('#promo-submit');
     const items = window.__gehPromos || [];
 
+    function syncValueField(type) {
+        const val = form.querySelector('[name="value"]');
+        const hint = form.querySelector('.promo-value-hint');
+        if (!val) return;
+        if (type === 'percentage') {
+            val.placeholder = '10';
+            val.max = '100';
+            val.step = '0.01';
+            if (hint) hint.textContent = 'Persen diskon, maksimal 100.';
+        } else {
+            val.placeholder = '50000';
+            val.removeAttribute('max');
+            val.step = '1000';
+            if (hint) hint.textContent = 'Nominal potongan dalam rupiah.';
+        }
+    }
+
+    function syncDates() {
+        const start = form.querySelector('[name="starts_at"]');
+        const end = form.querySelector('[name="expires_at"]');
+        if (!start || !end) return;
+        if (start.value) {
+            end.min = start.value;
+            if (end.value && end.value < start.value) end.value = start.value;
+        } else {
+            end.removeAttribute('min');
+        }
+        if (end.value) start.max = end.value;
+    }
+
     function resetForm() {
         form.reset();
         form.setAttribute('action', '/geprek-geh/admin/promos');
@@ -1439,6 +1469,12 @@ document.addEventListener('click', (e) => {
         form.querySelectorAll('.field-error').forEach((el) => el.remove());
         if (titleEl) titleEl.textContent = 'Buat Kode Promo';
         if (submitBtn) submitBtn.textContent = 'Buat Kode';
+        const typeSel = form.querySelector('[name="type"]');
+        if (typeSel) syncValueField(typeSel.value);
+        const start = form.querySelector('[name="starts_at"]');
+        const end = form.querySelector('[name="expires_at"]');
+        if (start) start.removeAttribute('max');
+        if (end) end.removeAttribute('min');
     }
 
     function open() {
