@@ -36,6 +36,13 @@ class AuthController {
             exit;
         }
 
+        if ((int) ($user['is_blocked'] ?? 0) === 1) {
+            $_SESSION['login_old'] = ['email' => $email];
+            flash_set('error', 'Akun ini diblokir oleh admin. Hubungi admin untuk info lebih lanjut.');
+            header('Location: /geprek-geh/auth/login');
+            exit;
+        }
+
         // 2FA aktif → lanjut ke langkah verifikasi; bawa niat "remember" ke sesi.
         if ((int) $user['totp_enabled'] === 1) {
             $_SESSION['twofa_uid']      = $user['id'];
@@ -70,6 +77,13 @@ class AuthController {
         if (!$user || (int) $user['totp_enabled'] !== 1) {
             unset($_SESSION['twofa_uid'], $_SESSION['twofa_name'], $_SESSION['twofa_role']);
             flash_set('error', 'Sesi tidak valid, silakan login kembali.');
+            header('Location: /geprek-geh/auth/login');
+            exit;
+        }
+
+        if ((int) ($user['is_blocked'] ?? 0) === 1) {
+            unset($_SESSION['twofa_uid'], $_SESSION['twofa_name'], $_SESSION['twofa_role']);
+            flash_set('error', 'Akun ini diblokir oleh admin. Hubungi admin untuk info lebih lanjut.');
             header('Location: /geprek-geh/auth/login');
             exit;
         }
