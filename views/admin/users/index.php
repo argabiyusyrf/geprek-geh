@@ -341,6 +341,16 @@ $__usersData = array_map(function ($u) {
         'notify_email' => (int) ($u['notify_email'] ?? 0),
     ];
 }, $users);
+if ($editTargetUser) {
+    $__usersData[] = [
+        'id'           => (int) $editTargetUser['id'],
+        'name'         => $editTargetUser['name'],
+        'email'        => $editTargetUser['email'],
+        'phone'        => $editTargetUser['phone'] ?? '',
+        'role'         => $editTargetUser['role'],
+        'notify_email' => (int) ($editTargetUser['notify_email'] ?? 0),
+    ];
+}
 $_drawerError = $formOld !== null && $formErrors !== null;
 ?>
 <script>
