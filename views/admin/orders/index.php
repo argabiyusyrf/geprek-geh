@@ -113,7 +113,8 @@ $page_href = function (int $p) use ($qp) {
 <div class="menu-filters admin-orders-filters">
     <form method="GET" action="/geprek-geh/admin/orders" class="menu-toolbar">
         <div class="menu-filter-row">
-            <?php if ($status !== ''): ?><input type="hidden" name="status" value="<?= e($status) ?>"><?php endif; ?>
+<?php if ($status !== ''): ?><input type="hidden" name="status" value="<?= e($status) ?>"><?php endif; ?>
+            <?php if ($per !== 15): ?><input type="hidden" name="per" value="<?= e($per) ?>"><?php endif; ?>
 
             <div class="menu-toolbar-top">
                 <div class="menu-search">
@@ -280,25 +281,37 @@ $page_href = function (int $p) use ($qp) {
     </table>
 </div>
 
-<?php if ($total_pages > 1): ?>
-<nav class="menu-pagination" aria-label="Navigasi halaman">
-    <?php
-    $qp = [];
-    if ($status !== '') $qp['status'] = $status;
-    if ($q !== '') $qp['q'] = $q;
-    if ($sort !== 'terbaru') $qp['sort'] = $sort;
-    $page_href = function (int $p) use ($qp) {
-        return '/geprek-geh/admin/orders?' . http_build_query(['page' => $p] + $qp);
-    };
-    ?>
-    <?php if ($page > 1): ?>
-        <a href="<?= e($page_href($page - 1)) ?>" class="menu-page-btn" aria-label="Halaman sebelumnya">&laquo;</a>
+<?php if ($total > 0): ?>
+<nav class="menu-pagination menu-pagination--orders" aria-label="Navigasi halaman">
+    <?php if ($total_pages > 1): ?>
+        <div class="menu-pagination-pages">
+            <?php if ($page > 1): ?>
+                <a href="<?= e($page_href($page - 1)) ?>" class="menu-page-btn" aria-label="Halaman sebelumnya">&laquo;</a>
+            <?php endif; ?>
+            <?php foreach ($page_window as $pw): ?>
+                <?php if ($pw === null): ?>
+                    <span class="menu-page-dots" aria-hidden="true">&hellip;</span>
+                <?php else: ?>
+                    <a href="<?= e($page_href($pw)) ?>" class="menu-page-btn <?= $pw === $page ? 'active' : '' ?>"><?= $pw ?></a>
+                <?php endif; ?>
+            <?php endforeach; ?>
+            <?php if ($page < $total_pages): ?>
+                <a href="<?= e($page_href($page + 1)) ?>" class="menu-page-btn" aria-label="Halaman berikutnya">&raquo;</a>
+            <?php endif; ?>
+        </div>
     <?php endif; ?>
-    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-        <a href="<?= e($page_href($i)) ?>" class="menu-page-btn <?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
-    <?php endfor; ?>
-    <?php if ($page < $total_pages): ?>
-        <a href="<?= e($page_href($page + 1)) ?>" class="menu-page-btn" aria-label="Halaman berikutnya">&raquo;</a>
-    <?php endif; ?>
+    <form method="GET" action="/geprek-geh/admin/orders" class="menu-perpage">
+        <?php if ($status !== ''): ?><input type="hidden" name="status" value="<?= e($status) ?>"><?php endif; ?>
+        <?php if ($q !== ''): ?><input type="hidden" name="q" value="<?= e($q) ?>"><?php endif; ?>
+        <?php if ($sort !== 'terbaru'): ?><input type="hidden" name="sort" value="<?= e($sort) ?>"><?php endif; ?>
+        <?php if ($from !== ''): ?><input type="hidden" name="from" value="<?= e($from) ?>"><?php endif; ?>
+        <?php if ($to !== ''): ?><input type="hidden" name="to" value="<?= e($to) ?>"><?php endif; ?>
+        <label for="orders-per-page" class="menu-perpage-label">Baris per halaman</label>
+        <select id="orders-per-page" name="per" class="menu-perpage-select" onchange="this.form.submit()" aria-label="Baris per halaman">
+            <?php foreach ([10, 15, 25, 50] as $pp): ?>
+                <option value="<?= $pp ?>"<?= $per === $pp ? ' selected' : '' ?>><?= $pp ?> baris</option>
+            <?php endforeach; ?>
+        </select>
+    </form>
 </nav>
 <?php endif; ?>
