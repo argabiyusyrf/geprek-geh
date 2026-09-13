@@ -204,8 +204,11 @@ $router->get('/admin/orders/{id}/print',   ['Admin\OrderController', 'printOrder
 $router->post('/admin/orders/{id}/status', ['Admin\OrderController', 'updateStatus']);
 $router->post('/admin/orders/{id}/verify-payment', ['Admin\OrderController', 'verifyPayment']);
 $router->get('/admin/users',               ['Admin\UserController', 'index']);
+$router->get('/admin/users/{id}',          ['Admin\UserController', 'show']);
 $router->post('/admin/users',              ['Admin\UserController', 'store']);
 $router->post('/admin/users/{id}',         ['Admin\UserController', 'update']);
+$router->post('/admin/users/{id}/block',   ['Admin\UserController', 'block']);
+$router->post('/admin/users/{id}/delete',  ['Admin\UserController', 'destroy']);
 
 $router->get('/admin/promos',              ['Admin\PromoController', 'index']);
 $router->post('/admin/promos',             ['Admin\PromoController', 'store']);
