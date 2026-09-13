@@ -29,8 +29,23 @@ class OrderController {
         if (!in_array($sort, $allowed_sort, true)) $sort = 'terbaru';
 
         $page = max(1, (int) ($_GET['page'] ?? 1));
-        $per_page = 15;
-        $offset = ($page - 1) * $per_page;
+        $per = (int) ($_GET['per'] ?? 15);
+        if (!in_array($per, [10, 15, 25, 50], true)) $per = 15;
+        $offset = ($page - 1) * $per;
+
+        $from = trim((string) ($_GET['from'] ?? ''));
+        $to = trim((string) ($_GET['to'] ?? ''));
+        $valid_date = fn($d) => preg_match('/^\d{4}-\d{2}-\d{2}$/', $d) && (bool) strtotime($d);
+        if ($from !== '' && !$valid_date($from)) $from = '';
+        if ($to !== '' && !$valid_date($to)) $to = '';
+        if ($from !== '' && $to !== '' && strtotime($from) > strtotime($to)) {
+            [$from, $to] = [$to, $from];
+        }
+
+        $date_where = '';
+        $date_params = [];
+        if ($from !== '') { $date_where .= ' AND o.created_at >= ?'; $date_params[] = $from . ' 00:00:00'; }
+        if ($to !== '')   { $date_where .= ' AND o.created_at <= ?';  $date_params[] = $to . ' 23:59:59'; }
 
         $where = '1=1';
         $params = [];
@@ -53,7 +68,8 @@ class OrderController {
                 COALESCE(SUM(CASE WHEN o.payment_status = 'paid' THEN (o.total - o.discount + o.shipping_cost + o.tax) ELSE 0 END), 0) AS revenue,
                 COALESCE(SUM(CASE WHEN o.payment_status = 'unpaid' AND o.status NOT IN ('cancelled','delivered') THEN 1 ELSE 0 END), 0) AS unpaid,
                 COALESCE(SUM(CASE WHEN o.status IN ('processing','shipped') THEN 1 ELSE 0 END), 0) AS active
-             FROM orders o"
+             FROM orders o WHERE 1=1{$date_where}",
+            $date_params
         );
         $kpis = [
             'total'   => (int) $kpi['total'],
@@ -63,15 +79,18 @@ class OrderController {
         ];
 
         $status_counts = [];
-        foreach ($db->fetchAll("SELECT status, COUNT(*) AS c FROM orders GROUP BY status") as $row) {
+        foreach ($db->fetchAll("SELECT status, COUNT(*) AS c FROM orders o WHERE 1=1{$date_where} GROUP BY status", $date_params) as $row) {
             $status_counts[$row['status']] = (int) $row['c'];
         }
+
+        $where .= $date_where;
+        $params = array_merge($params, $date_params);
 
         $total = (int) $db->fetchColumn(
             "SELECT COUNT(*) FROM orders o JOIN users u ON u.id = o.user_id WHERE {$where}",
             $params
         );
-        $total_pages = max(1, ceil($total / $per_page));
+        $total_pages = max(1, ceil($total / $per));
         if ($page > $total_pages) $page = $total_pages;
 
         $order_dir = [
@@ -86,7 +105,7 @@ class OrderController {
             "SELECT o.*, u.name AS customer_name, u.email AS customer_email, u.phone AS customer_phone,
                 (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id = o.id) AS item_count
              FROM orders o JOIN users u ON u.id = o.user_id
-             WHERE {$where} ORDER BY {$sort_sql} LIMIT {$per_page} OFFSET {$offset}",
+             WHERE {$where} ORDER BY {$sort_sql} LIMIT {$per} OFFSET {$offset}",
             $params
         );
 
