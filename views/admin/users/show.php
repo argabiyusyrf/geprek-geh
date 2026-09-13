@@ -79,7 +79,7 @@ $status_meta = [
     </div>
 </div>
 
-<div class="admin-info-grid">
+<div class="admin-grid-2">
     <div class="card admin-card user-profile-card">
         <div class="admin-card-head">
             <div class="admin-title min"><h3>Profil</h3></div>
