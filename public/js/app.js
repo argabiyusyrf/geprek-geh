@@ -1519,6 +1519,8 @@ document.addEventListener('click', (e) => {
         form.querySelector('[name="expires_at"]').value = data.expires_at || '';
         const active = form.querySelector('[name="is_active"]');
         if (active) active.checked = parseInt(data.is_active) === 1;
+        syncValueField(form.querySelector('[name="type"]').value || 'percentage');
+        syncDates();
         setEditState(data.id);
         open();
     }
@@ -1537,6 +1539,12 @@ document.addEventListener('click', (e) => {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && drawer.classList.contains('is-open')) close();
     });
+    const typeSel = form.querySelector('[name="type"]');
+    if (typeSel) typeSel.addEventListener('change', () => syncValueField(typeSel.value));
+    const startIn = form.querySelector('[name="starts_at"]');
+    const endIn = form.querySelector('[name="expires_at"]');
+    if (startIn) startIn.addEventListener('change', syncDates);
+    if (endIn) endIn.addEventListener('change', syncDates);
     if (form) form.addEventListener('submit', () => {
         if (submitBtn && !submitBtn.classList.contains('is-loading')) {
             submitBtn.classList.add('is-loading');
