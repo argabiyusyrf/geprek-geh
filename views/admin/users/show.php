@@ -36,10 +36,10 @@ $status_meta = [
     <div class="order-head-actions">
         <a href="/geprek-geh/admin/users?edit=<?= $user['id'] ?>" class="btn btn-sm btn-outline">Edit</a>
         <?php if (!$isSelf): ?>
-            <form method="POST" action="/geprek-geh/admin/users/<?= $user['id'] ?>/block" class="inline-form">
-                <?= csrf_field() ?>
-                <button type="submit" class="btn <?= $isBlocked ? 'btn-outline' : 'btn-primary' ?>" data-confirm="<?= $isBlocked ? 'Buka blokir akun ' . e($user['name']) . '?' : 'Blokir akun ' . e($user['name']) . '? Pengguna tidak bisa login.' ?>"><?= $isBlocked ? 'Buka Blokir' : 'Blokir' ?></button>
-            </form>
+<form method="POST" action="/geprek-geh/admin/users/<?= $user['id'] ?>/block" class="inline-form" data-confirm="<?= $isBlocked ? 'Buka blokir akun ' . e($user['name']) . '?' : 'Blokir akun ' . e($user['name']) . '? Pengguna tidak bisa login.' ?>">
+    <?= csrf_field() ?>
+    <button type="submit" class="btn <?= $isBlocked ? 'btn-outline' : 'btn-primary' ?>"><?= $isBlocked ? 'Buka Blokir' : 'Blokir' ?></button>
+</form>
             <form method="POST" action="/geprek-geh/admin/users/<?= $user['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus akun <?= e($user['name']) ?>? Seluruh pesanan, alamat, dan notifikasinya ikut terhapus. Tindakan ini tidak bisa dibatalkan.">
                 <?= csrf_field() ?>
                 <button type="submit" class="btn btn-danger">Hapus Akun</button>
