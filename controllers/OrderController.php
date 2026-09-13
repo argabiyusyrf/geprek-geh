@@ -34,7 +34,7 @@ class OrderController {
         }
 
         $total = (int) $db->fetchColumn("SELECT COUNT(*) FROM orders WHERE {$where}", $params);
-        $total_pages = max(1, ceil($total / $per_page));
+        $total_pages = max(1, (int) ceil($total / $per_page));
         if ($page > $total_pages) $page = $total_pages;
 
         $order_dir = [

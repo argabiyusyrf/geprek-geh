@@ -90,7 +90,7 @@ class OrderController {
             "SELECT COUNT(*) FROM orders o JOIN users u ON u.id = o.user_id WHERE {$where}",
             $params
         );
-        $total_pages = max(1, ceil($total / $per));
+        $total_pages = max(1, (int) ceil($total / $per));
         if ($page > $total_pages) $page = $total_pages;
 
         $order_dir = [
