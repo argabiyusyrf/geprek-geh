@@ -4,7 +4,73 @@ class PromoController {
     public function index() {
         \Auth::requireAdmin();
         $db = \Database::getInstance();
-        $promos = $db->fetchAll("SELECT * FROM promo_codes ORDER BY created_at DESC");
+
+        $allowed_status = ['active', 'upcoming', 'expired', 'inactive'];
+        $status = $_GET['status'] ?? '';
+        if (!in_array($status, $allowed_status, true)) $status = '';
+
+        $q = trim((string) ($_GET['q'] ?? ''));
+        $sort = $_GET['sort'] ?? 'terbaru';
+        $allowed_sort = ['terbaru', 'terlama', 'nama', 'nilai'];
+        if (!in_array($sort, $allowed_sort, true)) $sort = 'terbaru';
+
+        $page = max(1, (int) ($_GET['page'] ?? 1));
+        $per = (int) ($_GET['per'] ?? 15);
+        if (!in_array($per, [10, 15, 25, 50], true)) $per = 15;
+        $offset = ($page - 1) * $per;
+
+        $where = '1=1';
+        $params = [];
+        switch ($status) {
+            case 'active':
+                $where .= " AND is_active = 1 AND (expires_at IS NULL OR expires_at > NOW()) AND (starts_at IS NULL OR starts_at <= NOW())";
+                break;
+            case 'upcoming':
+                $where .= " AND is_active = 1 AND starts_at IS NOT NULL AND starts_at > NOW()";
+                break;
+            case 'expired':
+                $where .= " AND expires_at IS NOT NULL AND expires_at < NOW()";
+                break;
+            case 'inactive':
+                $where .= " AND is_active = 0 AND (expires_at IS NULL OR expires_at > NOW())";
+                break;
+        }
+        if ($q !== '') {
+            $where .= " AND code LIKE ?";
+            $params[] = '%' . $q . '%';
+        }
+
+        $stats = $db->fetchOne("SELECT
+            COUNT(*) AS total,
+            COALESCE(SUM(CASE WHEN is_active = 1 AND (expires_at IS NULL OR expires_at > NOW()) AND (starts_at IS NULL OR starts_at <= NOW()) THEN 1 ELSE 0 END), 0) AS aktif,
+            COALESCE(SUM(CASE WHEN is_active = 1 AND starts_at IS NOT NULL AND starts_at > NOW() THEN 1 ELSE 0 END), 0) AS akan_tiba,
+            COALESCE(SUM(CASE WHEN expires_at IS NOT NULL AND expires_at < NOW() THEN 1 ELSE 0 END), 0) AS berakhir,
+            COALESCE(SUM(CASE WHEN is_active = 0 AND (expires_at IS NULL OR expires_at > NOW()) THEN 1 ELSE 0 END), 0) AS nonaktif
+         FROM promo_codes");
+        $kpis = [
+            'total'      => (int) $stats['total'],
+            'aktif'      => (int) $stats['aktif'],
+            'akan_tiba'  => (int) $stats['akan_tiba'],
+            'berakhir'   => (int) $stats['berakhir'],
+            'nonaktif'   => (int) $stats['nonaktif'],
+        ];
+
+        $total = (int) $db->fetchColumn("SELECT COUNT(*) FROM promo_codes WHERE {$where}", $params);
+        $total_pages = max(1, (int) ceil($total / $per));
+        if ($page > $total_pages) $page = $total_pages;
+
+        $order_dir = [
+            'terbaru' => 'created_at DESC',
+            'terlama' => 'created_at ASC',
+            'nama'    => 'code ASC',
+            'nilai'   => 'value DESC',
+        ];
+        $sort_sql = $order_dir[$sort];
+
+        $promos = $db->fetchAll(
+            "SELECT * FROM promo_codes WHERE {$where} ORDER BY {$sort_sql} LIMIT {$per} OFFSET {$offset}",
+            $params
+        );
 
         $formErrors = \form_errors();
         $formOld    = \form_old();
