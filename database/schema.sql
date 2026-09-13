@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS `users` (
     `totp_recovery` TEXT DEFAULT NULL,
     `recovery_keyword` VARCHAR(255) DEFAULT NULL,
     `role` ENUM('customer','admin') DEFAULT 'customer',
+    `is_blocked` TINYINT(1) NOT NULL DEFAULT 0,
+    `blocked_at` TIMESTAMP NULL DEFAULT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;

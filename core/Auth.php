@@ -24,6 +24,18 @@ class Auth {
             header('Location: /geprek-geh/auth/login');
             exit;
         }
+        $row = Database::getInstance()->fetchOne("SELECT is_blocked FROM users WHERE id = ?", [self::id()]);
+        if (!$row || (int) ($row['is_blocked'] ?? 0) === 1) {
+            self::purgeRememberTokens((int) self::id());
+            self::clearRememberCookie();
+            $_SESSION = [];
+            session_destroy();
+            session_start();
+            session_regenerate_id(true);
+            $_SESSION['flash'] = ['type' => 'error', 'msg' => $row ? 'Akun Anda telah diblokir oleh admin.' : 'Sesi tidak valid, silakan login kembali.'];
+            header('Location: /geprek-geh/auth/login');
+            exit;
+        }
     }
 
     public static function requireAdmin() {
