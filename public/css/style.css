@@ -6610,3 +6610,45 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 .back-link svg { transition: transform .2s var(--ease-soft); }
 .back-link:hover { color: var(--accent); }
 .back-link:hover svg { transform: translateX(-3px); }
+
+/* ─── Admin: pengguna — detail ───────────────────────────── */
+.user-profile-card .admin-card-head,
+.user-sessions-card .admin-card-head { border-bottom: 0; }
+
+.user-detail-list { display: flex; flex-direction: column; }
+.user-detail-item {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+    padding: 11px 2px; border-bottom: 1px solid var(--hairline); font-size: 13.5px;
+}
+.user-detail-item:last-child { border-bottom: 0; }
+.user-detail-label { font-weight: 700; color: var(--muted); flex: none; }
+.user-detail-item > a { color: var(--accent-deep); overflow-wrap: anywhere; }
+.user-detail-item--warn { color: var(--bad); }
+.user-detail-item--warn .user-detail-label { color: var(--bad); }
+
+.user-session-list { display: flex; flex-direction: column; padding: 6px 10px 10px; }
+.user-session-item {
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px;
+    padding: 13px 12px; border-radius: 14px; min-width: 0;
+    transition: background .3s var(--ease-soft);
+}
+.user-session-item:hover { background: rgba(232,75,35,0.06); }
+.user-session-icon {
+    width: 42px; height: 42px; border-radius: 13px; background: var(--bg-soft);
+    color: var(--ink-3); display: grid; place-items: center; flex: none;
+    border: 1px solid var(--hairline);
+}
+
+.user-notif-list { display: flex; flex-direction: column; padding: 6px 10px 10px; }
+.user-notif-item {
+    position: relative; display: grid; grid-template-columns: auto 1fr auto;
+    align-items: center; gap: 14px; padding: 13px 12px 13px 8px; border-radius: 14px; min-width: 0;
+}
+.user-notif-item:hover { background: rgba(232,75,35,0.05); }
+.user-notif-item.unread { background: rgba(232,75,35,0.07); }
+.user-notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--hairline); flex: none; }
+.user-notif-item.unread .user-notif-dot { background: var(--accent); }
+
+/* ─── Admin: pengguna — baris akun diblokir ──────────────── */
+.table tbody tr.row-blocked { opacity: .55; }
+.table tbody tr.row-blocked td { background: transparent; }
