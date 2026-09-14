@@ -43,7 +43,7 @@ class ProductController {
               FROM products p JOIN categories c ON p.category_id = c.id
               LEFT JOIN (
                 SELECT product_id, COUNT(*) AS review_count, AVG(rating) AS avg_rating
-                FROM product_reviews GROUP BY product_id
+                FROM product_reviews WHERE is_visible = 1 GROUP BY product_id
               ) r ON r.product_id = p.id
               WHERE {$where} ORDER BY {$order_by} LIMIT {$per_page} OFFSET {$offset}",
             $params
@@ -77,7 +77,7 @@ class ProductController {
              FROM products p JOIN categories c ON p.category_id = c.id
              LEFT JOIN (
                 SELECT product_id, COUNT(*) AS review_count, AVG(rating) AS avg_rating
-                FROM product_reviews GROUP BY product_id
+                FROM product_reviews WHERE is_visible = 1 GROUP BY product_id
              ) r ON r.product_id = p.id
              WHERE p.is_active = 1 AND p.category_id = ? AND p.id != ? ORDER BY RAND() LIMIT 4",
             [$product['category_id'], $product['id']]
@@ -87,12 +87,12 @@ class ProductController {
         $reviews = $db->fetchAll(
             "SELECT pr.*, u.name AS user_name FROM product_reviews pr
              JOIN users u ON pr.user_id = u.id
-             WHERE pr.product_id = ? ORDER BY pr.created_at DESC",
+             WHERE pr.product_id = ? AND pr.is_visible = 1 ORDER BY pr.created_at DESC",
             [$product['id']]
         );
         $review_stats = $db->fetchOne(
             "SELECT COUNT(*) AS review_count, COALESCE(AVG(rating), 0) AS avg_rating
-             FROM product_reviews WHERE product_id = ?",
+             FROM product_reviews WHERE product_id = ? AND is_visible = 1",
             [$product['id']]
         );
         $my_review = Auth::check() ? $db->fetchOne(
@@ -126,7 +126,7 @@ class ProductController {
         }
         $rating_dist = array_fill(1, 5, 0);
         foreach ($db->fetchAll(
-            "SELECT rating, COUNT(*) AS total FROM product_reviews WHERE product_id = ? GROUP BY rating",
+            "SELECT rating, COUNT(*) AS total FROM product_reviews WHERE product_id = ? AND is_visible = 1 GROUP BY rating",
             [$product['id']]
         ) as $row) {
             $rating_dist[(int)$row['rating']] = (int)$row['total'];

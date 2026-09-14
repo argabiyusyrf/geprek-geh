@@ -6652,3 +6652,98 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 /* ─── Admin: pengguna — baris akun diblokir ──────────────── */
 .table tbody tr.row-blocked { opacity: .55; }
 .table tbody tr.row-blocked td { background: transparent; }
+
+/* ─── Admin: Manajemen Stok ─────────────────────────────────── */
+.stock-pill {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 34px; height: 26px; padding: 0 10px; border-radius: 999px;
+    font-weight: 800; font-size: 12.5px; font-variant-numeric: tabular-nums;
+}
+.stock-pill.ok  { background: rgba(44,110,63,0.12); color: var(--good); }
+.stock-pill.low { background: rgba(242,176,29,0.18); color: #8a5a06; }
+.stock-pill.out { background: rgba(179,38,30,0.12); color: var(--bad); }
+.stock-pill--lg { min-width: 44px; height: 30px; font-size: 14px; }
+.stock-cell { font-variant-numeric: tabular-nums; }
+
+.badge-dark { background: rgba(29,26,21,0.10); color: var(--ink-2); }
+
+.stock-detail-hero {
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;
+    margin-bottom: 22px; align-items: stretch;
+}
+.stock-detail-box {
+    border: 1px solid var(--hairline); border-radius: 18px; padding: 22px;
+    background: #fff; display: flex; flex-direction: column; gap: 14px;
+}
+.stock-detail-qty { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.stock-detail-meta {
+    display: flex; flex-wrap: wrap; gap: 8px 18px; padding-top: 14px;
+    border-top: 1px solid var(--hairline); font-size: 13px; color: var(--muted);
+}
+.stock-detail-meta span { font-weight: 600; }
+
+/* ─── Admin: Laporan Penjualan ──────────────────────────────── */
+.report-head-gap { margin-top: 22px; }
+.reports-filter .form-row { gap: 14px; align-items: flex-end; }
+.reports-filter-submit { margin-bottom: 1px; }
+.stats-grid--reports .stat-number { font-size: 24px; }
+
+/* ─── Admin: Moderasi Ulasan ────────────────────────────────── */
+.review-mod-list { display: flex; flex-direction: column; gap: 14px; }
+.review-mod-card { padding: 18px 20px; }
+.review-mod-hidden { opacity: .68; }
+.review-mod-head {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+    flex-wrap: wrap;
+}
+.review-mod-user { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.review-mod-avatar {
+    width: 40px; height: 40px; border-radius: 50%; flex: none;
+    background: rgba(232,75,35,0.12); color: var(--accent-deep);
+    display: grid; place-items: center; font-weight: 800; font-size: 15px;
+}
+.review-mod-name { font-weight: 750; color: var(--ink); font-size: 14px; }
+.review-mod-product { color: var(--muted); font-weight: 600; font-size: 13px; }
+.review-mod-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+.review-star { color: var(--hairline-dark, #d8d3cc); font-size: 14px; }
+.review-star.on { color: var(--accent); }
+.review-mod-comment { margin: 12px 0 0; color: var(--ink-2); font-size: 14px; line-height: 1.6; }
+.review-mod-date { margin: 10px 0 0; font-size: 12px; color: var(--muted); }
+.review-pagination { justify-content: center; }
+
+/* ─── Admin: Notifikasi ke Pelanggan ────────────────────────── */
+.radio-inline { display: inline-flex; align-items: center; gap: 7px; margin-right: 18px; font-size: 14px; padding: 6px 0; }
+.radio-inline input { accent-color: var(--accent); width: 15px; height: 15px; }
+.notif-history { display: flex; flex-direction: column; }
+.notif-row {
+    display: flex; gap: 12px; padding: 14px 4px; border-bottom: 1px solid var(--hairline);
+}
+.notif-row:last-child { border-bottom: 0; }
+.notif-row-icon {
+    width: 36px; height: 36px; border-radius: 12px; flex: none;
+    background: var(--bg-soft); border: 1px solid var(--hairline);
+    display: grid; place-items: center; color: var(--accent-deep);
+}
+.notif-row-body { min-width: 0; }
+.notif-row-title { font-weight: 750; color: var(--ink); font-size: 14px; }
+.notif-row-msg { color: var(--ink-2); font-size: 13.5px; margin-top: 2px; line-height: 1.5; overflow-wrap: anywhere; }
+.notif-row-meta { color: var(--muted); font-size: 12px; margin-top: 5px; }
+.notif-row-meta a { color: var(--accent-deep); }
+.notif-form .form-group { margin-bottom: 14px; }
+
+/* ─── Admin: Pengaturan Toko ────────────────────────────────── */
+.settings-form { display: flex; flex-direction: column; gap: 18px; max-width: 900px; }
+.settings-section { padding: 20px 22px; }
+.settings-section .form-row { margin-top: 14px; }
+.settings-actions { display: flex; justify-content: flex-end; }
+
+/* ─── Admin: tombol penghapusan samar ───────────────────────── */
+.btn-danger-ghost {
+    color: var(--bad); background: transparent; border: 1px solid transparent;
+    font-weight: 700;
+}
+.btn-danger-ghost:hover { background: rgba(179,38,30,0.08); border-color: rgba(179,38,30,0.20); }
+
+@media (max-width: 860px) {
+    .stock-detail-hero { grid-template-columns: 1fr; }
+}

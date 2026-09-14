@@ -216,4 +216,17 @@ $router->post('/admin/promos/{id}',        ['Admin\PromoController', 'update']);
 $router->post('/admin/promos/{id}/toggle', ['Admin\PromoController', 'toggle']);
 $router->post('/admin/promos/{id}/delete', ['Admin\PromoController', 'delete']);
 
+$router->get('/admin/reports',               ['Admin\ReportController', 'index']);
+$router->get('/admin/reports/export',         ['Admin\ReportController', 'export']);
+$router->get('/admin/stock',                  ['Admin\StockController', 'index']);
+$router->get('/admin/stock/{id}',             ['Admin\StockController', 'show']);
+$router->post('/admin/stock/{id}/restock',    ['Admin\StockController', 'restock']);
+$router->get('/admin/reviews',                ['Admin\ReviewController', 'index']);
+$router->post('/admin/reviews/{id}/toggle',   ['Admin\ReviewController', 'toggle']);
+$router->post('/admin/reviews/{id}/delete',   ['Admin\ReviewController', 'delete']);
+$router->get('/admin/notifications',          ['Admin\NotificationController', 'index']);
+$router->post('/admin/notifications',         ['Admin\NotificationController', 'send']);
+$router->get('/admin/settings',              ['Admin\SettingsController', 'index']);
+$router->post('/admin/settings',             ['Admin\SettingsController', 'save']);
+
 $router->dispatch();
