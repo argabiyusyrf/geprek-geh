@@ -225,7 +225,7 @@ $page_href = function (int $p) use ($qp) {
                 <tr>
                     <td colspan="7">
                         <div class="empty-state empty-state--compact">
-                            <span class="ghost">📦</span>
+                            <span class="ghost"><svg style="width:4.5rem;height:4.5rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>
                             <h3>Tidak ada pesanan</h3>
                             <p><?= $q !== '' || $status !== '' || $date_active ? 'Coba ubah kata kunci, status, atau periode tanggal.' : 'Belum ada pesanan masuk.' ?></p>
                         </div>

@@ -78,7 +78,7 @@ $status_label = ['visible' => 'Ditampilkan', 'hidden' => 'Disembunyikan', '' => 
 <?php if (empty($reviews)): ?>
     <div class="card order-card">
         <div class="empty-state empty-state--compact">
-            <span class="ghost">⭐</span>
+            <span class="ghost"><svg style="width:4.5rem;height:4.5rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6.3 6.9.5-5.2 4.6 1.7 6.8L12 16.8l-6.3 3.4 1.7-6.8L2.2 8.8l6.9-.5z"/></svg></span>
             <h3>Tidak ada ulasan</h3>
             <p>Belum ada ulasan yang cocok dengan filter.</p>
         </div>
@@ -96,7 +96,7 @@ $status_label = ['visible' => 'Ditampilkan', 'hidden' => 'Disembunyikan', '' => 
                         </div>
                         <div class="review-mod-meta">
                             <?php for ($i = 1; $i <= 5; $i++): ?>
-                                <span class="review-star <?= $i <= (int) $r['rating'] ? 'on' : '' ?>">★</span>
+                                <svg class="review-star <?= $i <= (int) $r['rating'] ? 'on' : '' ?>" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
                             <?php endfor; ?>
                             <span class="badge<?= $r['is_visible'] ? ' badge-success' : ' badge-dark' ?>"><?= $r['is_visible'] ? 'Ditampilkan' : 'Disembunyikan' ?></span>
                         </div>

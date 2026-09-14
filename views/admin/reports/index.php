@@ -77,7 +77,7 @@ $method_label = fn($m) => ['transfer' => 'Transfer Bank', 'cod' => 'COD', 'ewall
         </header>
         <?php if (empty($daily)): ?>
             <div class="empty-state empty-state--compact">
-                <span class="ghost">📊</span>
+                <span class="ghost"><svg style="width:4.5rem;height:4.5rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg></span>
                 <h3>Belum ada penjualan</h3>
                 <p>Tidak ada pesanan pada periode ini.</p>
             </div>

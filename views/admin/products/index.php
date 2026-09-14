@@ -253,7 +253,7 @@ $statusHref = function ($st) use ($keep, $category) {
                 </td>
                 <td>
                     <?php if ($p['is_featured']): ?>
-                        <span class="badge badge-warning">★ Favorit</span>
+                        <span class="badge badge-warning"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:-2px;margin-right:2px"><path d="M12 2l2.9 6.3 6.9.5-5.2 4.6 1.7 6.8L12 16.8l-6.3 3.4 1.7-6.8L2.2 8.8l6.9-.5z"/></svg>Favorit</span>
                     <?php else: ?>
                         <span class="table-slug">—</span>
                     <?php endif; ?>
@@ -419,7 +419,7 @@ $statusHref = function ($st) use ($keep, $category) {
             <label class="switch">
                 <input type="checkbox" name="is_featured" class="switch-input" <?= $featDefault ? 'checked' : '' ?>>
                 <span class="switch-ui" aria-hidden="true"><span class="switch-knob"></span></span>
-                <span class="switch-meta"><strong><span class="sw-star">★</span> Favorit</strong><small>Tampil di blok “Menu populer” beranda</small></span>
+                <span class="switch-meta"><strong><span class="sw-star"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:-2px"><path d="M12 2l2.9 6.3 6.9.5-5.2 4.6 1.7 6.8L12 16.8l-6.3 3.4 1.7-6.8L2.2 8.8l6.9-.5z"/></svg></span> Favorit</strong><small>Tampil di blok “Menu populer” beranda</small></span>
             </label>
         </fieldset>
     </form>

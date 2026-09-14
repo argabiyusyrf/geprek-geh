@@ -108,7 +108,7 @@
 <?php else: ?>
 <div class="table-wrap">
     <div class="empty-state">
-        <span class="ghost">🗂️</span>
+        <span class="ghost"><svg style="width:4.5rem;height:4.5rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg></span>
         <h3>Belum ada kategori</h3>
         <p>Buat kategori pertama untuk mengelompokkan menu Anda.</p>
         <button type="button" class="btn btn-primary" data-open-category-drawer>+ Tambah Kategori</button>

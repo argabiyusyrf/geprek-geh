@@ -61,7 +61,7 @@ $hero_level = $categories[1] ?? null;
                 <b>Setan Level 1–5,<br>pilih keberanianmu</b>
             </div>
         </div>
-        <div class="hero-chip"><b>✦</b> Level Pedas Customizable</div>
+        <div class="hero-chip"><b><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:-2px"><path d="M12 2l1.5 5.5 5.5.4-4.2 3.6 1.4 5.5L12 14.3l-4.2 2.7 1.4-5.5L5 7.9l5.5-.4z"/></svg></b> Level Pedas Customizable</div>
     </div>
 </section>
 
@@ -71,7 +71,7 @@ $hero_level = $categories[1] ?? null;
         <?php $marquee = ['Ayam Geprek', 'Sambal Level', 'Nasi Panas', 'Telur Dadar', 'Es Teh Manis', 'Crispy Renyah', 'Pedas Nikmat'];
         $items = array_merge($marquee, $marquee); ?>
         <?php foreach ($items as $m): ?>
-            <span class="marquee-item"><?= e($m) ?> <i>✦</i></span>
+            <span class="marquee-item"><?= e($m) ?> <i><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:-1px"><path d="M12 2l1.5 5.5 5.5.4-4.2 3.6 1.4 5.5L12 14.3l-4.2 2.7 1.4-5.5L5 7.9l5.5-.4z"/></svg></i></span>
         <?php endforeach; ?>
     </div>
 </div>

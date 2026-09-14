@@ -43,7 +43,7 @@
 
             <div class="form-group">
                 <label for="notif-title">Judul</label>
-                <input type="text" id="notif-title" name="title" class="input" maxlength="150" required placeholder="Contoh: Promo akhir pekan 🔥">
+                <input type="text" id="notif-title" name="title" class="input" maxlength="150" required placeholder="Contoh: Promo akhir pekan">
             </div>
 
             <div class="form-group">
@@ -67,7 +67,7 @@
         </header>
         <?php if (empty($recent)): ?>
             <div class="empty-state empty-state--compact">
-                <span class="ghost">🔔</span>
+                <span class="ghost"><svg style="width:4.5rem;height:4.5rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
                 <h3>Belum ada notifikasi</h3>
                 <p>Notifikasi yang dikirim akan muncul di sini.</p>
             </div>

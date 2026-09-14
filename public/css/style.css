@@ -6706,7 +6706,7 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 .review-mod-product { color: var(--muted); font-weight: 600; font-size: 13px; }
 .review-mod-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
 .review-star { color: var(--hairline-dark, #d8d3cc); font-size: 14px; }
-.review-star.on { color: var(--accent); }
+.review-star.on { color: var(--accent); fill: var(--accent); }
 .review-mod-comment { margin: 12px 0 0; color: var(--ink-2); font-size: 14px; line-height: 1.6; }
 .review-mod-date { margin: 10px 0 0; font-size: 12px; color: var(--muted); }
 .review-pagination { justify-content: center; }

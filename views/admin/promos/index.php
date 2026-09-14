@@ -184,7 +184,7 @@ $days_past = fn($ts) => (int) floor(($now - $ts) / 86400);
                 <tr>
                     <td colspan="7">
                         <div class="empty-state empty-state--compact">
-                            <span class="ghost">🏷️</span>
+                            <span class="ghost"><svg style="width:4.5rem;height:4.5rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span>
                             <h3>Tidak ada kode promo</h3>
                             <p><?= $q !== '' || $status !== '' ? 'Coba ubah kata kunci atau filter status.' : 'Belum ada kode promo. Buatlah yang pertama.' ?></p>
                         </div>

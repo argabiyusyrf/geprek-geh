@@ -65,7 +65,7 @@ $low = (int) $product['stock'] <= 0 ? 'out' : ((int) $product['stock'] <= $thres
     </header>
     <?php if (empty($movements)): ?>
         <div class="empty-state empty-state--compact">
-            <span class="ghost">🗒</span>
+            <span class="ghost"><svg style="width:4.5rem;height:4.5rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 12h6"/><path d="M9 16h6"/></svg></span>
             <h3>Belum ada riwayat</h3>
             <p>Riwayat penambahan stok akan muncul di sini.</p>
         </div>
