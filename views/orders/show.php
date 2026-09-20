@@ -6,7 +6,7 @@ $created = date('d M Y, H:i', strtotime($order['created_at']));
 $bank_details = $payment_details['bank'] ?? ['name' => '-', 'number' => '-', 'holder' => '-'];
 $ewallet_details = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-', 'holder' => '-'];
 $wa_number = $contacts['whatsapp'] ?? '';
-$need_proof = in_array($order['payment_method'], ['transfer', 'ewallet'], true);
+$need_proof = payment_requires_proof($order['payment_method']);
 $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array($order['status'], ['pending', 'processing'], true);
 ?>
 
@@ -118,7 +118,7 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
                     <div class="meta-cell">
                         <span class="meta-label">Status Pembayaran</span>
                         <span class="meta-value">
-                            <?php if ($order['payment_method'] === 'cod'): ?>
+                            <?php if ($pm_type === 'cod'): ?>
                                 <span class="payment-state"><?= $order['status'] === 'delivered' ? 'Lunas saat antar' : 'Bayar saat tiba' ?></span>
                             <?php else: ?>
                                 <span class="badge <?= $payment_badge ?>"><?= $payment_status_label ?></span>
@@ -164,14 +164,19 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
                     <span class="pay-amount-label">Yang harus dibayar</span>
                     <span class="pay-amount-value"><?= rupiah(grand_total($order)) ?></span>
                 </div>
-                <?php if ($order['payment_method'] === 'transfer'): ?>
+                <?php if ($pm_type === 'bank'): ?>
                     <p class="pay-instructions-line">Transfer ke rekening kami:</p>
                     <p class="pay-instructions-detail"><strong><?= e($bank_details['name']) ?></strong> • <span class="pay-copy-target"><?= e($bank_details['number']) ?></span> <button type="button" class="btn-copy" data-copy="<?= e($bank_details['number']) ?>" title="Salin nomor rekening"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button> a.n. <?= e($bank_details['holder']) ?></p>
                     <p class="pay-instructions-note">Konfirmasi dengan mengunggah bukti di bawah. Verifikasi manual oleh admin 1×24 jam.</p>
-                <?php else: ?>
+                <?php elseif ($pm_type === 'ewallet'): ?>
                     <p class="pay-instructions-line">Bayar via e-wallet:</p>
                     <p class="pay-instructions-detail"><strong><?= e($ewallet_details['name']) ?></strong> • <span class="pay-copy-target"><?= e($ewallet_details['number']) ?></span> <button type="button" class="btn-copy" data-copy="<?= e($ewallet_details['number']) ?>" title="Salin nomor e-wallet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button> a.n. <?= e($ewallet_details['holder']) ?></p>
                     <p class="pay-instructions-note">Kirim bukti transfer/kode bayar di bawah agar diperiksa admin.</p>
+                <?php elseif ($pm_type === 'qris'): ?>
+                    <?php $qgw = payment_gateway(); ?>
+                    <p class="pay-instructions-line">Bayar via QRIS:</p>
+                    <p class="pay-instructions-detail"><strong><?= e($qgw['label'] ?: 'QRIS') ?></strong><?= !empty($qgw['number']) ? ' • <span class="pay-copy-target">' . e($qgw['number']) . '</span> <button type="button" class="btn-copy" data-copy="' . e($qgw['number']) . '" title="Salin nomor"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>' : '' ?></p>
+                    <p class="pay-instructions-note">Setelah bayar, unggah bukti QRIS di bawah untuk diverifikasi admin.</p>
                 <?php endif; ?>
             </div>
         </div>
@@ -196,14 +201,14 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
 
                     <div class="proof-fields-grid">
                         <div class="form-group">
-                            <label><?= $order['payment_method'] === 'ewallet' ? 'E-Wallet' : 'Bank' ?> *</label>
+                            <label><?= in_array($pm_type, ['ewallet', 'qris'], true) ? 'E-Wallet' : 'Bank' ?> *</label>
                             <span class="menu-dropdown proof-bank-dropdown" data-dropdown>
                                 <button type="button" class="menu-dropdown-trigger" data-dropdown-trigger aria-haspopup="listbox" aria-expanded="false">
-                                    <span data-dropdown-label>Pilih <?= $order['payment_method'] === 'ewallet' ? 'e-wallet' : 'bank' ?>…</span>
+                                    <span data-dropdown-label>Pilih <?= in_array($pm_type, ['ewallet', 'qris'], true) ? 'e-wallet' : 'bank' ?>…</span>
                                     <svg class="menu-sort-chev menu-sort-chev--js" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
                                 </button>
                                 <div class="menu-dropdown-menu" data-dropdown-menu role="listbox">
-                                    <?php if ($order['payment_method'] === 'transfer'): ?>
+                                    <?php if ($pm_type === 'bank'): ?>
                                         <button type="button" class="menu-dropdown-item" data-value="BCA" role="option">BCA</button>
                                         <button type="button" class="menu-dropdown-item" data-value="BNI" role="option">BNI</button>
                                         <button type="button" class="menu-dropdown-item" data-value="BRI" role="option">BRI</button>
@@ -222,7 +227,7 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
                                     <?php endif; ?>
                                 </div>
                                 <select name="payment_bank" class="menu-sort-select menu-sort-native" data-dropdown-select>
-                                    <?php if ($order['payment_method'] === 'transfer'): ?>
+                                    <?php if ($pm_type === 'bank'): ?>
                                         <option value="">Pilih bank…</option>
                                         <option value="BCA">BCA</option>
                                         <option value="BNI">BNI</option>
@@ -246,11 +251,11 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
                             </span>
                         </div>
                         <div class="form-group">
-                            <label><?= $order['payment_method'] === 'ewallet' ? 'No. E-Wallet' : 'No. Rekening' ?> *</label>
-                            <input type="text" name="payment_account_no" class="input" placeholder="<?= $order['payment_method'] === 'ewallet' ? '08xxxxxxxxxx' : '1234567890' ?>" required>
+                            <label><?= in_array($pm_type, ['ewallet', 'qris'], true) ? 'No. E-Wallet' : 'No. Rekening' ?> *</label>
+                            <input type="text" name="payment_account_no" class="input" placeholder="<?= in_array($pm_type, ['ewallet', 'qris'], true) ? '08xxxxxxxxxx' : '1234567890' ?>" required>
                         </div>
                         <div class="form-group">
-                            <label>Nama Pemilik <?= $order['payment_method'] === 'ewallet' ? 'E-Wallet' : 'Rekening' ?> *</label>
+                            <label>Nama Pemilik <?= in_array($pm_type, ['ewallet', 'qris'], true) ? 'E-Wallet' : 'Rekening' ?> *</label>
                             <input type="text" name="payment_account_name" class="input" placeholder="Nama sesuai rekening" required>
                         </div>
                     </div>
@@ -286,7 +291,8 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
         </div>
         <?php endif; ?>
 
-        <a class="order-help" href="<?= wa_link($wa_number) ?>" target="_blank" rel="noopener">
+        <?php $wa_help = wa_template('wa_template_help', ['invoice' => $order['invoice_no']]); ?>
+        <a class="order-help" href="<?= wa_link($wa_number, $wa_help) ?>" target="_blank" rel="noopener">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             <div>
                 <strong>Butuh bantuan?</strong>

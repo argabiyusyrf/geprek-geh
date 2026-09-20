@@ -21,6 +21,36 @@
     </div>
 </div>
 
+<?php if (!empty($low_stock)): ?>
+<div class="stock-alert">
+    <div class="stock-alert-head">
+        <span class="stock-alert-ic">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        </span>
+        <div class="stock-alert-txt">
+            <strong><?= $low_stock_count ?> produk perlu restok<?= $out_stock_count > 0 ? " (termasuk {$out_stock_count} stok habis)" : '' ?></strong>
+            <small>Stok di bawah ambang batas <?= (int) $threshold ?> unit.</small>
+        </div>
+        <div class="stock-alert-actions">
+            <a href="/geprek-geh/admin/stock" class="btn btn-warning btn-xs">Kelola Stok</a>
+        </div>
+    </div>
+    <div class="stock-alert-list">
+        <?php foreach ($low_stock as $p): ?>
+        <a class="stock-alert-item" href="/geprek-geh/admin/stock/<?= $p['id'] ?>">
+            <span class="stock-alert-name"><?= e($p['name']) ?></span>
+            <span class="stock-alert-cat"><?= e($p['category_name']) ?></span>
+            <?php if ((int)$p['stock'] === 0): ?>
+                <span class="badge badge-danger">Habis</span>
+            <?php else: ?>
+                <span class="badge badge-warning">Sisa <?= (int) $p['stock'] ?></span>
+            <?php endif; ?>
+        </a>
+        <?php endforeach; ?>
+    </div>
+</div>
+<?php endif; ?>
+
 <div class="stats-grid">
     <div class="stat-card stat-card--rev">
         <span class="stat-icon">
@@ -210,12 +240,14 @@
                 </span>
                 <span><strong>Atur Kategori</strong><small>Kelompokkan menu agar mudah dicari</small></span>
             </a>
+            <?php if (Auth::admin()): ?>
             <a class="quick-item" href="/geprek-geh/admin/users">
                 <span class="quick-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
                 </span>
                 <span><strong>Kelola Pelanggan</strong><small>Lihat &amp; kelola user terdaftar</small></span>
             </a>
+            <?php endif; ?>
         </div>
         <div class="admin-quick-foot">
             <span class="dot-pulse"></span>

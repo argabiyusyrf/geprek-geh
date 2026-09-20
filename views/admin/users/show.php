@@ -156,7 +156,7 @@ $status_meta = [
                     <td>
                         <a href="/geprek-geh/admin/orders/<?= $o['id'] ?>" class="ocell-invoice">
                             <span class="ocell-no"><?= e($o['invoice_no']) ?></span>
-                            <span class="ocell-sub"><?= e($o['payment_method'] ?: 'transfer') ?></span>
+                            <span class="ocell-sub"><?= e(\payment_method_label($o['payment_method'])) ?></span>
                         </a>
                     </td>
                     <td class="stock-cell"><?= date('d M Y H:i', strtotime($o['created_at'])) ?></td>

@@ -127,17 +127,36 @@ function order_log($db, $order_id, $actor, $message) {
     $db->insert('order_logs', ['order_id' => $order_id, 'actor' => $actor, 'message' => $message]);
 }
 
-function order_restore_stock($db, $order_id) {
-    $items = $db->fetchAll("SELECT product_id, quantity FROM order_items WHERE order_id = ?", [$order_id]);
-    foreach ($items as $item) {
-        $db->query("UPDATE products SET stock = stock + ? WHERE id = ?", [$item['quantity'], $item['product_id']]);
-    }
-}
+// order_restore_stock() memakai versi lanjutan di bagian bawah file
+// (mencatat pergerakan stok otomatis ke stock_movements).
 
-function wa_link($number) {
+function wa_link($number, string $text = '') {
     $n = preg_replace('/\D/', '', $number ?? '');
     if (str_starts_with($n, '0')) $n = '62' . substr($n, 1);
-    return 'https://wa.me/' . $n;
+    if ($text === '') return 'https://wa.me/' . $n;
+    return 'https://wa.me/' . $n . '?text=' . rawurlencode($text);
+}
+
+/** Template pesan WhatsApp dari pengaturan (cache statis). Placeholder: {nama}, {invoice}. */
+function wa_template(string $key, array $vars = []): string {
+    static $templates = null;
+    if ($templates === null) {
+        $templates = [];
+        try {
+            $rows = Database::getInstance()->fetchAll(
+                "SELECT skey, svalue FROM toko_settings WHERE skey LIKE 'wa_template_%'"
+            );
+            foreach ($rows as $r) $templates[$r['skey']] = (string) $r['svalue'];
+        } catch (Throwable $e) {
+            // tabel belum ada
+        }
+    }
+    $text = $templates[$key] ?? '';
+    if ($text === '') return '';
+    foreach ($vars as $k => $v) {
+        $text = str_replace('{' . $k . '}', (string) $v, $text);
+    }
+    return $text;
 }
 
 /**
@@ -250,4 +269,123 @@ function calculateOrderSummary(array $items, ?array $promo = null): array {
         'promo_label' => $promo_label,
         'grand_total' => max(0, $subtotal - $discount + $tax + $shipping),
     ];
+}
+
+// ─────────── Metode pembayaran multi (payment_methods) ───────────
+
+/** Ambil detail metode pembayaran dari kode-nya (cache statis per-request). */
+function payment_method_details(?string $code): ?array {
+    if ($code === null || $code === '') return null;
+    static $methods = null;
+    if ($methods === null) {
+        $methods = [];
+        foreach (Database::getInstance()->fetchAll("SELECT * FROM payment_methods") as $m) {
+            $methods[$m['code']] = $m;
+        }
+    }
+    return $methods[$code] ?? null;
+}
+
+/** Konfigurasi gateway pembayaran (QRIS) dari toko_settings (cache statis). */
+function payment_gateway(): array {
+    static $gw = null;
+    if ($gw !== null) return $gw;
+    $default = ['type' => 'none', 'label' => 'QRIS', 'number' => ''];
+    try {
+        $rows = Database::getInstance()->fetchAll(
+            "SELECT skey, svalue FROM toko_settings WHERE skey LIKE 'payment_gateway_%'"
+        );
+        foreach ($rows as $r) {
+            $key = substr($r['skey'], strlen('payment_gateway_'));
+            if ($key === 'type' || $key === 'number' || $key === 'label') {
+                $default[$key] = $r['svalue'];
+            }
+        }
+    } catch (Throwable $e) {
+        // table absent — pakai default
+    }
+    $gw = $default;
+    return $gw;
+}
+
+/** Apakah gateway QRIS aktif? */
+function qris_payment_enabled(): bool {
+    return payment_gateway()['type'] === 'qris';
+}
+
+/** Label ramah-manusia untuk kode metode (fallback ke metode legacy). */
+function payment_method_label(?string $code): string {
+    $m = payment_method_details($code);
+    if ($m) {
+        if ($m['type'] === 'ewallet') return 'E-Wallet ' . $m['name'];
+        return 'Transfer ' . $m['name'];
+    }
+    if ($code === 'qris') {
+        $gw = payment_gateway();
+        return 'QRIS' . ($gw['label'] !== '' ? ' (' . $gw['label'] . ')' : '');
+    }
+    return [
+        'transfer' => 'Transfer Bank',
+        'cod'      => 'Bayar di Tempat (COD)',
+        'ewallet'  => 'E-Wallet (ShopeePay)',
+    ][$code ?? ''] ?? ucfirst((string) $code);
+}
+
+/** Tipe metode utk keputusan alur bayar: bank / ewallet / cod / qris / unknown. */
+function payment_method_type(?string $code): string {
+    $m = payment_method_details($code);
+    if ($m) return $m['type'];
+    if ($code === 'cod') return 'cod';
+    if ($code === 'qris') return 'qris';
+    if ($code === 'transfer') return 'bank';
+    if ($code === 'ewallet') return 'ewallet';
+    return 'unknown';
+}
+
+/** Apakah metode ini butuh upload bukti bayar? (semua kecuali COD). */
+function payment_requires_proof(?string $code): bool {
+    return payment_method_type($code) !== 'cod';
+}
+
+/** Catat pergerakan stok produk ke tabel stock_movements. */
+function stock_log(int $productId, int $qtyChange, ?string $note = null, ?int $userId = null): void {
+    $db = Database::getInstance();
+    $db->insert('stock_movements', [
+        'product_id' => $productId,
+        'qty_change' => $qtyChange,
+        'note'       => $note !== null && $note !== '' ? $note : null,
+        'user_id'    => $userId,
+    ]);
+}
+
+/** Perbaiki order_restore_stock: kembalikan stok + log otomatis ke stock_movements. */
+function order_restore_stock($db, $order_id) {
+    $order = $db->fetchOne("SELECT id, invoice_no FROM orders WHERE id = ?", [$order_id]);
+    $label = $order ? "pembatalan #{$order['invoice_no']}" : 'pembatalan';
+    $items = $db->fetchAll("SELECT product_id, quantity FROM order_items WHERE order_id = ?", [$order_id]);
+    foreach ($items as $item) {
+        $db->query("UPDATE products SET stock = stock + ? WHERE id = ?", [$item['quantity'], $item['product_id']]);
+        stock_log((int) $item['product_id'], (int) $item['quantity'], $label, null);
+    }
+}
+
+// ─────────── Wishlist ───────────
+
+/** Set id produk di wishlist user yg login (cache statis per-request). */
+function wishlist_ids(): array {
+    static $ids = null;
+    if ($ids !== null) return $ids;
+    $ids = [];
+    if (isset($_SESSION['user_id'])) {
+        try {
+            $rows = Database::getInstance()->fetchAll(
+                "SELECT product_id FROM wishlists WHERE user_id = ?",
+                [$_SESSION['user_id']]
+            );
+            foreach ($rows as $r) $ids[(int) $r['product_id']] = true;
+        } catch (Throwable $e) {
+            // tabel belum ada
+        }
+    }
+    return $ids;
 }

@@ -3,9 +3,29 @@ namespace Admin;
 class ReportController {
 
     public function index() {
-        \Auth::requireAdmin();
-        $db = \Database::getInstance();
+        \Auth::requireStaff();
 
+        [$from, $to] = $this->parseRange();
+        extract($this->collect($from, $to));
+
+        $admin_page_title = 'Laporan Penjualan';
+        require __DIR__ . '/../../views/layouts/admin-header.php';
+        require __DIR__ . '/../../views/admin/reports/index.php';
+        require __DIR__ . '/../../views/layouts/admin-footer.php';
+    }
+
+    /** Halaman cetak laporan — layout mandiri (print-friendly). */
+    public function printPage() {
+        \Auth::requireStaff();
+
+        [$from, $to] = $this->parseRange();
+        extract($this->collect($from, $to));
+
+        require __DIR__ . '/../../views/admin/reports/print.php';
+        exit;
+    }
+
+    private function parseRange(): array {
         $from = trim((string) ($_GET['from'] ?? ''));
         $to   = trim((string) ($_GET['to'] ?? ''));
         $valid_date = fn($d) => preg_match('/^\d{4}-\d{2}-\d{2}$/', $d) && (bool) strtotime($d);
@@ -18,6 +38,11 @@ class ReportController {
         if ($from !== '' && $to !== '' && strtotime($from) > strtotime($to)) {
             [$from, $to] = [$to, $from];
         }
+        return [$from, $to];
+    }
+
+    private function collect(string $from, string $to): array {
+        $db = \Database::getInstance();
 
         $date_where = '';
         $params = [];
@@ -48,6 +73,20 @@ class ReportController {
             $params
         );
 
+        // Graf: isi tanggal kosong agar sumbu kontinu.
+        $by_day = [];
+        foreach ($daily as $r) { $by_day[$r['tgl']] = $r; }
+        $chart = [];
+        if ($from !== '' && $to !== '') {
+            for ($d = strtotime($from); $d <= strtotime($to); $d = strtotime('+1 day', $d)) {
+                $tgl = date('Y-m-d', $d);
+                $chart[] = $by_day[$tgl] ?? ['tgl' => $tgl, 'order_count' => 0, 'revenue' => 0, 'qty' => 0];
+            }
+            $chart = array_slice($chart, -31, 31); // maks 31 bar untuk keterbacaan grafik
+        } else {
+            $chart = array_reverse($daily);
+        }
+
         $top_products = $db->fetchAll(
             "SELECT p.name, SUM(oi.quantity) AS qty, SUM(oi.quantity * oi.price) AS revenue
              FROM order_items oi
@@ -77,14 +116,11 @@ class ReportController {
             $params
         );
 
-        $admin_page_title = 'Laporan Penjualan';
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/reports/index.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        return compact('kpis', 'daily', 'chart', 'top_products', 'by_category', 'by_method');
     }
 
     public function export() {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
 
         $from = trim((string) ($_GET['from'] ?? date('Y-m-d', strtotime('-30 days'))));

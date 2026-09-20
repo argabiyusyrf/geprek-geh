@@ -17,6 +17,7 @@
         <a href="/geprek-geh/admin" class="brand">
             <span class="brand-mark">G</span>
             <span class="brand-word">Geprek Geh</span>
+            <?php if (!Auth::admin()): ?><span class="staff-badge">Staff</span><?php endif; ?>
         </a>
     </div>
     <nav class="sidebar-nav">
@@ -40,10 +41,12 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
             Kode Promo
         </a>
+        <?php if (Auth::admin()): ?>
         <a href="/geprek-geh/admin/users" class="<?= strpos($_SERVER['REQUEST_URI'], 'users') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             Pengguna
         </a>
+        <?php endif; ?>
         <a href="/geprek-geh/admin/stock" class="<?= strpos($_SERVER['REQUEST_URI'], 'stock') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg>
             Stok
@@ -56,14 +59,26 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
             Notifikasi
         </a>
+        <?php if (Auth::admin()): ?>
+        <a href="/geprek-geh/admin/payments" class="<?= strpos($_SERVER['REQUEST_URI'], 'payments') !== false ? 'active' : '' ?>">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+            Metode Bayar
+        </a>
+        <?php endif; ?>
         <a href="/geprek-geh/admin/reports" class="<?= strpos($_SERVER['REQUEST_URI'], 'reports') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
             Laporan
         </a>
+        <?php if (Auth::admin()): ?>
         <a href="/geprek-geh/admin/settings" class="<?= strpos($_SERVER['REQUEST_URI'], 'settings') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             Pengaturan
         </a>
+        <a href="/geprek-geh/admin/backup" class="<?= strpos($_SERVER['REQUEST_URI'], 'backup') !== false ? 'active' : '' ?>">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 1 10-10"/><path d="M22 12v7a3 3 0 0 1-3 3"/><path d="M16 16l6 3-6 3z"/></svg>
+            Backup DB
+        </a>
+        <?php endif; ?>
         <hr>
         <a href="/geprek-geh/" target="_blank">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
@@ -86,10 +101,16 @@
     <a href="/geprek-geh/admin/orders" class="<?= strpos($_SERVER['REQUEST_URI'], 'orders') !== false ? 'active' : '' ?>">Pesanan</a>
     <a href="/geprek-geh/admin/stock" class="<?= strpos($_SERVER['REQUEST_URI'], 'stock') !== false ? 'active' : '' ?>">Stok</a>
     <a href="/geprek-geh/admin/promos" class="<?= strpos($_SERVER['REQUEST_URI'], 'promos') !== false ? 'active' : '' ?>">Promo</a>
+    <?php if (Auth::admin()): ?>
     <a href="/geprek-geh/admin/users" class="<?= strpos($_SERVER['REQUEST_URI'], 'users') !== false ? 'active' : '' ?>">Pengguna</a>
+    <?php endif; ?>
     <a href="/geprek-geh/admin/reviews" class="<?= strpos($_SERVER['REQUEST_URI'], 'reviews') !== false ? 'active' : '' ?>">Ulasan</a>
     <a href="/geprek-geh/admin/reports" class="<?= strpos($_SERVER['REQUEST_URI'], 'reports') !== false ? 'active' : '' ?>">Laporan</a>
+    <?php if (Auth::admin()): ?>
+    <a href="/geprek-geh/admin/payments" class="<?= strpos($_SERVER['REQUEST_URI'], 'payments') !== false ? 'active' : '' ?>">Metode Bayar</a>
     <a href="/geprek-geh/admin/settings" class="<?= strpos($_SERVER['REQUEST_URI'], 'settings') !== false ? 'active' : '' ?>">Pengaturan</a>
+    <a href="/geprek-geh/admin/backup" class="<?= strpos($_SERVER['REQUEST_URI'], 'backup') !== false ? 'active' : '' ?>">Backup DB</a>
+    <?php endif; ?>
 </nav>
 
 <div class="admin-main">
@@ -98,7 +119,7 @@
             <span class="admin-eyebrow">Geprek Geh · Panel Admin</span>
             <div class="admin-title-row">
                 <h2 class="admin-page-title"><?= e($admin_page_title ?? 'Dashboard') ?></h2>
-                <span class="badge badge-primary">Admin</span>
+                <span class="badge <?= Auth::admin() ? 'badge-primary' : 'badge-secondary' ?>"><?= Auth::admin() ? 'Admin' : 'Staff' ?></span>
             </div>
         </div>
         <div class="admin-topbar-right">

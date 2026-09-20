@@ -235,7 +235,7 @@ $page_href = function (int $p) use ($qp) {
             <?php foreach ($orders as $o):
                 [$sl, $bc] = format_status($o['status']);
                 [$pl, $pc] = format_payment_status($o['payment_status']);
-                $pay_method = $o['payment_method'] === 'ewallet' ? 'E-Wallet' : ($o['payment_method'] === 'cod' ? 'COD' : ucfirst($o['payment_method'] ?? '-'));
+                $pay_method = \payment_method_label($o['payment_method']);
                 $is_unpaid = $o['payment_status'] === 'unpaid';
             ?>
             <tr class="order-row" data-invoice="<?= e($o['invoice_no']) ?>">

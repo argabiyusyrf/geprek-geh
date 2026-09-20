@@ -6747,3 +6747,146 @@ button:disabled, a:disabled { opacity: .5; pointer-events: none; }
 @media (max-width: 860px) {
     .stock-detail-hero { grid-template-columns: 1fr; }
 }
+
+/* ─── Admin: Low-stock alert (dashboard) ────────────────────── */
+.stock-alert {
+    background: rgba(255,247,230,0.75);
+    border: 1px solid rgba(161,98,7,0.25);
+    border-radius: 18px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+}
+.stock-alert-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.stock-alert-ic {
+    display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px;
+    background: rgba(242,176,29,0.18); color: #8a5a06; flex: none;
+}
+.stock-alert-txt { min-width: 0; }
+.stock-alert-txt strong { display: block; color: var(--ink); font-size: 14.5px; }
+.stock-alert-txt small { color: var(--ink-2); font-size: 12.5px; }
+.stock-alert-actions { margin-left: auto; }
+.btn-xs { padding: 6px 12px; font-size: 12px; }
+.stock-alert-list {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px;
+    margin-top: 14px;
+}
+.stock-alert-item {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.6); border: 1px solid rgba(161,98,7,0.16);
+    border-radius: 12px; padding: 10px 12px;
+    transition: all .25s var(--ease-soft);
+}
+.stock-alert-item:hover { background: #fff; border-color: rgba(161,98,7,0.35); transform: translateY(-1px); }
+.stock-alert-name { font-weight: 700; color: var(--ink); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stock-alert-cat { color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stock-alert-item .badge { margin-left: auto; flex: none; }
+@media (max-width: 720px) {
+    .stock-alert-head { align-items: flex-start; }
+    .stock-alert-actions { margin-left: 0; width: 100%; }
+}
+
+/* ─── Wishlist ──────────────────────────────────────────────── */
+.wish-form { flex: none; margin: 0 0 0 8px; }
+.product-wish {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--hairline);
+    background: var(--bg-soft);
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: all .35s var(--ease-soft);
+}
+.product-wish:hover { background: var(--accent); border-color: var(--accent); color: #fff; transform: scale(1.08); }
+.product-wish svg { display: block; }
+.heart-pill {
+    display: inline-block; padding: 0 7px; background: rgba(212,62,27,0.12);
+    color: var(--accent); border-radius: 8px; font-weight: 800;
+}
+.empty-state .heart-pill { margin: 0 3px; }
+.empty-state h3 { margin-bottom: 10px; }
+@media (max-width: 480px) {
+    .product-wish { width: 36px; height: 36px; }
+}
+
+/* ─── Wishlist heart (product cards catatan) ────────────────── */
+.wish-btn-overlay {
+    position: absolute; top: 12px; right: 12px; z-index: 5;
+}
+.wish-btn-overlay form { margin: 0; }
+.wish-btn-overlay .product-wish {
+    background: rgba(255,255,255,0.92); border: 1px solid var(--hairline);
+    box-shadow: 0 4px 14px -4px rgba(29,26,21,0.18);
+}
+
+/* ─── Wishlist: detail + nav ────────────────────────────────── */
+.pd-wish-form { margin-top: 12px; }
+.pd-wish-form .pd-wish {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--hairline); border-radius: 12px;
+    padding: 12px 18px;
+}
+.pd-wish-form .pd-wish svg { color: var(--accent); }
+.wish-nav-link { position: relative; margin-left: 8px; }
+.wish-nav-link .notif-dot { top: -4px; right: -6px; }
+@media (max-width: 640px) { .wish-nav-link { display: none; } }
+
+/* ─── Review photo ──────────────────────────────────────────── */
+.review-photo-field { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.review-photo-label { display: inline-flex; cursor: pointer; }
+.review-photo-ui {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1.5px dashed var(--hairline-strong); border-radius: 12px;
+    padding: 10px 14px; font-size: 13px; color: var(--muted);
+    transition: border-color .25s, color .25s, background .25s;
+}
+.review-photo-label:hover .review-photo-ui { border-color: var(--accent); color: var(--ink); }
+.review-photo-name { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.review-photo-preview { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; border: 1px solid var(--hairline); }
+.review-photo { display: block; margin: 12px 0; }
+.review-photo img {
+    max-width: 240px; width: 100%; aspect-ratio: 4/3; object-fit: cover;
+    border-radius: 12px; border: 1px solid var(--hairline);
+}
+.review-mod-photo { display: inline-block; margin-top: 10px; }
+.review-mod-photo img { width: 84px; height: 63px; object-fit: cover; border-radius: 8px; border: 1px solid var(--hairline); }
+
+/* ─── Report chart (admin reports) ──────────────────────────── */
+.report-chart {
+    display: flex; align-items: flex-end; gap: 6px;
+    height: 180px; padding: 12px 8px 0; margin-bottom: 14px;
+    border-bottom: 1px solid var(--hairline-strong);
+    overflow-x: auto;
+}
+.report-chart-col {
+    flex: 1 1 0; min-width: 22px; height: 100%;
+    display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 4px;
+}
+.report-chart-meta { height: 18px; font-size: 10px; color: var(--muted); text-align: center; overflow: hidden; }
+.report-chart-val { white-space: nowrap; }
+.report-chart-bar {
+    border-radius: 5px 5px 0 0; min-height: 3px;
+    background: linear-gradient(180deg, #f04e2c, #d43e1b);
+    transition: filter .25s;
+}
+.report-chart-col:hover .report-chart-bar { filter: brightness(1.15); }
+.report-chart-label {
+    font-size: 10px; color: var(--muted); text-align: center; padding-top: 6px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+@media (max-width: 640px) {
+    .report-chart { gap: 4px; }
+    .report-chart-col { min-width: 18px; }
+}
+
+/* ─── Staff role badge ──────────────────────────────────────── */
+.staff-badge {
+    display: inline-block; margin-left: 8px;
+    font-size: 10px; font-weight: 800; letter-spacing: .06em;
+    text-transform: uppercase; color: #fff;
+    background: #e8890c; border-radius: 999px; padding: 2px 8px;
+    vertical-align: middle;
+}
+.sidebar-header .brand { display: inline-flex; align-items: center; }
+.admin-page-title + .badge { margin-left: 10px; }

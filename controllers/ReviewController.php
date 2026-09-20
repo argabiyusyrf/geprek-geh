@@ -42,22 +42,65 @@ class ReviewController {
         }
 
         if ($existing) {
-            $db->update('product_reviews', [
+            $fields = [
                 'rating'   => $rating,
                 'comment'  => $comment,
-            ], 'id = ?', [$existing['id']]);
+            ];
+            $photo = $this->handlePhotoUpload();
+            if ($photo) {
+                $this->deletePhotoFile($existing['image'] ?? null);
+                $fields['image'] = $photo;
+            } elseif ($photo === false) {
+                // upload gagal validasi → flash sudah terisi
+                redirect('/geprek-geh/products/' . $product['slug']);
+            }
+            $db->update('product_reviews', $fields, 'id = ?', [$existing['id']]);
             flash_set('success', 'Review berhasil diperbarui.');
         } else {
+            $photo = $this->handlePhotoUpload();
+            if ($photo === false) {
+                redirect('/geprek-geh/products/' . $product['slug']);
+            }
             $db->insert('product_reviews', [
                 'product_id' => $product_id,
                 'user_id'    => Auth::id(),
                 'rating'     => $rating,
                 'comment'    => $comment,
+                'image'      => $photo ?: null,
             ]);
             flash_set('success', 'Review berhasil ditambahkan. Terima kasih!');
         }
 
         redirect('/geprek-geh/products/' . $product['slug']);
+    }
+
+    /** Upload foto ulasan opsional. Return nama file, null tanpa file, atau false bila gagal validasi. */
+    private function handlePhotoUpload() {
+        if (!isset($_FILES['photo']) || $_FILES['photo']['error'] === UPLOAD_ERR_NO_FILE) return null;
+        if ($_FILES['photo']['error'] !== UPLOAD_ERR_OK) return false;
+        $file = $_FILES['photo'];
+        if ($file['size'] > 5 * 1024 * 1024) {
+            flash_set('error', 'Ukuran foto maksimal 5MB.');
+            return false;
+        }
+        $imageInfo = @getimagesize($file['tmp_name']);
+        $typeToExt = [IMAGETYPE_PNG => 'png', IMAGETYPE_JPEG => 'jpg', IMAGETYPE_WEBP => 'webp'];
+        if (!$imageInfo || !isset($typeToExt[$imageInfo[2]])) {
+            flash_set('error', 'File foto tidak valid (PNG/JPG/WebP saja).');
+            return false;
+        }
+        $ext = $typeToExt[$imageInfo[2]];
+        $name = 'review_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+        $upload_dir = __DIR__ . '/../assets/uploads/reviews/';
+        if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
+        move_uploaded_file($file['tmp_name'], $upload_dir . $name);
+        return $name;
+    }
+
+    private function deletePhotoFile($image) {
+        if (!$image) return;
+        $path = __DIR__ . '/../assets/uploads/reviews/' . basename((string) $image);
+        if (is_file($path)) @unlink($path);
     }
 
     public function delete($id) {
@@ -77,6 +120,7 @@ class ReviewController {
             redirect('/geprek-geh/products');
         }
 
+        $this->deletePhotoFile($review['image'] ?? null);
         $db->delete('product_reviews', 'id = ?', [$id]);
         flash_set('success', 'Review berhasil dihapus.');
         redirect('/geprek-geh/products/' . $review['slug']);

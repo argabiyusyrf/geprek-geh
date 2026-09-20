@@ -3,7 +3,7 @@ namespace Admin;
 class ReviewController {
 
     public function index() {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
 
         $status = $_GET['status'] ?? '';
@@ -58,7 +58,7 @@ class ReviewController {
     }
 
     public function toggle($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
         $id = (int) $id;
         if (!\verify_csrf()) {
@@ -80,13 +80,18 @@ class ReviewController {
     }
 
     public function delete($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
         $id = (int) $id;
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
             header('Location: /geprek-geh/admin/reviews');
             exit;
+        }
+        $review = $db->fetchOne("SELECT image FROM product_reviews WHERE id = ?", [$id]);
+        if ($review && !empty($review['image'])) {
+            $file = __DIR__ . '/../../assets/uploads/reviews/' . basename((string) $review['image']);
+            if (is_file($file)) @unlink($file);
         }
         $db->delete('product_reviews', 'id = ?', [$id]);
         \flash_set('success', 'Ulasan dihapus.');

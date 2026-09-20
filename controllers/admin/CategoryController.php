@@ -2,7 +2,7 @@
 namespace Admin;
 class CategoryController {
     public function index() {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
         $categories = $db->fetchAll(
             "SELECT c.*, (SELECT COUNT(*) FROM products WHERE category_id = c.id) AS product_count
@@ -37,7 +37,7 @@ class CategoryController {
     }
 
     public function store() {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/categories'); exit; }
         $db = \Database::getInstance();
         $name = trim($_POST['name'] ?? '');
@@ -64,7 +64,7 @@ class CategoryController {
     }
 
     public function update($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $id = (int) $id;
         if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/categories'); exit; }
         $db = \Database::getInstance();
@@ -96,7 +96,7 @@ class CategoryController {
     }
 
     public function delete($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/categories'); exit; }
         $db = \Database::getInstance();
         $cat = $db->fetchOne("SELECT id FROM categories WHERE id = ?", [$id]);

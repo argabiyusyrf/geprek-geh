@@ -2,7 +2,7 @@
 namespace Admin;
 class PromoController {
     public function index() {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
 
         $allowed_status = ['active', 'upcoming', 'expired', 'inactive'];
@@ -119,7 +119,7 @@ class PromoController {
     }
 
     public function store() {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/promos'); exit; }
         $db = \Database::getInstance();
         $in = $this->collectInput();
@@ -149,7 +149,7 @@ class PromoController {
     }
 
     public function update($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $id = (int) $id;
         if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/promos'); exit; }
         $db = \Database::getInstance();
@@ -184,7 +184,7 @@ class PromoController {
     }
 
     public function toggle($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
         $promo = $db->fetchOne("SELECT * FROM promo_codes WHERE id = ?", [$id]);
         if (!$promo) {
@@ -199,7 +199,7 @@ class PromoController {
     }
 
     public function delete($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
         $db->delete('promo_codes', 'id = ?', [(int) $id]);
         \flash_set('success', 'Kode promo dihapus.');

@@ -3,7 +3,7 @@ namespace Admin;
 class StockController {
 
     public function index() {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
         $app = require __DIR__ . '/../../config/app.php';
         $threshold = (int) ($app['stock_low_threshold'] ?? 10);
@@ -65,7 +65,7 @@ class StockController {
     }
 
     public function show($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
         $app = require __DIR__ . '/../../config/app.php';
         $threshold = (int) ($app['stock_low_threshold'] ?? 10);
@@ -96,7 +96,7 @@ class StockController {
     }
 
     public function restock($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
             header('Location: /geprek-geh/admin/stock');

@@ -35,13 +35,50 @@ class CheckoutController {
 
         $grand_total = max(0, $subtotal - $discount + $tax + $shipping);
 
-        $payment_options = [
-            'transfer' => ['label' => 'Transfer Bank', 'icon' => 'bank', 'desc' => 'Verifikasi manual oleh admin 1×24 jam'],
-            'cod'      => ['label' => 'Bayar di Tempat (COD)', 'icon' => 'cash', 'desc' => 'Bayar tunai saat pesanan tiba'],
-            'ewallet'  => ['label' => 'E-Wallet (ShopeePay)', 'icon' => 'wallet', 'desc' => 'Verifikasi manual oleh admin dari bukti bayar'],
+        $payment_options = [];
+        $bank_info = null;
+        $ewallet_info = null;
+        foreach (($app['payment']['methods'] ?? []) as $m) {
+            $popt = [
+                'label'  => $m['type'] === 'bank' ? 'Transfer ' . $m['name'] : 'E-Wallet ' . $m['name'],
+                'icon'   => $m['type'] === 'bank' ? 'bank' : 'wallet',
+                'type'   => $m['type'],
+                'name'   => $m['name'],
+                'number' => $m['number'],
+                'holder' => $m['holder'],
+                'desc'   => $m['description'] ?: ($m['type'] === 'bank'
+                    ? 'Verifikasi manual oleh admin 1×24 jam'
+                    : 'Verifikasi manual oleh admin dari bukti bayar'),
+            ];
+            $payment_options[$m['code']] = $popt;
+            if ($m['type'] === 'bank' && !$bank_info) $bank_info = $popt;
+            if ($m['type'] === 'ewallet' && !$ewallet_info) $ewallet_info = $popt;
+        }
+        $gateway = $app['payment']['gateway'] ?? ['type' => 'none', 'label' => 'QRIS', 'number' => ''];
+        if (($gateway['type'] ?? 'none') === 'qris') {
+            $glabel = trim((string) ($gateway['label'] ?? ''));
+            $gnum = trim((string) ($gateway['number'] ?? ''));
+            $payment_options['qris'] = [
+                'label'  => 'QRIS' . ($glabel !== '' ? " · {$glabel}" : ''),
+                'icon'   => 'wallet',
+                'type'   => 'qris',
+                'name'   => $glabel !== '' ? $glabel : 'QRIS',
+                'number' => $gnum,
+                'holder' => '',
+                'desc'   => $gnum !== '' ? "Bayar via {$glabel}" . ' ' . $gnum . ', lalu kirim bukti bayar' : 'Scan kode QRIS, lalu kirim bukti bayar',
+            ];
+        }
+        $payment_options['cod'] = [
+            'label'  => 'Bayar di Tempat (COD)',
+            'icon'   => 'cash',
+            'type'   => 'cod',
+            'name'   => 'COD',
+            'number' => '',
+            'holder' => '',
+            'desc'   => 'Bayar tunai saat pesanan tiba',
         ];
-
-        $payment_details = $app['payment'] ?? [];
+        $default_pm = isset($payment_options['cod']) ? 'cod' : array_key_first($payment_options);
+        $payment_details = ['bank' => $bank_info ?? ['name' => '-', 'number' => '-', 'holder' => '-'], 'ewallet' => $ewallet_info ?? ['name' => 'E-Wallet', 'number' => '-', 'holder' => '-']];
         $contacts = $app['contacts'] ?? [];
 
         $saved_addresses = $db->fetchAll(
@@ -91,8 +128,21 @@ class CheckoutController {
         $district = $post('district');
         $village = $post('village');
         $postal_code = $post('postal_code');
-        $payment_method = $_POST['payment_method'] ?? 'transfer';
-        if (!in_array($payment_method, ['transfer', 'ewallet', 'cod'], true)) $payment_method = 'transfer';
+        $payment_method = $_POST['payment_method'] ?? '';
+        // Valid: aktif di payment_methods (kode dinamis) atau 'qris' (jika gateway
+        // QRIS aktif) atau 'cod'.
+        $allowed_codes = [];
+        foreach (($app['payment']['methods'] ?? []) as $m) $allowed_codes[] = $m['code'];
+        $gateway = $app['payment']['gateway'] ?? ['type' => 'none'];
+        if (($gateway['type'] ?? 'none') === 'qris') $allowed_codes[] = 'qris';
+        $allowed_codes[] = 'cod';
+        if (!in_array($payment_method, $allowed_codes, true)) {
+            // Fallback legacy / invalid → metode aktif pertama, atau COD.
+            $payment_method = $allowed_codes[0] ?? 'cod';
+        }
+        $pm_details = payment_method_details($payment_method); // false utk cod / tak dikenal
+        $payment_method_id = $pm_details ? (int) $pm_details['id'] : null;
+        if ($pm_details && $pm_details['type'] === 'cod') $payment_method_id = null;
         $notes = $post('notes');
 
         // Pick shipping address: radio `picked_address` works even without JS.
@@ -204,6 +254,7 @@ class CheckoutController {
             'tax'                   => $tax,
             'status'                => 'pending',
             'payment_method'        => $payment_method,
+            'payment_method_id'     => $payment_method_id,
             'shipping_address'      => $order_address,
             'notes'                 => $notes,
         ]);
@@ -236,10 +287,12 @@ $reserved = [];
                 $db->delete('orders', 'id = ?', [$order_id]);
                 foreach ($reserved as $r) {
                     $db->query("UPDATE products SET stock = stock + ? WHERE id = ?", [$r['qty'], $r['product_id']]);
+                    stock_log($r['product_id'], (int) $r['qty'], "Pembatalan {$invoice} (stok habis saat checkout)");
                 }
                 flash_set('error', "Stok {$item['name']} habis saat checkout. Silakan periksa kembali.");
                 redirect('/geprek-geh/cart');
             }
+            stock_log($item['product_id'], -$item['quantity'], "Pesanan {$invoice} dibuat", Auth::id());
             $reserved[] = ['product_id' => $item['product_id'], 'qty' => $item['quantity']];
         }
 

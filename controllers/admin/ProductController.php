@@ -2,7 +2,7 @@
 namespace Admin;
 class ProductController {
     public function index() {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
         $categories = $db->fetchAll(
             "SELECT c.*, (SELECT COUNT(*) FROM products p WHERE p.category_id = c.id) AS product_count
@@ -125,13 +125,13 @@ class ProductController {
     }
 
     public function create() {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         header('Location: /geprek-geh/admin/products?create=1');
         exit;
     }
 
     public function store() {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/products?create=1'); exit; }
         $db = \Database::getInstance();
         $name = trim($_POST['name'] ?? '');
@@ -164,7 +164,7 @@ class ProductController {
             header('Location: /geprek-geh/admin/products?create=1&error=1'); exit;
         }
 
-        $db->insert('products', [
+        $new_id = (int) $db->insert('products', [
             'name'        => $name,
             'slug'        => $this->uniqueSlug(\slug($name)),
             'category_id' => $category_id,
@@ -176,13 +176,17 @@ class ProductController {
             'is_featured' => $is_featured,
         ]);
 
+        if ($stock > 0) {
+            \stock_log($new_id, $stock, 'Stok awal produk baru');
+        }
+
         \flash_set('success', 'Produk berhasil ditambahkan.');
         header('Location: /geprek-geh/admin/products');
         exit;
     }
 
     public function edit($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
         $product = $db->fetchOne("SELECT id FROM products WHERE id = ?", [$id]);
         if (!$product) {
@@ -226,7 +230,7 @@ class ProductController {
     }
 
     public function update($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $id = (int) $id;
         if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/products'); exit; }
         $db = \Database::getInstance();
@@ -277,14 +281,19 @@ class ProductController {
         ];
         if ($image !== null) $data['image'] = $image;
 
+        $current = $db->fetchOne("SELECT stock FROM products WHERE id = ?", [$id]);
         $db->update('products', $data, 'id = ?', [$id]);
+        if ($current && (int) $current['stock'] !== $stock) {
+            $diff = $stock - (int) $current['stock'];
+            \stock_log($id, $diff, 'Edit stok via form produk');
+        }
         \flash_set('success', 'Produk berhasil diupdate.');
         header('Location: /geprek-geh/admin/products');
         exit;
     }
 
     public function delete($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/products'); exit; }
         $db = \Database::getInstance();
         $product = $db->fetchOne("SELECT image FROM products WHERE id = ?", [$id]);

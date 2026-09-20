@@ -153,6 +153,8 @@ if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(
                             <?php endif; ?>
                         </span>
                     </a>
+                    <?php $wish_ids = wishlist_ids(); ?>
+                    <?php require __DIR__ . '/../partials/wish-heart.php'; ?>
 
                     <div class="product-body">
                         <span class="product-cat"><?= e($p['category_name']) ?></span>

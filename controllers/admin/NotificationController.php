@@ -3,7 +3,7 @@ namespace Admin;
 class NotificationController {
 
     public function index() {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
 
         $customers = $db->fetchAll(
@@ -24,7 +24,7 @@ class NotificationController {
     }
 
     public function send() {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
             header('Location: /geprek-geh/admin/notifications');

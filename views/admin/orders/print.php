@@ -2,10 +2,12 @@
 [$status_label] = \format_status($order['status']);
 [$payment_status_label] = \format_payment_status($order['payment_status']);
 $method = $order['payment_method'] ?? '';
-$method_label = $method === 'ewallet' ? 'E-Wallet (ShopeePay)' : ($method === 'cod' ? 'COD — Bayar di Tempat' : ($method === 'transfer' ? 'Transfer Bank' : ucfirst($method ?: '-')));
+$pm_type = \payment_method_type($method);
+$pm_details = \payment_method_details($method);
+$method_label = \payment_method_label($method);
 $grand = \grand_total($order);
 $created = date('d M Y, H:i', strtotime($order['created_at']));
-$bank = $payment_details['bank'] ?? ['name' => '-', 'number' => '-', 'holder' => '-'];
+$bank = $pm_type === 'bank' && $pm_details ? $pm_details : ['name' => '-', 'number' => '-', 'holder' => '-'];
 $proof_exists = !empty($order['payment_proof']) && file_exists(dirname(__DIR__, 3) . '/assets/uploads/payments/' . $order['payment_proof']);
 ?>
 <!DOCTYPE html>
@@ -126,8 +128,11 @@ $proof_exists = !empty($order['payment_proof']) && file_exists(dirname(__DIR__, 
             <h4>Pembayaran</h4>
             <p>
                 <strong><?= e($method_label) ?></strong><br>
-                <?php if (!in_array($method, ['cod'], true)): ?>
+                <?php if ($pm_type === 'bank'): ?>
                     <?= e($bank['name']) ?> &bull; <?= e($bank['number']) ?> a.n. <?= e($bank['holder']) ?><br>
+                    Status: <strong><?= $payment_status_label ?></strong>
+                <?php elseif ($pm_type === 'qris'): ?>
+                    <?php $qgw = \payment_gateway(); ?><?= e($qgw['label'] ?: 'QRIS') ?><?= !empty($qgw['number']) ? ' &bull; ' . e($qgw['number']) : '' ?><br>
                     Status: <strong><?= $payment_status_label ?></strong>
                 <?php else: ?>
                     Status: <strong><?= $payment_status_label ?></strong>

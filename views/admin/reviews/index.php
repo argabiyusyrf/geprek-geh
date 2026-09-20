@@ -116,6 +116,11 @@ $status_label = ['visible' => 'Ditampilkan', 'hidden' => 'Disembunyikan', '' => 
             <?php if ($r['comment'] !== null && $r['comment'] !== ''): ?>
                 <p class="review-mod-comment"><?= e($r['comment']) ?></p>
             <?php endif; ?>
+            <?php if (!empty($r['image'])): ?>
+                <a href="/geprek-geh/assets/uploads/reviews/<?= e($r['image']) ?>" target="_blank" rel="noopener" class="review-mod-photo">
+                    <img src="/geprek-geh/assets/uploads/reviews/<?= e($r['image']) ?>" alt="Foto ulasan" loading="lazy">
+                </a>
+            <?php endif; ?>
             <p class="review-mod-date"><?= e(date('d M Y H:i', strtotime($r['created_at']))) ?></p>
         </div>
     <?php endforeach; ?>

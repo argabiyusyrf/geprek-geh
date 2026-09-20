@@ -47,6 +47,21 @@ class Auth {
         }
     }
 
+    /** True bila role admin atau staff. */
+    public static function staff(): bool {
+        return self::check() && in_array($_SESSION['role'] ?? '', ['admin', 'staff'], true);
+    }
+
+    /** Staf (admin apa pun role) diizinkan; selain itu arahkan ke beranda. */
+    public static function requireStaff() {
+        self::requireLogin();
+        if (!self::staff()) {
+            $_SESSION['flash'] = ['type' => 'error', 'msg' => 'Akses ditolak.'];
+            header('Location: /geprek-geh/');
+            exit;
+        }
+    }
+
     /**
      * Autentikasi tanpa membuat sesi login.
      * Mengembalikan data user bila email+password cocok (tahap-1 dari login 2FA),

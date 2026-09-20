@@ -1,5 +1,5 @@
 <?php
-$method_label = fn($m) => ['transfer' => 'Transfer Bank', 'cod' => 'COD', 'ewallet' => 'E-Wallet'][$m] ?? ucfirst($m ?: '');
+$method_label = fn($m) => \payment_method_label($m);
 ?>
 
 <div class="breadcrumb">
@@ -14,6 +14,10 @@ $method_label = fn($m) => ['transfer' => 'Transfer Bank', 'cod' => 'COD', 'ewall
         <p class="page-sub">Ringkasan penjualan <?= e($from) ?> s/d <?= e($to) ?> (pesanan yang tidak dibatalkan)</p>
     </div>
     <div class="order-head-actions">
+        <a href="/geprek-geh/admin/reports/print?from=<?= e($from) ?>&to=<?= e($to) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-ghost">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+            Cetak
+        </a>
         <a href="/geprek-geh/admin/reports/export?from=<?= e($from) ?>&to=<?= e($to) ?>" class="btn btn-primary btn-sm">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
             Export CSV
@@ -82,6 +86,19 @@ $method_label = fn($m) => ['transfer' => 'Transfer Bank', 'cod' => 'COD', 'ewall
                 <p>Tidak ada pesanan pada periode ini.</p>
             </div>
         <?php else: ?>
+        <?php
+        $max_rev = (int) max(array_column($chart, 'revenue'));
+        $max_rev = $max_rev > 0 ? $max_rev : 1;
+        ?>
+        <div class="report-chart" role="img" aria-label="Grafik omzet per hari">
+            <?php foreach ($chart as $c): $rev = (int) $c['revenue']; $h = max(4, round(($rev / $max_rev) * 100)); ?>
+                <div class="report-chart-col">
+                    <div class="report-chart-meta"><?= $rev > 0 ? '<span class="report-chart-val">' . rupiah($rev) . '</span>' : '' ?></div>
+                    <div class="report-chart-bar" style="height: <?= $h ?>%" title="<?= e($c['tgl']) ?> · <?= rupiah($rev) ?>"></div>
+                    <span class="report-chart-label"><?= e(date('d/m', strtotime($c['tgl']))) ?></span>
+                </div>
+            <?php endforeach; ?>
+        </div>
         <div class="table-wrap">
             <table class="table">
                 <thead>

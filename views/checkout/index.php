@@ -165,7 +165,7 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
                     <div class="payment-options">
                         <?php foreach ($payment_options as $val => $opt): ?>
                         <label class="radio-card">
-                            <input type="radio" name="payment_method" value="<?= $val ?>" <?= ($payment_method ?? 'transfer') === $val ? 'checked' : '' ?>>
+                            <input type="radio" name="payment_method" value="<?= e($val) ?>" <?= ($payment_method ?? ($default_pm ?? 'cod')) === $val ? 'checked' : '' ?>>
                             <span class="radio-icon">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                                     <?php if ($opt['icon'] === 'bank'): ?><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>
@@ -184,18 +184,22 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
                     </div>
 
                     <div class="pay-info-wrap" data-pay-info-wrap>
-                        <div class="pay-info" data-pay-info="transfer">
-                            <span class="pay-info-label">Transfer ke rekening kami:</span>
-                            <span class="pay-info-detail"><strong><?= e($bank['name']) ?></strong> • <?= e($bank['number']) ?> a.n. <?= e($bank['holder']) ?></span>
+                        <?php foreach ($payment_options as $val => $opt): ?>
+                        <div class="pay-info" data-pay-info="<?= e($val) ?>">
+                            <?php if ($opt['type'] === 'cod'): ?>
+                                <span class="pay-info-label">Bayar di tempat (COD):</span>
+                                <span class="pay-info-detail">Siapkan uang tunai tepat sesuai total pesanan saat pesanan tiba.</span>
+                            <?php elseif ($opt['type'] === 'qris'): ?>
+                                <span class="pay-info-label">Bayar via QRIS:</span>
+                                <span class="pay-info-detail">
+                                    <strong><?= e($opt['name']) ?></strong><?php if ($opt['number'] !== ''): ?> • <span class="pay-copy-target"><?= e($opt['number']) ?></span><?php endif; ?> — lalu kirim bukti bayar pada halaman pesanan.
+                                </span>
+                            <?php else: ?>
+                                <span class="pay-info-label"><?= $opt['type'] === 'ewallet' ? 'Bayar via e-wallet:' : 'Transfer ke rekening kami:' ?></span>
+                                <span class="pay-info-detail"><strong><?= e($opt['name']) ?></strong> • <?= e($opt['number']) ?> a.n. <?= e($opt['holder']) ?></span>
+                            <?php endif; ?>
                         </div>
-                        <div class="pay-info" data-pay-info="ewallet">
-                            <span class="pay-info-label">Bayar via e-wallet:</span>
-                            <span class="pay-info-detail"><strong><?= e($ewallet['name']) ?></strong> • <?= e($ewallet['number']) ?> a.n. <?= e($ewallet['holder']) ?></span>
-                        </div>
-                        <div class="pay-info" data-pay-info="cod">
-                            <span class="pay-info-label">Bayar di tempat (COD):</span>
-                            <span class="pay-info-detail">Siapkan uang tunai tepat sesuai total pesanan saat pesanan tiba.</span>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </section>

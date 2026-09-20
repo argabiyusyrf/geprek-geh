@@ -132,6 +132,15 @@ $out_stock = $product['stock'] <= 0;
                 <?php else: ?>
                     <button type="button" class="btn btn-lg pd-add is-soldout" disabled>Stok Habis</button>
                 <?php endif; ?>
+
+                <?php $wish_ids = wishlist_ids(); $is_wished = isset($wish_ids[(int) $product['id']]); ?>
+                <form method="POST" action="/geprek-geh/wishlist/<?= (int) $product['id'] ?>/toggle" class="pd-wish-form">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-ghost btn-lg pd-wish" title="<?= $is_wished ? 'Hapus dari daftar keinginan' : 'Simpan ke daftar keinginan' ?>">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="<?= $is_wished ? 'currentColor' : 'none' ?>" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                        <span><?= $is_wished ? 'Tersimpan' : 'Simpan ke Favorit' ?></span>
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -192,7 +201,7 @@ $out_stock = $product['stock'] <= 0;
                 <?php endif; ?>
             </div>
         </div>
-        <form method="POST" action="/geprek-geh/reviews" class="review-form">
+        <form method="POST" action="/geprek-geh/reviews" class="review-form" enctype="multipart/form-data">
             <?= csrf_field() ?>
             <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
             <div class="review-rating-input" data-rating-input>
@@ -205,6 +214,21 @@ $out_stock = $product['stock'] <= 0;
                 <input type="hidden" name="rating" value="<?= $my_review ? $my_review['rating'] : 4 ?>">
             </div>
             <textarea name="comment" class="input review-textarea" rows="3" placeholder="Ceritakan pengalamanmu... (opsional)"><?= e($my_review['comment'] ?? '') ?></textarea>
+
+            <?php $my_photo = $my_review['image'] ?? null; ?>
+            <div class="review-photo-field">
+                <label class="review-photo-label">
+                    <input type="file" name="photo" accept="image/png,image/jpeg,image/webp" hidden onchange="this.closest('label').querySelector('.review-photo-name').textContent = this.files[0] ? this.files[0].name : ''">
+                    <span class="review-photo-ui">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                        <span class="review-photo-name"><?= $my_photo ? 'Foto terpasang — pilih untuk ganti' : 'Lampirkan foto (opsional)' ?></span>
+                    </span>
+                </label>
+                <?php if ($my_photo): ?>
+                    <img src="/geprek-geh/assets/uploads/reviews/<?= e($my_photo) ?>" class="review-photo-preview" alt="Foto review-mu">
+                <?php endif; ?>
+            </div>
+
             <button type="submit" class="btn btn-primary">
                 <?= $my_review ? 'Update Review' : 'Kirim Review' ?>
                 <span class="btn-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
@@ -252,6 +276,11 @@ $out_stock = $product['stock'] <= 0;
                     </div>
                     <?php if ($rv['comment']): ?>
                         <p class="review-body"><?= e($rv['comment']) ?></p>
+                    <?php endif; ?>
+                    <?php if (!empty($rv['image'])): ?>
+                        <a href="/geprek-geh/assets/uploads/reviews/<?= e($rv['image']) ?>" target="_blank" rel="noopener" class="review-photo">
+                            <img src="/geprek-geh/assets/uploads/reviews/<?= e($rv['image']) ?>" alt="Foto ulasan <?= e($rv['user_name']) ?>" loading="lazy">
+                        </a>
                     <?php endif; ?>
                     <?php if (Auth::id() === $rv['user_id']): ?>
                         <form method="POST" action="/geprek-geh/reviews/<?= $rv['id'] ?>/delete" class="review-delete" data-confirm="Hapus ulasan ini?">

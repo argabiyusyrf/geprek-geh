@@ -52,6 +52,13 @@
                 <span class="notif-dot" data-cart-count="<?= CartController::count() ?>" <?= CartController::count() > 0 ? '' : 'style="display:none"' ?>><?= CartController::count() ?></span>
             </button>
             <?php if (Auth::check()): ?>
+                <a href="/geprek-geh/wishlist" class="cart-link icon-trigger wish-nav-link" aria-label="Daftar keinginan">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                    <?php $wish_count = count(wishlist_ids()); ?>
+                    <span class="notif-dot" data-wish-count="<?= $wish_count ?>" <?= $wish_count > 0 ? '' : 'style="display:none"' ?>><?= $wish_count ?></span>
+                </a>
+            <?php endif; ?>
+            <?php if (Auth::check()): ?>
                 <?php $notifs = NotificationController::fetchAll(8); $unread = NotificationController::unreadCount(); ?>
                 <div class="notif" data-notif>
                     <button type="button" class="notif-trigger" data-notif-trigger aria-label="Notifikasi" aria-expanded="false" aria-haspopup="true">
@@ -155,9 +162,10 @@
                 <a class="overlay-link <?= $uri === '/geprek-geh/auth/register' ? 'is-active' : '' ?>" href="/geprek-geh/auth/register"><small>04</small> Daftar</a>
             <?php else: ?>
                 <a class="overlay-link <?= $uri === '/geprek-geh/account' ? 'is-active' : '' ?>" href="/geprek-geh/account"><small>03</small> Profil Saya</a>
-                <a class="overlay-link <?= $uri === '/geprek-geh/orders' || str_starts_with($uri, '/geprek-geh/orders/') ? 'is-active' : '' ?>" href="/geprek-geh/orders"><small>04</small> Pesanan Saya</a>
+                <a class="overlay-link <?= $uri === '/geprek-geh/wishlist' ? 'is-active' : '' ?>" href="/geprek-geh/wishlist"><small class="ov-num">04</small> Daftar Keinginan<span class="cart-count" data-wish-count><?= count(wishlist_ids()) ?></span></a>
+                <a class="overlay-link <?= $uri === '/geprek-geh/orders' || str_starts_with($uri, '/geprek-geh/orders/') ? 'is-active' : '' ?>" href="/geprek-geh/orders"><small>05</small> Pesanan Saya</a>
                 <?php if (Auth::admin()): ?>
-                    <a class="overlay-link" href="/geprek-geh/admin"><small>05</small> Admin Panel</a>
+                    <a class="overlay-link" href="/geprek-geh/admin"><small class="ov-num">06</small> Admin Panel</a>
                 <?php endif; ?>
             <?php endif; ?>
         </nav>

@@ -101,15 +101,14 @@ class OrderController {
             [$id]
         );
         $app = require __DIR__ . '/../config/app.php';
-        $payment_details = $app['payment'] ?? [];
         $contacts = $app['contacts'] ?? [];
 
-        $payment_labels = [
-            'transfer' => 'Transfer Bank',
-            'cod'      => 'Bayar di Tempat (COD)',
-            'ewallet'  => 'E-Wallet (ShopeePay)',
-        ];
-        $payment_label = $payment_labels[$order['payment_method']] ?? ucfirst($order['payment_method']);
+        $pm_details = payment_method_details($order['payment_method']);
+        $pm_type = payment_method_type($order['payment_method']);
+        $payment_label = $pm_details && $pm_type === 'bank'
+            ? 'Transfer ' . $pm_details['name']
+            : payment_method_label($order['payment_method']);
+        $payment_details = ['bank' => $pm_type === 'bank' && $pm_details ? $pm_details : null, 'ewallet' => $pm_type === 'ewallet' && $pm_details ? $pm_details : null];
         [$payment_status_label, $payment_badge] = format_payment_status($order['payment_status']);
 
         // Status timeline: created -> processing -> shipped -> delivered
@@ -149,7 +148,7 @@ class OrderController {
             flash_set('error', 'Bukti hanya bisa diupload untuk pesanan menunggu yang belum dibayar.');
             redirect('/geprek-geh/orders/' . $order['id']);
         }
-        if (!in_array($order['payment_method'], ['transfer', 'ewallet'], true)) {
+        if (!payment_requires_proof($order['payment_method'])) {
             flash_set('error', 'Pesanan COD tidak memerlukan upload bukti.');
             redirect('/geprek-geh/orders/' . $order['id']);
         }
@@ -310,7 +309,7 @@ class OrderController {
         }
 
         $data = ['status' => 'delivered'];
-        if ($order['payment_method'] === 'cod') {
+        if (payment_method_type($order['payment_method']) === 'cod') {
             $data['payment_status'] = 'paid';
         }
         $db->update('orders', $data, 'id = ?', [$id]);
@@ -319,7 +318,7 @@ class OrderController {
             $id,
             'customer',
             'Pesanan selesai — dikonfirmasi diterima'
-            . ($order['payment_method'] === 'cod' ? ' (pembayaran COD diterima saat antar)' : '')
+            . (payment_method_type($order['payment_method']) === 'cod' ? ' (pembayaran COD diterima saat antar)' : '')
         );
         NotificationController::push(
             Auth::id(),

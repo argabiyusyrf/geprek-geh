@@ -26,29 +26,36 @@ class SettingsController {
         $db = \Database::getInstance();
 
         $fields = [
-            'shipping'             => 'int',
-            'tax_rate'             => 'float',
-            'stock_low_threshold'  => 'int',
-            'contacts_whatsapp'    => 'str',
-            'contacts_hours'       => 'str',
-            'bank_name'            => 'str',
-            'bank_number'          => 'str',
-            'bank_holder'          => 'str',
-            'ewallet_name'         => 'str',
-            'ewallet_number'       => 'str',
-            'ewallet_holder'       => 'str',
+            'shipping'                => 'int',
+            'tax_rate'                => 'float',
+            'stock_low_threshold'     => 'int',
+            'contacts_whatsapp'       => 'str',
+            'contacts_hours'          => 'str',
+            'payment_gateway_type'    => 'str',
+            'payment_gateway_label'   => 'str',
+            'payment_gateway_number'  => 'str',
+            'auto_cancel_hours'       => 'int',
+            'auto_cancel_enabled'     => 'bool',
+            'wa_template_help'        => 'str',
+            'wa_template_paid'        => 'str',
+            'wa_template_shipped'     => 'str',
+            'wa_template_cancelled'   => 'str',
         ];
 
         foreach ($fields as $key => $type) {
-            $val = trim($_POST[$key] ?? '');
-            if ($type === 'int') {
-                $val = (int) $val;
-                if ($val < 0) $val = 0;
-            } elseif ($type === 'float') {
-                $val = (float) $val;
-                if ($val < 0) $val = 0;
+            if ($type === 'bool') {
+                $val = isset($_POST[$key]) ? 1 : 0;
             } else {
-                if (mb_strlen($val) > 255) $val = mb_substr($val, 0, 255);
+                $val = trim($_POST[$key] ?? '');
+                if ($type === 'int') {
+                    $val = (int) $val;
+                    if ($val < 0) $val = 0;
+                } elseif ($type === 'float') {
+                    $val = (float) $val;
+                    if ($val < 0) $val = 0;
+                } else {
+                    if (mb_strlen($val) > 255) $val = mb_substr($val, 0, 255);
+                }
             }
             $db->query(
                 "INSERT INTO toko_settings (skey, svalue) VALUES (?, ?) ON DUPLICATE KEY UPDATE svalue = VALUES(svalue)",

@@ -149,6 +149,8 @@ $hero_level = $categories[1] ?? null;
                             <?php endif; ?>
                         </span>
                     </a>
+                    <?php $wish_ids = wishlist_ids(); ?>
+                    <?php require __DIR__ . '/../partials/wish-heart.php'; ?>
                     <div class="product-body">
                         <span class="product-cat"><?= e($p['category_name']) ?></span>
                         <h3 class="product-title"><a href="/geprek-geh/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a></h3>
@@ -234,6 +236,8 @@ $hero_level = $categories[1] ?? null;
                             <span class="product-badges"><span class="badge badge--red">Habis</span></span>
                         <?php endif; ?>
                     </a>
+                    <?php $wish_ids = wishlist_ids(); ?>
+                    <?php require __DIR__ . '/../partials/wish-heart.php'; ?>
                     <div class="product-body">
                         <span class="product-cat"><?= e($p['category_name']) ?></span>
                         <h3 class="product-title"><a href="/geprek-geh/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a></h3>

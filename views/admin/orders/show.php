@@ -3,10 +3,11 @@ $admin_page_title = 'Detail Pesanan';
 [$status_label, $badge_class] = format_status($order['status']);
 [$payment_status_label, $payment_badge] = format_payment_status($order['payment_status']);
 $bank = $payment_details['bank'] ?? ['name' => '-', 'number' => '-', 'holder' => '-'];
+$ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-', 'holder' => '-'];
 $method = $order['payment_method'] ?? '';
-$method_label = $method === 'ewallet' ? 'E-Wallet (ShopeePay)' : ($method === 'cod' ? 'COD — Bayar di Tempat' : ($method === 'transfer' ? 'Transfer Bank' : ucfirst($method ?: '-')));
+$method_label = $pm_label;
 $grand = grand_total($order);
-$is_cod = $method === 'cod';
+$is_cod = $pm_type === 'cod';
 $created = date('d M Y, H:i', strtotime($order['created_at']));
 $total_qty = array_sum(array_map(fn($it) => (int) $it['quantity'], $items));
 $wa = !empty($order['customer_phone']) ? \wa_link($order['customer_phone']) : null;
@@ -46,7 +47,7 @@ $step_keys = array_keys($timeline);
 $is_cancelled = $order['status'] === 'cancelled';
 $cur = $is_cancelled ? null : array_search($order['status'], $step_keys, true);
 
-$can_verify = in_array($method, ['transfer', 'ewallet'], true)
+$can_verify = \payment_requires_proof($method)
     && $order['payment_status'] !== 'paid'
     && $order['payment_status'] !== 'refunded'
     && !empty($order['payment_proof'])
@@ -81,7 +82,17 @@ $weekly_out = $weekly_remaining <= 0;
     </div>
     <div class="order-head-actions">
         <?php if ($wa): ?>
-            <a href="<?= e($wa) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-ghost">
+            <?php
+            $wa_tmpl_key = match ($order['status']) {
+                'shipped'   => 'wa_template_shipped',
+                'cancelled' => 'wa_template_cancelled',
+                'processing' => 'wa_template_paid',
+                default     => null,
+            };
+            $wa_text = $wa_tmpl_key ? \wa_template($wa_tmpl_key, ['nama' => $order['customer_name'], 'invoice' => $order['invoice_no']]) : '';
+            $wa_href = $wa_text !== '' ? \wa_link($order['customer_phone'], $wa_text) : \wa_link($order['customer_phone']);
+            ?>
+            <a href="<?= e($wa_href) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-ghost">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.65-4.7A8 8 0 1 1 7.7 19.3z"/><path d="M9 10a.5.5 0 0 0 1 0V9.5a.5.5 0 0 0-1 0zm0 0a5 5 0 0 0 5 5m0 0h.5a.5.5 0 0 0 0-1H14a.5.5 0 0 0 0 1z"/></svg>
                 WhatsApp
             </a>
@@ -256,10 +267,16 @@ $weekly_out = $weekly_remaining <= 0;
             </div>
 
             <div class="order-meta-grid">
-                <?php if (!in_array($method, ['cod'], true)): ?>
+                <?php if (!$is_cod): ?>
                 <div class="meta-cell meta-cell--full">
-                    <span class="meta-label">Rekening Tujuan</span>
-                    <span class="meta-value"><?= e($bank['name']) ?> &bull; <?= e($bank['number']) ?> a.n. <?= e($bank['holder']) ?></span>
+                    <?php if ($pm_type === 'qris'): ?>
+                        <?php $qgw = \payment_gateway(); ?>
+                        <span class="meta-label">Tujuan QRIS</span>
+                        <span class="meta-value"><?= e($qgw['label'] ?: 'QRIS') ?><?= !empty($qgw['number']) ? ' &bull; ' . e($qgw['number']) : '' ?></span>
+                    <?php else: ?>
+                        <span class="meta-label"><?= $pm_type === 'ewallet' ? 'Tujuan E-Wallet' : 'Rekening Tujuan' ?></span>
+                        <span class="meta-value"><?= $pm_type === 'ewallet' ? e($ewallet['name']) . ' &bull; ' . e($ewallet['number']) . ' a.n. ' . e($ewallet['holder']) : e($bank['name']) . ' &bull; ' . e($bank['number']) . ' a.n. ' . e($bank['holder']) ?></span>
+                    <?php endif; ?>
                 </div>
                 <?php endif; ?>
                 <?php if (!empty($order['payment_bank'])): ?>

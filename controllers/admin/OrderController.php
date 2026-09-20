@@ -16,7 +16,7 @@ class OrderController {
     }
 
     public function index() {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
 
         $allowed = ['pending','processing','shipped','delivered','cancelled'];
@@ -115,7 +115,7 @@ class OrderController {
     }
 
     public function show($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
         $order = $this->order($id);
         if (!$order) {
@@ -134,7 +134,10 @@ class OrderController {
             [$id]
         );
         $app = require __DIR__ . '/../../config/app.php';
-        $payment_details = $app['payment'] ?? [];
+        $pm_details = \payment_method_details($order['payment_method']);
+        $pm_type = \payment_method_type($order['payment_method']);
+        $pm_label = \payment_method_label($order['payment_method']);
+        $payment_details = ['bank' => $pm_type === 'bank' && $pm_details ? $pm_details : null, 'ewallet' => $pm_type === 'ewallet' && $pm_details ? $pm_details : null];
 
         [$payment_status_label, $payment_badge] = \format_payment_status($order['payment_status']);
         $transitions = $this->transitions($order['status']);
@@ -146,7 +149,7 @@ class OrderController {
     }
 
     public function printOrder($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         $db = \Database::getInstance();
         $order = $this->order($id);
         if (!$order) {
@@ -159,8 +162,6 @@ class OrderController {
              WHERE oi.order_id = ?",
             [$id]
         );
-        $app = require __DIR__ . '/../../config/app.php';
-        $payment_details = $app['payment'] ?? [];
         require __DIR__ . '/../../views/admin/orders/print.php';
     }
 
@@ -187,7 +188,7 @@ class OrderController {
     }
 
     public function updateStatus($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
             $this->redirectBack($id);
@@ -228,7 +229,7 @@ class OrderController {
             if ($order['payment_status'] === 'paid') $data['payment_status'] = 'refunded';
         }
 
-        if ($target === 'delivered' && $order['payment_method'] === 'cod') {
+        if ($target === 'delivered' && \payment_method_type($order['payment_method']) === 'cod') {
             $data['payment_status'] = 'paid';
         }
 
@@ -273,7 +274,7 @@ class OrderController {
     }
 
     public function verifyPayment($id) {
-        \Auth::requireAdmin();
+        \Auth::requireStaff();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
             $this->redirectBack($id);
@@ -286,7 +287,7 @@ class OrderController {
             exit;
         }
 
-        if (!in_array($order['payment_method'], ['transfer', 'ewallet'], true)) {
+        if (!\payment_requires_proof($order['payment_method'])) {
             \flash_set('error', 'Pesanan COD lunas otomatis saat pesanan diterima.');
             $this->redirectBack($id);
         }
