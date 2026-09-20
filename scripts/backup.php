@@ -15,6 +15,7 @@ $dir = __DIR__ . '/../logs/backups';
 if (!is_dir($dir)) {
     @mkdir($dir, 0775, true);
 }
+@chmod($dir, 0777);
 
 $stamp = date('Ymd-His');
 $file = $dir . '/geprek-geh-' . $stamp . '.sql.gz';

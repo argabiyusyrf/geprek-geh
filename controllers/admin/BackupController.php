@@ -43,6 +43,7 @@ class BackupController {
         $config = require __DIR__ . '/../../config/database.php';
         $dir = $this->dir();
         if (!is_dir($dir)) @mkdir($dir, 0775, true);
+        @chmod($dir, 0777);
         $file = $dir . '/geprek-geh-' . date('Ymd-His') . '.sql.gz';
         $cmd = sprintf(
             'mysqldump --no-tablespaces --single-transaction --quick -h %s -u %s %s %s 2>&1 | gzip > %s',
@@ -55,10 +56,12 @@ class BackupController {
         exec($cmd, $out, $code);
         if ($code !== 0 || !is_file($file)) {
             @unlink($file);
-            \flash_set('error', 'Backup gagal dibuat.');
+            $detail = is_array($out) ? mb_substr(implode("\n", $out), 0, 400) : '';
+            \flash_set('error', 'Backup gagal dibuat.' . ($detail !== '' ? ' Keterangan: ' . $detail : ''));
             header('Location: /geprek-geh/admin/backup');
             exit;
         }
+        @chmod($file, 0664);
         \flash_set('success', 'Backup berhasil dibuat: ' . basename($file));
         header('Location: /geprek-geh/admin/backup');
         exit;

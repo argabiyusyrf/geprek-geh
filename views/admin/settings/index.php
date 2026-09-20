@@ -91,19 +91,24 @@ $val = fn($k) => e($settings[$k] ?? '');
         <header class="order-card-head">
             <h3>Auto-batalkan Pesanan</h3>
         </header>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Batas Waktu (jam)</label>
-                <input type="number" name="auto_cancel_hours" class="input" min="1" value="<?= $val('auto_cancel_hours') ?>">
-                <span class="field-hint">Pesanan dengan status "Menunggu" dan belum dibayar dalam X jam dibatalkan otomatis (jalan via cron: php scripts/auto-cancel.php).</span>
-            </div>
-            <div class="form-group">
-                <label>Fitur Auto-cancel</label>
-                <label class="switch">
+        <div class="auto-cancel-panel">
+            <div class="auto-cancel-head">
+                <label class="switch auto-cancel-switch">
                     <input type="checkbox" name="auto_cancel_enabled" value="1" class="switch-input" <?= ($settings['auto_cancel_enabled'] ?? '1') === '1' ? 'checked' : '' ?>>
                     <span class="switch-ui" aria-hidden="true"><span class="switch-knob"></span></span>
-                    <span class="switch-meta"><strong>Aktifkan pembatalan otomatis</strong><small>Jalankan via cron dengan php scripts/auto-cancel.php</small></span>
+                    <span class="switch-meta"><strong>Aktifkan pembatalan otomatis</strong><small>Pesanan berstatus &ldquo;Menunggu&rdquo; yang belum dibayar dibatalkan sendiri oleh cron.</small></span>
                 </label>
+                <span class="badge <?= ($settings['auto_cancel_enabled'] ?? '1') === '1' ? 'badge-success' : 'badge-dark' ?>"><?= ($settings['auto_cancel_enabled'] ?? '1') === '1' ? 'Aktif' : 'Nonaktif' ?></span>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Batas Waktu</label>
+                    <div class="input-affix">
+                        <input type="number" name="auto_cancel_hours" class="input input-affix-input" min="1" value="<?= $val('auto_cancel_hours') ?>">
+                        <span class="input-affix-suffix">jam</span>
+                    </div>
+                    <span class="field-hint">Pesanan &ldquo;Menunggu&rdquo; dilewati batas ini akan dibatalkan otomatis (jalan via cron: <code>php scripts/auto-cancel.php</code>).</span>
+                </div>
             </div>
         </div>
     </div>
@@ -119,19 +124,19 @@ $val = fn($k) => e($settings[$k] ?? '');
         <div class="form-row">
             <div class="form-group">
                 <label>Chat Bantuan (halaman pesanan pelanggan)</label>
-                <textarea name="wa_template_help" class="input" rows="2" placeholder="Halo Geprek Geh, saya butuh bantuan soal pesanan {invoice}."><?= $val('wa_template_help') ?></textarea>
+                <textarea name="wa_template_help" class="input" rows="4" placeholder="Halo Geprek Geh, saya butuh bantuan soal pesanan {invoice}."><?= $val('wa_template_help') ?></textarea>
             </div>
             <div class="form-group">
                 <label>Konfirmasi Pembayaran Diterima</label>
-                <textarea name="wa_template_paid" class="input" rows="2" placeholder="Halo {nama}, pembayaran pesanan {invoice} sudah kami terima. Terima kasih!"><?= $val('wa_template_paid') ?></textarea>
+                <textarea name="wa_template_paid" class="input" rows="4" placeholder="Halo {nama}, pembayaran pesanan {invoice} sudah kami terima. Terima kasih!"><?= $val('wa_template_paid') ?></textarea>
             </div>
             <div class="form-group">
                 <label>Pesanan Dikirim</label>
-                <textarea name="wa_template_shipped" class="input" rows="2" placeholder="Halo {nama}, pesanan {invoice} sedang dalam perjalanan. Mohon ditunggu ya!"><?= $val('wa_template_shipped') ?></textarea>
+                <textarea name="wa_template_shipped" class="input" rows="4" placeholder="Halo {nama}, pesanan {invoice} sedang dalam perjalanan. Mohon ditunggu ya!"><?= $val('wa_template_shipped') ?></textarea>
             </div>
             <div class="form-group">
                 <label>Pesanan Dibatalkan</label>
-                <textarea name="wa_template_cancelled" class="input" rows="2" placeholder="Halo {nama}, mohon maaf pesanan {invoice} terpaksa dibatalkan. Hubungi kami untuk pertanyaan lebih lanjut."><?= $val('wa_template_cancelled') ?></textarea>
+                <textarea name="wa_template_cancelled" class="input" rows="4" placeholder="Halo {nama}, mohon maaf pesanan {invoice} terpaksa dibatalkan. Hubungi kami untuk pertanyaan lebih lanjut."><?= $val('wa_template_cancelled') ?></textarea>
             </div>
         </div>
     </div>

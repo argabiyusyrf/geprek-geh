@@ -112,85 +112,103 @@ $typeIcon = [
         </div>
     </div>
 <?php else: ?>
-<div class="pm-list" id="pm-list">
-    <?php foreach ($methods as $i => $m): ?>
-    <div class="card order-card pm-card" id="m-<?= (int) $m['id'] ?>">
-        <div class="pm-card-top">
-            <div class="pm-ident">
-                <span class="pm-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><?= $typeIcon[$m['type']] ?></svg>
-                </span>
-                <div>
-                    <div class="pm-name">
-                        <?= e($m['name']) ?>
-                        <span class="badge <?= $typeBadge[$m['type']] ?>"><?= $typeLabel[$m['type']] ?></span>
-                        <span class="badge <?= $m['is_active'] ? 'badge-success' : 'badge-dark' ?>"><?= $m['is_active'] ? 'Aktif' : 'Nonaktif' ?></span>
-                    </div>
-                    <div class="pm-detail"><?= e($m['number']) ?>&bull; a.n. <strong><?= e($m['holder']) ?></strong></div>
-                    <?php if (!empty($m['description'])): ?><div class="pm-desc"><?= e($m['description']) ?></div><?php endif; ?>
-                </div>
-            </div>
-            <div class="table-actions">
-                <span class="count-pill" title="Urutan tampil"><?= (int) $m['sort_order'] ?></span>
-                <button type="button" class="btn btn-sm btn-outline" data-pm-edit="<?= (int) $m['id'] ?>">Edit</button>
-                <form method="POST" action="/geprek-geh/admin/payments/<?= (int) $m['id'] ?>/toggle" class="inline-form">
-                    <?= csrf_field() ?>
-                    <button type="submit" class="btn btn-sm <?= $m['is_active'] ? 'btn-ghost' : 'btn-primary' ?>"><?= $m['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?></button>
-                </form>
-                <form method="POST" action="/geprek-geh/admin/payments/<?= (int) $m['id'] ?>/delete" class="inline-form" data-confirm="Hapus metode &ldquo;<?= e($m['name']) ?>&rdquo;? Pesanan lama tetap bisa dilihat, metode tidak lagi tersedia di checkout.">
-                    <?= csrf_field() ?>
-                    <button type="submit" class="btn btn-sm btn-danger-ghost">Hapus</button>
-                </form>
-            </div>
+<?php
+    $grouped = [
+        'bank'     => ['Transfer Bank', []],
+        'ewallet'  => ['E-Wallet', []],
+        'inactive' => ['Nonaktif', []],
+    ];
+    foreach ($methods as $m) {
+        if (!$m['is_active']) { $grouped['inactive'][1][] = $m; continue; }
+        $grouped[$m['type']][1][] = $m;
+    }
+?>
+<?php foreach ($grouped as $gkey => [$gtitle, $gitems]): ?>
+    <?php if (empty($gitems)) continue; ?>
+    <div class="pm-group">
+        <div class="pm-group-head">
+            <h3><?= e($gtitle) ?></h3>
+            <span class="count-pill"><?= count($gitems) ?></span>
         </div>
-        <form method="POST" action="/geprek-geh/admin/payments/<?= (int) $m['id'] ?>" class="pm-edit-form" data-pm-editform="<?= (int) $m['id'] ?>" hidden>
-            <?= csrf_field() ?>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Tipe Pembayaran</label>
-                    <div class="pm-type-row">
-                        <label class="pm-type-opt">
-                            <input type="radio" name="type" value="bank" <?= $m['type'] === 'bank' ? 'checked' : '' ?>>
-                            <span>Transfer Bank</span>
-                        </label>
-                        <label class="pm-type-opt">
-                            <input type="radio" name="type" value="ewallet" <?= $m['type'] === 'ewallet' ? 'checked' : '' ?>>
-                            <span>E-Wallet</span>
+        <div class="pm-list" id="pm-list-<?= $gkey ?>">
+        <?php foreach ($gitems as $m): ?>
+        <div class="card order-card pm-card" id="m-<?= (int) $m['id'] ?>">
+            <div class="pm-card-top">
+                <div class="pm-ident">
+                    <span class="pm-icon pm-icon--<?= $m['type'] ?>">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><?= $typeIcon[$m['type']] ?></svg>
+                    </span>
+                    <div>
+                        <div class="pm-name">
+                            <?= e($m['name']) ?>
+                            <span class="badge <?= $typeBadge[$m['type']] ?>"><?= $typeLabel[$m['type']] ?></span>
+                        </div>
+                        <div class="pm-detail"><?= e($m['number']) ?>&nbsp;&bull;&nbsp;a.n. <strong><?= e($m['holder']) ?></strong></div>
+                        <?php if (!empty($m['description'])): ?><div class="pm-desc"><?= e($m['description']) ?></div><?php endif; ?>
+                    </div>
+                </div>
+                <div class="table-actions">
+                    <button type="button" class="btn btn-sm btn-outline" data-pm-edit="<?= (int) $m['id'] ?>">Edit</button>
+                    <form method="POST" action="/geprek-geh/admin/payments/<?= (int) $m['id'] ?>/toggle" class="inline-form">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-sm <?= $m['is_active'] ? 'btn-ghost' : 'btn-primary' ?>"><?= $m['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?></button>
+                    </form>
+                    <form method="POST" action="/geprek-geh/admin/payments/<?= (int) $m['id'] ?>/delete" class="inline-form" data-confirm="Hapus metode &ldquo;<?= e($m['name']) ?>&rdquo;? Pesanan lama tetap bisa dilihat, metode tidak lagi tersedia di checkout.">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-sm btn-danger-ghost">Hapus</button>
+                    </form>
+                </div>
+            </div>
+            <form method="POST" action="/geprek-geh/admin/payments/<?= (int) $m['id'] ?>" class="pm-edit-form" data-pm-editform="<?= (int) $m['id'] ?>" hidden>
+                <?= csrf_field() ?>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tipe Pembayaran</label>
+                        <div class="pm-type-row">
+                            <label class="pm-type-opt">
+                                <input type="radio" name="type" value="bank" <?= $m['type'] === 'bank' ? 'checked' : '' ?>>
+                                <span>Transfer Bank</span>
+                            </label>
+                            <label class="pm-type-opt">
+                                <input type="radio" name="type" value="ewallet" <?= $m['type'] === 'ewallet' ? 'checked' : '' ?>>
+                                <span>E-Wallet</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row pm-3col">
+                    <div class="form-group"><label>Nama *</label><input type="text" name="name" class="input" value="<?= e($m['name']) ?>" required></div>
+                    <div class="form-group"><label>Nomor *</label><input type="text" name="number" class="input" value="<?= e($m['number']) ?>" required></div>
+                    <div class="form-group"><label>Atas Nama *</label><input type="text" name="holder" class="input" value="<?= e($m['holder']) ?>" required></div>
+                </div>
+                <div class="form-row pm-3col">
+                    <div class="form-group">
+                        <label>Keterangan</label>
+                        <input type="text" name="description" class="input" value="<?= e($m['description'] ?? '') ?>" maxlength="255">
+                    </div>
+                    <div class="form-group">
+                        <label>Urutan Tampil</label>
+                        <input type="number" name="sort_order" class="input" min="0" value="<?= (int) $m['sort_order'] ?>">
+                        <span class="field-hint">Angka kecil tampil duluan di checkout.</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <label class="pm-toggle">
+                            <input type="checkbox" name="is_active" value="1" <?= $m['is_active'] ? 'checked' : '' ?>>
+                            <span>Aktif</span>
                         </label>
                     </div>
                 </div>
-            </div>
-            <div class="form-row pm-3col">
-                <div class="form-group"><label>Nama *</label><input type="text" name="name" class="input" value="<?= e($m['name']) ?>" required></div>
-                <div class="form-group"><label>Nomor *</label><input type="text" name="number" class="input" value="<?= e($m['number']) ?>" required></div>
-                <div class="form-group"><label>Atas Nama *</label><input type="text" name="holder" class="input" value="<?= e($m['holder']) ?>" required></div>
-            </div>
-            <div class="form-row pm-3col">
-                <div class="form-group">
-                    <label>Keterangan</label>
-                    <input type="text" name="description" class="input" value="<?= e($m['description'] ?? '') ?>" maxlength="255">
+                <div class="settings-actions">
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    <button type="button" class="btn btn-ghost" data-pm-edit-close="<?= (int) $m['id'] ?>">Batal</button>
                 </div>
-                <div class="form-group">
-                    <label>Urutan Tampil</label>
-                    <input type="number" name="sort_order" class="input" min="0" value="<?= (int) $m['sort_order'] ?>">
-                    <span class="field-hint">Angka kecil tampil duluan di checkout.</span>
-                </div>
-                <div class="form-group">
-                    <label>Status</label>
-                    <label class="pm-toggle">
-                        <input type="checkbox" name="is_active" value="1" <?= $m['is_active'] ? 'checked' : '' ?>>
-                        <span>Aktif</span>
-                    </label>
-                </div>
-            </div>
-            <div class="settings-actions">
-                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                <button type="button" class="btn btn-ghost" data-pm-edit-close="<?= (int) $m['id'] ?>">Batal</button>
-            </div>
-        </form>
+            </form>
+        </div>
+        <?php endforeach; ?>
+        </div>
     </div>
-    <?php endforeach; ?>
-</div>
+<?php endforeach; ?>
 <?php endif; ?>
 
 <script>
@@ -199,25 +217,27 @@ $typeIcon = [
     var addCard = document.querySelector('[data-pm-addcard]');
     var addBtn = document.querySelector('[data-pm-add]');
     var addClose = document.querySelector('[data-pm-add-close]');
-    var list = document.getElementById('pm-list');
-    if (!list) return;
+    var lists = document.querySelectorAll('.pm-list');
+    if (!lists.length) return;
     if (addBtn) addBtn.addEventListener('click', function () {
         toggle(addCard, true);
         addCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
     if (addClose) addClose.addEventListener('click', function () { toggle(addCard, false); });
-    list.addEventListener('click', function (e) {
-        var editBtn = e.target.closest('[data-pm-edit]');
-        if (editBtn) {
-            var id = editBtn.getAttribute('data-pm-edit');
-            var form = list.querySelector('[data-pm-editform="' + id + '"]');
-            toggle(form, form.hidden);
-        }
-        var closeBtn = e.target.closest('[data-pm-edit-close]');
-        if (closeBtn) {
-            var form2 = list.querySelector('[data-pm-editform="' + closeBtn.getAttribute('data-pm-edit-close') + '"]');
-            toggle(form2, false);
-        }
+    lists.forEach(function (list) {
+        list.addEventListener('click', function (e) {
+            var editBtn = e.target.closest('[data-pm-edit]');
+            if (editBtn) {
+                var id = editBtn.getAttribute('data-pm-edit');
+                var form = list.querySelector('[data-pm-editform="' + id + '"]');
+                toggle(form, form.hidden);
+            }
+            var closeBtn = e.target.closest('[data-pm-edit-close]');
+            if (closeBtn) {
+                var form2 = list.querySelector('[data-pm-editform="' + closeBtn.getAttribute('data-pm-edit-close') + '"]');
+                toggle(form2, false);
+            }
+        });
     });
 })();
 </script>

@@ -228,6 +228,7 @@
             </div>
         </div>
         <div class="quick-list">
+            <span class="quick-group-label">Katalog</span>
             <a class="quick-item" href="/geprek-geh/admin/products/create">
                 <span class="quick-icon quick-icon--accent">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -240,12 +241,52 @@
                 </span>
                 <span><strong>Atur Kategori</strong><small>Kelompokkan menu agar mudah dicari</small></span>
             </a>
+            <a class="quick-item" href="/geprek-geh/admin/stock">
+                <span class="quick-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+                </span>
+                <span><strong>Kelola Stok</strong><small>Pantau &amp; catat mutasi stok</small></span>
+            </a>
+
+            <span class="quick-group-label">Penjualan</span>
+            <a class="quick-item" href="/geprek-geh/admin/orders">
+                <span class="quick-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </span>
+                <span><strong>Daftar Pesanan</strong><small>Proses &amp; lanjutkan status pesanan</small></span>
+            </a>
+            <a class="quick-item" href="/geprek-geh/admin/promos">
+                <span class="quick-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
+                </span>
+                <span><strong>Kelola Promo</strong><small>Buat diskon dengan kode promo</small></span>
+            </a>
+            <a class="quick-item" href="/geprek-geh/admin/reports">
+                <span class="quick-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
+                </span>
+                <span><strong>Lihat Laporan</strong><small>Grafik &amp; cetak laporan penjualan</small></span>
+            </a>
+
             <?php if (Auth::admin()): ?>
+            <span class="quick-group-label">Sistem</span>
+            <a class="quick-item" href="/geprek-geh/admin/payments">
+                <span class="quick-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+                </span>
+                <span><strong>Metode Bayar</strong><small>Rekening bank &amp; e-wallet</small></span>
+            </a>
             <a class="quick-item" href="/geprek-geh/admin/users">
                 <span class="quick-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
                 </span>
                 <span><strong>Kelola Pelanggan</strong><small>Lihat &amp; kelola user terdaftar</small></span>
+            </a>
+            <a class="quick-item" href="/geprek-geh/admin/backup">
+                <span class="quick-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 1 10-10"/><path d="M22 12v7a3 3 0 0 1-3 3"/><path d="M16 16l6 3-6 3z"/></svg>
+                </span>
+                <span><strong>Backup Database</strong><small>Buat &amp; unduh backup terbaru</small></span>
             </a>
             <?php endif; ?>
         </div>
