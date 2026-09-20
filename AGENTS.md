@@ -6,7 +6,7 @@ Vanilla PHP 8.4 MVC e-commerce ("Geprek Geh"), served from `/var/www/html/geprek
 - Install/seeds DB: `php install.php` (idempotent; recreates schema, re-seeds. On re-run clears only `cart/order_items/orders/products/categories`, not users). Production credentials are hardcoded in `install.php`. `install.php` refuses to run from a web request (CLI only).
 - DB config: `config/database.php` reads `GG_DB_*` env vars, falling back to a gitignored `.env` (see `.env.example`). Live local creds live ONLY in `.env`, never committed.
 - Schema: `database/schema.sql` is **STALE/incomplete** — see Gotchas. The live MySQL DB is the real source of truth.
-- Run: Apache docroot `/var/www/html` serves app at base path `/geprek-geh`, or `php -S localhost:8080 router.php` from project root.
+- Run: **nginx** (`/etc/nginx/sites-enabled/default`) serves app at base path `/geprek-geh` via PHP 8.4-FPM. The repo's `.htaccess` is **inert** here (Apache-only); all routing/security lives in the nginx vhost. Fallback for local dev: `php -S localhost:8080 router.php`.
 - Verify changes with `php -l file.php` + manual browse at `http://localhost/geprek-geh/` (Playwright browser available). No lint/test tooling exists.
 - Sessions are hardened via `session_set_cookie_params` at the top of `index.php` (httponly, SameSite=Lax). Don't remove; keep it before `session_start()`.
 
@@ -21,7 +21,8 @@ Vanilla PHP 8.4 MVC e-commerce ("Geprek Geh"), served from `/var/www/html/geprek
 ## Gotchas
 - **`database/schema.sql` is stale** — it predates the codebase and is missing `addresses`, `notifications`, `order_logs` tables and `users.notify_email` / `totp_secret` / `totp_enabled` / `totp_recovery` columns that controllers rely on. A fresh `php install.php` on an empty DB builds an app broken with missing-table/column SQL errors. The live MySQL DB is the source of truth — run `php install.php` (and read live `SHOW CREATE TABLE`) instead of trusting schema.sql. Do NOT add new app columns/tables without applying them to the live DB too (schema.sql alone won't provision them).
 - Base path `/geprek-geh` is hardcoded in `.htaccess`, `router.php`, `index.php`, and every view link/redirect (`Auth::logout`, `requireLogin`, etc.). Moving the app requires changing all of them.
-- `auto-push.sh` runs every minute via cron: any file change is auto-committed (`auto: <timestamp>`) and pushed to `origin/main`. Do not manually `git add/commit/push` unless asked — your edits are version-controlled automatically. `logs/` and `assets/uploads/` are gitignored.
+- **Perlindungan web aktif ada di nginx vhost (`/etc/nginx/sites-enabled/default`), BUKAN di `.htaccess`** — `.htaccess` di repo hanya untuk dokumentasi/fallback Apache (inert). Vhost memblokir `database/`, `config/`, `scripts/`, `logs/` (403), menolak eksekusi PHP di `assets/uploads/`, melarang dotfile, dan menyetel header keamanan (nosniff, X-Frame-Options, Referrer-Policy, Permissions-Policy, CSP). Bila menyentuh keamanan/perutean HTTP, edit vhost nginx + reload (`sudo nginx -t && sudo nginx -s reload`), lalu verifikasi dengan curl.
+- `auto-push.sh` runs every minute via cron: any file change is auto-committed (`auto: <timestamp>`) and pushed to `origin/main`. Do not manually `git add/commit/push` unless asked — your edits are version-controlled automatically. `logs/`, `assets/uploads/`, dan file `.playwright-mcp/` (artifact browser) harus dihapus sebelum bertumpuk. Saat ini cron auto-push **nonaktif** — commit manual bila ditanya.
 - Payment proof uploads live in `assets/uploads/` (gitignored).
 - Omit dotfiles php lint passes for `public/fonts/*.woff2` (binary, not PHP).
 - Static hosting (GitHub Pages) cannot run this app — it requires PHP + MySQL.

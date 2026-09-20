@@ -10,6 +10,11 @@ class AuthController {
     }
 
     public function login() {
+        if (!verify_csrf()) {
+            flash_set('error', 'Sesi tidak valid, silakan coba lagi.');
+            header('Location: /geprek-geh/auth/login');
+            exit;
+        }
         $email    = strtolower(trim($_POST['email'] ?? ''));
         $password = $_POST['password'] ?? '';
         $remember = isset($_POST['remember']) && $_POST['remember'] === '1';
@@ -70,6 +75,11 @@ class AuthController {
     public function twoFactorSubmit() {
         if (Auth::check()) redirect('/geprek-geh/');
         if (empty($_SESSION['twofa_uid'])) redirect('/geprek-geh/auth/login');
+        if (!verify_csrf()) {
+            flash_set('error', 'Sesi tidak valid, silakan coba lagi.');
+            header('Location: /geprek-geh/auth/2fa');
+            exit;
+        }
 
         $db = Database::getInstance();
         $user = $db->fetchOne("SELECT * FROM users WHERE id = ?", [(int) $_SESSION['twofa_uid']]);
@@ -124,6 +134,12 @@ class AuthController {
     }
 
     public function register() {
+        if (!verify_csrf()) {
+            $_SESSION['login_old'] = ['email' => $_POST['email'] ?? '', 'name' => $_POST['name'] ?? ''];
+            flash_set('error', 'Sesi tidak valid, silakan coba lagi.');
+            header('Location: /geprek-geh/auth/register');
+            exit;
+        }
         $name     = trim($_POST['name'] ?? '');
         $email    = strtolower(trim($_POST['email'] ?? ''));
         $phone    = trim($_POST['phone'] ?? '');
