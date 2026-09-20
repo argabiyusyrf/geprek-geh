@@ -4,9 +4,7 @@ class AuthController {
         if (Auth::check()) redirect('/geprek-geh/');
         $login_old = $_SESSION['login_old'] ?? null;
         unset($_SESSION['login_old']);
-        require __DIR__ . '/../views/layouts/auth-header.php';
-        require __DIR__ . '/../views/auth/login.php';
-        require __DIR__ . '/../views/layouts/auth-footer.php';
+        render('auth/login', get_defined_vars());
     }
 
     public function login() {
@@ -67,9 +65,7 @@ class AuthController {
         if (empty($_SESSION['twofa_uid'])) redirect('/geprek-geh/auth/login');
         $app = require __DIR__ . '/../config/app.php';
         $twofa_name = $_SESSION['twofa_name'] ?? '';
-        require __DIR__ . '/../views/layouts/auth-header.php';
-        require __DIR__ . '/../views/auth/twofactor.php';
-        require __DIR__ . '/../views/layouts/auth-footer.php';
+        render('auth/twofactor', get_defined_vars());
     }
 
     public function twoFactorSubmit() {
@@ -128,9 +124,7 @@ class AuthController {
         $reg_old = $_SESSION['reg_old'] ?? null;
         $reg_errors = $_SESSION['reg_errors'] ?? null;
         unset($_SESSION['reg_old'], $_SESSION['reg_errors']);
-        require __DIR__ . '/../views/layouts/auth-header.php';
-        require __DIR__ . '/../views/auth/register.php';
-        require __DIR__ . '/../views/layouts/auth-footer.php';
+        render('auth/register', get_defined_vars());
     }
 
     public function register() {
@@ -177,10 +171,8 @@ class AuthController {
         }
 
         if ($phone !== '') {
-            $phoneDigits = preg_replace('/\D/', '', $phone);
-            if (str_starts_with($phoneDigits, '62')) $phoneDigits = '0' . substr($phoneDigits, 2);
-            $phone = $phoneDigits;
-            if (!preg_match('/^08\d{8,11}$/', $phone)) {
+            $phone = normalize_phone($phone);
+            if (!valid_phone($phone)) {
                 $errors['phone'] = 'Nomor telepon tidak valid. Contoh: 081234567890.';
             }
         }

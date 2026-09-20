@@ -19,9 +19,7 @@ class WishlistController {
         );
 
         $admin_page_title = 'Daftar Keinginan';
-        require __DIR__ . '/../views/layouts/header.php';
-        require __DIR__ . '/../views/wishlist/index.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        render('wishlist/index', get_defined_vars());
     }
 
     public function toggle($id) {

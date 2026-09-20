@@ -18,22 +18,11 @@ class CheckoutController {
             flash_set('error', 'Keranjang kosong.');
             redirect('/geprek-geh/cart');
         }
-        $subtotal = array_sum(array_map(fn($i) => $i['price'] * $i['quantity'], $items));
-        $total_qty = array_sum(array_map(fn($i) => $i['quantity'], $items));
-        $app = require __DIR__ . '/../config/app.php';
-        $tax = (int)($subtotal * $app['tax_rate']);
-        $shipping = $app['shipping'];
-
         $promo = $_SESSION['promo'] ?? null;
-        $discount = 0;
-        $promo_label = '';
-        if ($promo && $subtotal > 0) {
-            $d = PromoController::calcDiscount($promo, $subtotal);
-            $discount = $d['discount'];
-            $promo_label = $d['label'];
-        }
-
-        $grand_total = max(0, $subtotal - $discount + $tax + $shipping);
+        $app = require __DIR__ . '/../config/app.php';
+        $proses = calculateOrderSummary($items, $promo);
+        extract($proses);
+        $total_qty = array_sum(array_map(fn($i) => $i['quantity'], $items));
 
         $payment_options = [];
         $bank_info = null;
@@ -81,10 +70,7 @@ class CheckoutController {
         $payment_details = ['bank' => $bank_info ?? ['name' => '-', 'number' => '-', 'holder' => '-'], 'ewallet' => $ewallet_info ?? ['name' => 'E-Wallet', 'number' => '-', 'holder' => '-']];
         $contacts = $app['contacts'] ?? [];
 
-        $saved_addresses = $db->fetchAll(
-            "SELECT * FROM addresses WHERE user_id = ? ORDER BY is_default DESC, updated_at DESC",
-            [Auth::id()]
-        );
+        $saved_addresses = user_addresses(Auth::id());
 
         $old = $_SESSION['checkout_old'] ?? null;
         $recipient_name = $old['recipient_name'] ?? null;
@@ -101,9 +87,7 @@ class CheckoutController {
         $field_errors = $_SESSION['checkout_errors'] ?? [];
         unset($_SESSION['checkout_errors'], $_SESSION['checkout_old']);
 
-        require __DIR__ . '/../views/layouts/header.php';
-        require __DIR__ . '/../views/checkout/index.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        render('checkout/index', get_defined_vars());
     }
 
     public function process() {
@@ -182,10 +166,8 @@ class CheckoutController {
         if (empty($phone)) {
             $errors['phone'] = 'Nomor telepon wajib diisi.';
         } else {
-            $phone_digits = preg_replace('/\D/', '', $phone);
-            if (str_starts_with($phone_digits, '62')) $phone_digits = '0' . substr($phone_digits, 2);
-            $phone = $phone_digits;
-            if (!preg_match('/^08\d{8,11}$/', $phone_digits)) {
+            $phone = normalize_phone($phone);
+            if (!valid_phone($phone)) {
                 $errors['phone'] = 'Format nomor tidak valid. Contoh: 081234567890.';
             }
         }
@@ -213,26 +195,15 @@ class CheckoutController {
             redirect('/geprek-geh/cart');
         }
 
-        $subtotal = 0;
         foreach ($items as $item) {
             if ($item['quantity'] > $item['stock']) {
                 flash_set('error', "Stok {$item['name']} tidak cukup.");
                 redirect('/geprek-geh/checkout');
             }
-            $subtotal += $item['price'] * $item['quantity'];
         }
-
-        $tax = (int)($subtotal * $app['tax_rate']);
-        $shipping = $app['shipping'];
 
         $promo = $_SESSION['promo'] ?? null;
-        $discount = 0;
-        if ($promo && $subtotal > 0) {
-            $d = PromoController::calcDiscount($promo, $subtotal);
-            $discount = $d['discount'];
-        }
-
-        $grand_total = max(0, $subtotal - $discount + $tax + $shipping);
+        extract(calculateOrderSummary($items, $promo));
 
         $invoice = generate_invoice();
         $full_address = array_filter([

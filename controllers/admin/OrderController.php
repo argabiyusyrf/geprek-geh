@@ -109,9 +109,7 @@ class OrderController {
             $params
         );
 
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/orders/index.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/orders/index', get_defined_vars());
     }
 
     public function show($id) {
@@ -123,12 +121,7 @@ class OrderController {
             header('Location: /geprek-geh/admin/orders');
             exit;
         }
-        $items = $db->fetchAll(
-            "SELECT oi.*, p.name, p.image, p.slug
-             FROM order_items oi JOIN products p ON oi.product_id = p.id
-             WHERE oi.order_id = ?",
-            [$id]
-        );
+        $items = \order_items($id);
         $logs = $db->fetchAll(
             "SELECT * FROM order_logs WHERE order_id = ? ORDER BY created_at ASC, id ASC",
             [$id]
@@ -143,25 +136,17 @@ class OrderController {
         $transitions = $this->transitions($order['status']);
         $weekly_cancels = $this->weeklyCancelCount($db);
 
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/orders/show.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/orders/show', get_defined_vars());
     }
 
     public function printOrder($id) {
         \Auth::requireStaff();
-        $db = \Database::getInstance();
         $order = $this->order($id);
         if (!$order) {
             http_response_code(404);
             exit;
         }
-        $items = $db->fetchAll(
-            "SELECT oi.*, p.name, p.image, p.slug
-             FROM order_items oi JOIN products p ON oi.product_id = p.id
-             WHERE oi.order_id = ?",
-            [$id]
-        );
+        $items = \order_items($id);
         require __DIR__ . '/../../views/admin/orders/print.php';
     }
 
@@ -260,14 +245,7 @@ class OrderController {
         );
 
         // Email the customer when status actually changes (best-effort)
-        try {
-            $customer = $db->fetchOne("SELECT email, name, notify_email FROM users WHERE id = ?", [$order['user_id']]);
-            if ($customer && !empty($customer['email']) && (int)($customer['notify_email'] ?? 1) === 1) {
-                \Mail::orderStatusChanged($customer['email'], $customer['name'], $order['invoice_no'], \format_status($target)[0], $msg);
-            }
-        } catch (\Exception $e) {
-            error_log('[AdminOrder] status email failed: ' . $e->getMessage());
-        }
+        \order_status_email($order['user_id'], $order['invoice_no'], \format_status($target)[0], $msg);
 
         \flash_set('success', 'Status pesanan diperbarui.');
         $this->redirectBack($id);
@@ -320,14 +298,8 @@ class OrderController {
             "/geprek-geh/orders/{$id}"
         );
 
-        try {
-            $customer = $db->fetchOne("SELECT email, name, notify_email FROM users WHERE id = ?", [$order['user_id']]);
-            if ($customer && !empty($customer['email']) && (int)($customer['notify_email'] ?? 1) === 1) {
-                \Mail::orderStatusChanged($customer['email'], $customer['name'], $order['invoice_no'], 'Pembayaran LUNAS', 'Pesanan kamu sedang diproses dapur.');
-            }
-        } catch (\Exception $e) {
-            error_log('[AdminOrder] payment email failed: ' . $e->getMessage());
-        }
+        \order_status_email($order['user_id'], $order['invoice_no'], 'Pembayaran LUNAS',
+            'Pesanan kamu sedang diproses dapur.');
 
         \flash_set('success', 'Pembayaran diverifikasi. Pesanan lanjut diproses (LUNAS).');
         $this->redirectBack($id);

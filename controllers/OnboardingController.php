@@ -16,9 +16,7 @@ class OnboardingController {
         $setup_old = $_SESSION['setup_old'] ?? null;
         unset($_SESSION['setup_old']);
         $page_title = 'Lengkapi Akun';
-        require __DIR__ . '/../views/layouts/auth-header.php';
-        require __DIR__ . '/../views/account/setup.php';
-        require __DIR__ . '/../views/layouts/auth-footer.php';
+        render('account/setup', get_defined_vars(), 'auth');
     }
 
     public function save() {

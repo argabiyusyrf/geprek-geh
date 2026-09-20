@@ -93,9 +93,7 @@ class UserController {
         $formErrors = \form_errors();
         $formOld    = \form_old();
 
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/users/index.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/users/index', get_defined_vars());
     }
 
     public function show($id) {
@@ -131,9 +129,7 @@ class UserController {
         $notif_count    = (int) $db->fetchOne("SELECT COUNT(*) AS c FROM notifications WHERE user_id = ?", [$id])['c'];
         $notif_unread   = (int) $db->fetchOne("SELECT COUNT(*) AS c FROM notifications WHERE user_id = ? AND is_read = 0", [$id])['c'];
 
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/users/show.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/users/show', get_defined_vars());
     }
 
     public function store() {

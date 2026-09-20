@@ -21,9 +21,7 @@ class CartController {
         $summary = calculateOrderSummary($items, $promo);
         extract($summary);
 
-        require __DIR__ . '/../views/layouts/header.php';
-        require __DIR__ . '/../views/cart/index.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        render('cart/index', get_defined_vars());
     }
 
     public function add() {

@@ -10,9 +10,7 @@ class SettingsController {
         foreach ($rows as $r) { $settings[$r['skey']] = $r['svalue']; }
 
         $admin_page_title = 'Pengaturan Toko';
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/settings/index.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/settings/index', get_defined_vars());
     }
 
     public function save() {

@@ -18,9 +18,7 @@ public function requestForm() {
         unset($_SESSION['forgot_error'], $_SESSION['forgot_old']);
 
         $page_title = 'Lupa Password';
-        require __DIR__ . '/../views/layouts/auth-header.php';
-        require __DIR__ . '/../views/auth/forgot.php';
-        require __DIR__ . '/../views/layouts/auth-footer.php';
+        render('auth/forgot', get_defined_vars());
     }
 
     public function request() {
@@ -143,9 +141,7 @@ public function requestForm() {
         $token    = $_GET['token'] ?? '';
         $page_title = 'Reset Password';
         $valid = self::validateToken($selector, $token) !== false;
-        require __DIR__ . '/../views/layouts/auth-header.php';
-        require __DIR__ . '/../views/auth/reset.php';
-        require __DIR__ . '/../views/layouts/auth-footer.php';
+        render('auth/reset', get_defined_vars());
     }
 
     public function isValidLink(string $selector, string $token): bool {

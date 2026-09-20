@@ -26,21 +26,9 @@ class StockController {
             $params[] = "%{$q}%";
         }
 
-        $kpis = $db->fetchOne(
-            "SELECT
-                COUNT(*) AS total,
-                COALESCE(SUM(CASE WHEN p.stock <= ? THEN 1 ELSE 0 END), 0) AS low,
-                COALESCE(SUM(CASE WHEN p.stock = 0 THEN 1 ELSE 0 END), 0) AS `out`,
-                COALESCE(SUM(p.stock), 0) AS total_stock
-             FROM products p JOIN categories c ON p.category_id = c.id
-             WHERE p.is_active = 1",
-            [$threshold]
-        );
+        $kpis = \ProductRepo::stockKpi($threshold);
 
-        $total = (int) $db->fetchColumn(
-            "SELECT COUNT(*) FROM products p JOIN categories c ON p.category_id = c.id WHERE {$where}",
-            $params
-        );
+        $total = (int) \ProductRepo::publicCount($where, $params);
         $total_pages = max(1, (int) ceil($total / $per));
         if ($page > $total_pages) $page = $total_pages;
 
@@ -51,17 +39,10 @@ class StockController {
         ];
         $sort_sql = $order_dir[$sort];
 
-        $products = $db->fetchAll(
-            "SELECT p.*, c.name AS category_name
-             FROM products p JOIN categories c ON p.category_id = c.id
-             WHERE {$where} ORDER BY {$sort_sql} LIMIT {$per} OFFSET {$offset}",
-            $params
-        );
+        $products = \ProductRepo::adminList($where, $params, $sort_sql, $per, $offset);
 
         $admin_page_title = 'Manajemen Stok';
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/stock/index.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/stock/index', get_defined_vars());
     }
 
     public function show($id) {
@@ -71,11 +52,7 @@ class StockController {
         $threshold = (int) ($app['stock_low_threshold'] ?? 10);
         $id = (int) $id;
 
-        $product = $db->fetchOne(
-            "SELECT p.*, c.name AS category_name FROM products p
-             JOIN categories c ON p.category_id = c.id WHERE p.id = ?",
-            [$id]
-        );
+        $product = \ProductRepo::byId($id);
         if (!$product) {
             \flash_set('error', 'Produk tidak ditemukan.');
             header('Location: /geprek-geh/admin/stock');
@@ -90,9 +67,7 @@ class StockController {
         );
 
         $admin_page_title = 'Detail Stok: ' . $product['name'];
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/stock/show.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/stock/show', get_defined_vars());
     }
 
     public function restock($id) {

@@ -123,8 +123,39 @@ function format_payment_status($status) {
     return $map[$status] ?? [$status, 'badge-secondary'];
 }
 
+/** Normalisasi nomor HP: buang non-digit, ubah awalan 62 → 0. */
+function normalize_phone($phone) {
+    $digits = preg_replace('/\D/', '', trim((string) ($phone ?? '')));
+    if (str_starts_with($digits, '62')) $digits = '0' . substr($digits, 2);
+    return $digits;
+}
+
+/** Cek format nomor HP Indonesia valid (08 + 8-11 digit). */
+function valid_phone($phone) {
+    return preg_match('/^08\d{8,11}$/', normalize_phone($phone)) === 1;
+}
+
+/** Alamat tersimpan milik user (default di urutan pertama). */
+function user_addresses($userId): array {
+    return Database::getInstance()->fetchAll(
+        "SELECT * FROM addresses WHERE user_id = ? ORDER BY is_default DESC, updated_at DESC",
+        [$userId]
+    );
+}
+
 function order_log($db, $order_id, $actor, $message) {
     $db->insert('order_logs', ['order_id' => $order_id, 'actor' => $actor, 'message' => $message]);
+}
+
+/** Item pesanan + info produk/kategori (untuk detail order customer & admin). */
+function order_items($order_id): array {
+    return Database::getInstance()->fetchAll(
+        "SELECT oi.*, p.name, p.image, p.slug, c.name AS category_name
+         FROM order_items oi JOIN products p ON oi.product_id = p.id
+         LEFT JOIN categories c ON p.category_id = c.id
+         WHERE oi.order_id = ?",
+        [$order_id]
+    );
 }
 
 // order_restore_stock() memakai versi lanjutan di bagian bawah file
@@ -369,6 +400,21 @@ function order_restore_stock($db, $order_id) {
     }
 }
 
+/** Kirim email perubahan status order (best-effort, ikuti preferensi notifikasi user). */
+function order_status_email($userId, string $invoiceNo, string $statusLabel, string $message): void {
+    try {
+        $customer = Database::getInstance()->fetchOne(
+            "SELECT email, name, notify_email FROM users WHERE id = ?",
+            [$userId]
+        );
+        if ($customer && !empty($customer['email']) && (int) ($customer['notify_email'] ?? 1) === 1) {
+            Mail::orderStatusChanged($customer['email'], $customer['name'], $invoiceNo, $statusLabel, $message);
+        }
+    } catch (Exception $e) {
+        error_log('[mail] order status email failed: ' . $e->getMessage());
+    }
+}
+
 // ─────────── Wishlist ───────────
 
 /** Set id produk di wishlist user yg login (cache statis per-request). */
@@ -388,4 +434,45 @@ function wishlist_ids(): array {
         }
     }
     return $ids;
+}
+
+// ─────────── Rendering ───────────
+
+/**
+ * Render view dengan layout yang sesuai sambil membagikan variabel scope
+ * controller ke view (pengganti manual require header + view + footer).
+ *
+ * Layout otomatis dari prefix view: `admin/` → admin, `auth/` → auth, lainnya → site.
+ * View `account/setup` (onboarding) memakai layout auth — lewati $layout eksplisit.
+ */
+function render(string $__gg_view, array $__gg_vars = [], string $__gg_layout = 'auto'): void {
+    if ($__gg_layout === 'auto') {
+        if (str_starts_with($__gg_view, 'admin/')) {
+            $__gg_layout = 'admin';
+        } elseif (str_starts_with($__gg_view, 'auth/')) {
+            $__gg_layout = 'auth';
+        } else {
+            $__gg_layout = 'site';
+        }
+    }
+
+    extract($__gg_vars, EXTR_SKIP);
+
+    $__gg_base = dirname(__DIR__) . '/views';
+    switch ($__gg_layout) {
+        case 'admin':
+            require $__gg_base . '/layouts/admin-header.php';
+            require $__gg_base . '/' . $__gg_view . '.php';
+            require $__gg_base . '/layouts/admin-footer.php';
+            break;
+        case 'auth':
+            require $__gg_base . '/layouts/auth-header.php';
+            require $__gg_base . '/' . $__gg_view . '.php';
+            require $__gg_base . '/layouts/auth-footer.php';
+            break;
+        default:
+            require $__gg_base . '/layouts/header.php';
+            require $__gg_base . '/' . $__gg_view . '.php';
+            require $__gg_base . '/layouts/footer.php';
+    }
 }

@@ -19,9 +19,7 @@ class CategoryController {
         $formErrors = \form_errors();
         $formOld    = \form_old();
 
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/categories/index.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/categories/index', get_defined_vars());
     }
 
     private function validate(array $post, ?int $ignoreId = null): array {

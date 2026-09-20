@@ -9,11 +9,7 @@ class ProfileController {
     }
 
     private function addresses($uid) {
-        $db = Database::getInstance();
-        return $db->fetchAll(
-            "SELECT * FROM addresses WHERE user_id = ? ORDER BY is_default DESC, updated_at DESC",
-            [$uid]
-        );
+        return user_addresses($uid);
     }
 
     public function index() {
@@ -85,9 +81,7 @@ class ProfileController {
 
         extract($view_data);
 
-        require __DIR__ . '/../views/layouts/header.php';
-        require __DIR__ . '/../views/account/profile.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        render('account/profile', get_defined_vars());
     }
 
     public function update() {
@@ -114,10 +108,8 @@ class ProfileController {
         if (empty($phone)) {
             $errors['phone'] = 'Nomor telepon wajib diisi.';
         } else {
-            $phone_digits = preg_replace('/\D/', '', $phone);
-            if (str_starts_with($phone_digits, '62')) $phone_digits = '0' . substr($phone_digits, 2);
-            $phone = $phone_digits;
-            if (!preg_match('/^08\d{8,11}$/', $phone_digits)) {
+            $phone = normalize_phone($phone);
+            if (!valid_phone($phone)) {
                 $errors['phone'] = 'Format nomor tidak valid. Contoh: 081234567890.';
             }
         }
@@ -464,6 +456,16 @@ class ProfileController {
         ]);
     }
 
+    private function validateAddress(array $in): array {
+        $errors = [];
+        if (strlen($in['recipient_name']) < 2)      $errors['recipient_name'] = 'Nama penerima minimal 2 karakter.';
+        if (empty($in['address']))                  $errors['address'] = 'Alamat lengkap wajib diisi.';
+        if ($in['postal_code'] !== '' && !preg_match('/^\d{5}$/', $in['postal_code'])) {
+            $errors['postal_code'] = 'Kode pos harus 5 digit angka.';
+        }
+        return $errors;
+    }
+
     private function addressSave() {
         Auth::requireLogin();
         if (!verify_csrf()) {
@@ -475,12 +477,7 @@ class ProfileController {
         $uid = Auth::id();
         $in = $this->addressInputs();
 
-        $errors = [];
-        if (strlen($in['recipient_name']) < 2)      $errors['recipient_name'] = 'Nama penerima minimal 2 karakter.';
-        if (empty($in['address']))                  $errors['address'] = 'Alamat lengkap wajib diisi.';
-        if ($in['postal_code'] !== '' && !preg_match('/^\d{5}$/', $in['postal_code'])) {
-            $errors['postal_code'] = 'Kode pos harus 5 digit angka.';
-        }
+        $errors = $this->validateAddress($in);
         if ($errors) {
             $_SESSION['address_old'] = $in;
             $_SESSION['address_edit_id'] = null;
@@ -539,12 +536,7 @@ class ProfileController {
 
         $in = $this->addressInputs();
 
-        $errors = [];
-        if (strlen($in['recipient_name']) < 2)      $errors['recipient_name'] = 'Nama penerima minimal 2 karakter.';
-        if (empty($in['address']))                  $errors['address'] = 'Alamat lengkap wajib diisi.';
-        if ($in['postal_code'] !== '' && !preg_match('/^\d{5}$/', $in['postal_code'])) {
-            $errors['postal_code'] = 'Kode pos harus 5 digit angka.';
-        }
+        $errors = $this->validateAddress($in);
         if ($errors) {
             $_SESSION['address_old'] = $in;
             $_SESSION['address_edit_id'] = $id;

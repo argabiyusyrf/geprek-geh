@@ -9,9 +9,7 @@ class ReportController {
         extract($this->collect($from, $to));
 
         $admin_page_title = 'Laporan Penjualan';
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/reports/index.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/reports/index', get_defined_vars());
     }
 
     /** Halaman cetak laporan — layout mandiri (print-friendly). */

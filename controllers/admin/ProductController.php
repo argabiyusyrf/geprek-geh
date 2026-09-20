@@ -51,12 +51,7 @@ class ProductController {
         if ($page > $total_pages) $page = $total_pages;
         $offset = ($page - 1) * $per_page;
 
-        $products = $db->fetchAll(
-            "SELECT p.*, c.name AS category_name
-               FROM products p JOIN categories c ON p.category_id = c.id
-              WHERE {$where} ORDER BY {$order_sql} LIMIT {$per_page} OFFSET {$offset}",
-            $params
-        );
+        $products = \ProductRepo::adminList($where, $params, $order_sql, $per_page, $offset);
 
         // Ringkasan untuk tab status & stok menipis (tanpa filter status tapi ikut q/kategori)
         $sWhere  = '1=1';
@@ -103,11 +98,7 @@ class ProductController {
         $top_total = array_sum(array_column($top_sellers, 'qty'));
 
         // ── Stok menipis (panel "perlu perhatian") ──
-        $low_stock_items = $db->fetchAll(
-            "SELECT p.id, p.name, p.image, p.stock, c.name AS category_name
-               FROM products p JOIN categories c ON p.category_id = c.id
-              WHERE p.is_active = 1 AND p.stock <= 5
-              ORDER BY p.stock ASC, p.name ASC LIMIT 5");
+        $low_stock_items = \ProductRepo::lowStock(5, 5, true);
 
         // Query params aktif untuk dipakai ulang di link filter/pagination
         $filter = ['q' => $q];
@@ -119,9 +110,7 @@ class ProductController {
         $formErrors = \form_errors();
         $formOld    = \form_old();
 
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/products/index.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/products/index', get_defined_vars());
     }
 
     public function create() {

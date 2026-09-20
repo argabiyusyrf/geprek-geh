@@ -22,10 +22,7 @@ class ProductController {
             $params[] = "%{$search}%";
         }
 
-        $total = $db->fetchColumn(
-            "SELECT COUNT(*) FROM products p JOIN categories c ON p.category_id = c.id WHERE {$where}",
-            $params
-        );
+        $total = ProductRepo::publicCount($where, $params);
         $total_pages = max(1, ceil($total / $per_page));
 
         $order_map = [
@@ -36,52 +33,23 @@ class ProductController {
         ];
         $order_by = $order_map[$sort] ?? $order_map['populer'];
 
-        $products = $db->fetchAll(
-            "SELECT p.*, c.name AS category_name, c.slug AS category_slug,
-              COALESCE(r.review_count, 0) AS review_count,
-              COALESCE(r.avg_rating, 0) AS avg_rating
-              FROM products p JOIN categories c ON p.category_id = c.id
-              LEFT JOIN (
-                SELECT product_id, COUNT(*) AS review_count, AVG(rating) AS avg_rating
-                FROM product_reviews WHERE is_visible = 1 GROUP BY product_id
-              ) r ON r.product_id = p.id
-              WHERE {$where} ORDER BY {$order_by} LIMIT {$per_page} OFFSET {$offset}",
-            $params
-        );
-        $categories = $db->fetchAll("SELECT c.*, (SELECT COUNT(*) FROM products WHERE category_id = c.id AND is_active = 1) AS product_count FROM categories c ORDER BY c.sort_order, c.name");
+        $products = ProductRepo::publicList($where, $params, $order_by, $per_page, $offset);
+        $categories = ProductRepo::categoriesWithCount();
 
         $app = require __DIR__ . '/../config/app.php';
 
-        require __DIR__ . '/../views/layouts/header.php';
-        require __DIR__ . '/../views/products/index.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        render('products/index', get_defined_vars());
     }
 
     public function show($slug) {
         $db = Database::getInstance();
-        $product = $db->fetchOne(
-            "SELECT p.*, c.name AS category_name, c.slug AS category_slug
-             FROM products p JOIN categories c ON p.category_id = c.id
-             WHERE p.slug = ? AND p.is_active = 1",
-            [$slug]
-        );
+        $product = ProductRepo::bySlug($slug);
         if (!$product) {
             http_response_code(404);
             require __DIR__ . '/../views/layouts/404.php';
             return;
         }
-        $related = $db->fetchAll(
-            "SELECT p.*, c.name AS category_name, c.slug AS category_slug,
-              COALESCE(r.review_count, 0) AS review_count,
-              COALESCE(r.avg_rating, 0) AS avg_rating
-             FROM products p JOIN categories c ON p.category_id = c.id
-             LEFT JOIN (
-                SELECT product_id, COUNT(*) AS review_count, AVG(rating) AS avg_rating
-                FROM product_reviews WHERE is_visible = 1 GROUP BY product_id
-             ) r ON r.product_id = p.id
-             WHERE p.is_active = 1 AND p.category_id = ? AND p.id != ? ORDER BY RAND() LIMIT 4",
-            [$product['category_id'], $product['id']]
-        );
+        $related = ProductRepo::related($product['category_id'], $product['id'], 4);
 
         // Reviews
         $reviews = $db->fetchAll(
@@ -134,8 +102,6 @@ class ProductController {
 
         $app = require __DIR__ . '/../config/app.php';
 
-        require __DIR__ . '/../views/layouts/header.php';
-        require __DIR__ . '/../views/products/show.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        render('products/show', get_defined_vars());
     }
 }

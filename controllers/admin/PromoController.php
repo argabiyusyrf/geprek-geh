@@ -75,9 +75,7 @@ class PromoController {
         $formErrors = \form_errors();
         $formOld    = \form_old();
 
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/promos/index.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/promos/index', get_defined_vars());
     }
 
     private function collectInput(): array {

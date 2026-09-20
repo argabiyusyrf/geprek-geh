@@ -1,5 +1,19 @@
 <?php
 class OrderController {
+
+    /** Ambil order milik user login; redirect ke daftar bila tak ditemukan. */
+    private function findUserOrder($id) {
+        $order = Database::getInstance()->fetchOne(
+            "SELECT * FROM orders WHERE id = ? AND user_id = ?",
+            [$id, Auth::id()]
+        );
+        if (!$order) {
+            flash_set('error', 'Pesanan tidak ditemukan.');
+            redirect('/geprek-geh/orders');
+        }
+        return $order;
+    }
+
     public function index() {
         Auth::requireLogin();
         $db = Database::getInstance();
@@ -73,29 +87,14 @@ class OrderController {
         foreach ($counts as $row) $status_counts[$row['status']] = (int) $row['c'];
         $all_count = array_sum($status_counts);
 
-        require __DIR__ . '/../views/layouts/header.php';
-        require __DIR__ . '/../views/orders/index.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        render('orders/index', get_defined_vars());
     }
 
     public function show($id) {
         Auth::requireLogin();
         $db = Database::getInstance();
-        $order = $db->fetchOne(
-            "SELECT * FROM orders WHERE id = ? AND user_id = ?",
-            [$id, Auth::id()]
-        );
-        if (!$order) {
-            flash_set('error', 'Pesanan tidak ditemukan.');
-            redirect('/geprek-geh/orders');
-        }
-        $items = $db->fetchAll(
-            "SELECT oi.*, p.name, p.image, p.slug, c.name AS category_name
-             FROM order_items oi JOIN products p ON oi.product_id = p.id
-             LEFT JOIN categories c ON p.category_id = c.id
-             WHERE oi.order_id = ?",
-            [$id]
-        );
+        $order = $this->findUserOrder($id);
+        $items = order_items($id);
         $logs = $db->fetchAll(
             "SELECT * FROM order_logs WHERE order_id = ? ORDER BY created_at ASC, id ASC",
             [$id]
@@ -123,9 +122,7 @@ class OrderController {
         $cancelled = $order['status'] === 'cancelled';
         $total_qty = array_sum(array_map(fn($i) => $i['quantity'], $items));
 
-        require __DIR__ . '/../views/layouts/header.php';
-        require __DIR__ . '/../views/orders/show.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        render('orders/show', get_defined_vars());
     }
 
     public function uploadProof($id) {
@@ -135,14 +132,7 @@ class OrderController {
             redirect('/geprek-geh/orders');
         }
         $db = Database::getInstance();
-        $order = $db->fetchOne(
-            "SELECT * FROM orders WHERE id = ? AND user_id = ?",
-            [$id, Auth::id()]
-        );
-        if (!$order) {
-            flash_set('error', 'Pesanan tidak ditemukan.');
-            redirect('/geprek-geh/orders');
-        }
+        $order = $this->findUserOrder($id);
 
         if (!in_array($order['status'], ['pending', 'processing'], true) || $order['payment_status'] !== 'unpaid') {
             flash_set('error', 'Bukti hanya bisa diupload untuk pesanan menunggu yang belum dibayar.');
@@ -235,14 +225,7 @@ class OrderController {
             redirect('/geprek-geh/orders');
         }
         $db = Database::getInstance();
-        $order = $db->fetchOne(
-            "SELECT * FROM orders WHERE id = ? AND user_id = ?",
-            [$id, Auth::id()]
-        );
-        if (!$order) {
-            flash_set('error', 'Pesanan tidak ditemukan.');
-            redirect('/geprek-geh/orders');
-        }
+        $order = $this->findUserOrder($id);
 
         if ($order['status'] !== 'pending') {
             flash_set('error', 'Pesanan hanya bisa dibatalkan selama masih berstatus "Menunggu".');
@@ -272,15 +255,8 @@ class OrderController {
             "/geprek-geh/admin/orders/{$id}"
         );
 
-        try {
-            $customer = Auth::user();
-            if (!empty($customer['email']) && (int)($customer['notify_email'] ?? 1) === 1) {
-                Mail::orderStatusChanged($customer['email'], $customer['name'], $order['invoice_no'], 'Dibatalkan',
-                    'Pesanan dibatalkan. Stok dikembalikan.' . $refund_note);
-            }
-        } catch (Exception $e) {
-            error_log('[OrderController] cancel email failed: ' . $e->getMessage());
-        }
+        order_status_email(Auth::id(), $order['invoice_no'], 'Dibatalkan',
+            'Pesanan dibatalkan. Stok dikembalikan.' . $refund_note);
 
         flash_set('success', 'Pesanan berhasil dibatalkan.'
             . ($order['payment_status'] === 'paid' ? ' Pembayaran akan di-refund.' : ' Stok telah dikembalikan.'));
@@ -294,14 +270,7 @@ class OrderController {
             redirect('/geprek-geh/orders');
         }
         $db = Database::getInstance();
-        $order = $db->fetchOne(
-            "SELECT * FROM orders WHERE id = ? AND user_id = ?",
-            [$id, Auth::id()]
-        );
-        if (!$order) {
-            flash_set('error', 'Pesanan tidak ditemukan.');
-            redirect('/geprek-geh/orders');
-        }
+        $order = $this->findUserOrder($id);
 
         if ($order['status'] !== 'shipped') {
             flash_set('error', 'Pesanan hanya bisa diselesaikan setelah statusnya "Sedang Dikirim".');
@@ -334,15 +303,8 @@ class OrderController {
             "/geprek-geh/admin/orders/{$id}"
         );
 
-        try {
-            $customer = Auth::user();
-            if (!empty($customer['email']) && (int)($customer['notify_email'] ?? 1) === 1) {
-                Mail::orderStatusChanged($customer['email'], $customer['name'], $order['invoice_no'], 'Selesai',
-                    'Terima kasih sudah berbelanja di Geprek Geh!');
-            }
-        } catch (Exception $e) {
-            error_log('[OrderController] receive email failed: ' . $e->getMessage());
-        }
+        order_status_email(Auth::id(), $order['invoice_no'], 'Selesai',
+            'Terima kasih sudah berbelanja di Geprek Geh!');
 
         flash_set('success', 'Terima kasih! Pesanan ditandai selesai.');
         redirect('/geprek-geh/orders/' . $id);
@@ -355,14 +317,7 @@ class OrderController {
             redirect('/geprek-geh/orders');
         }
         $db = Database::getInstance();
-        $order = $db->fetchOne(
-            "SELECT * FROM orders WHERE id = ? AND user_id = ?",
-            [$id, Auth::id()]
-        );
-        if (!$order) {
-            flash_set('error', 'Pesanan tidak ditemukan.');
-            redirect('/geprek-geh/orders');
-        }
+        $order = $this->findUserOrder($id);
 
         $items = $db->fetchAll(
             "SELECT oi.product_id, oi.quantity, p.name, p.stock

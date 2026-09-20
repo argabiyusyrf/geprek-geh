@@ -49,18 +49,10 @@ class DashboardController {
         // Low-stock alert
         $app = require __DIR__ . '/../../config/app.php';
         $threshold = (int) ($app['stock_low_threshold'] ?? 10);
-        $low_stock = $db->fetchAll(
-            "SELECT p.id, p.name, p.stock, c.name AS category_name
-               FROM products p JOIN categories c ON p.category_id = c.id
-              WHERE p.is_active = 1 AND p.stock <= ?
-              ORDER BY p.stock ASC, p.name ASC LIMIT 8",
-            [$threshold]
-        );
+        $low_stock = \ProductRepo::lowStock($threshold, 8, false);
         $low_stock_count = (int) $db->count('products', 'is_active = 1 AND stock <= ' . (int) $threshold);
         $out_stock_count = (int) $db->count('products', 'is_active = 1 AND stock = 0');
 
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/dashboard.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/dashboard', get_defined_vars());
     }
 }

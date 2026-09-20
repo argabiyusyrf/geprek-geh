@@ -52,9 +52,7 @@ class ReviewController {
         );
 
         $admin_page_title = 'Moderasi Ulasan';
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/reviews/index.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/reviews/index', get_defined_vars());
     }
 
     public function toggle($id) {

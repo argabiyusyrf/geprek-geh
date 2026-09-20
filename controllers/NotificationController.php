@@ -91,8 +91,6 @@ class NotificationController {
         $page_title = 'Notifikasi';
         $page_description = 'Semua notifikasi pesanan dan aktivitas akunmu.';
 
-        require __DIR__ . '/../views/layouts/header.php';
-        require __DIR__ . '/../views/notifications/index.php';
-        require __DIR__ . '/../views/layouts/footer.php';
+        render('notifications/index', get_defined_vars());
     }
 }

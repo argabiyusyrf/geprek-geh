@@ -34,9 +34,7 @@ class RecoveryController {
         }
         $rc_name = $_SESSION['recovery_name'] ?? $user['name'];
         $page_title = 'Ubah Password';
-        require __DIR__ . '/../views/layouts/auth-header.php';
-        require __DIR__ . '/../views/auth/recovery.php';
-        require __DIR__ . '/../views/layouts/auth-footer.php';
+        render('auth/recovery', get_defined_vars());
     }
 
     /** Proses ubah password via kata kunci. */

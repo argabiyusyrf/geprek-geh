@@ -43,9 +43,7 @@ class PaymentController {
         $db = \Database::getInstance();
         $methods = $db->fetchAll("SELECT * FROM payment_methods ORDER BY sort_order ASC, id ASC");
         $admin_page_title = 'Metode Pembayaran';
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/payments/index.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/payments/index', get_defined_vars());
     }
 
     public function store() {

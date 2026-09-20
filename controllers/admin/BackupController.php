@@ -28,9 +28,7 @@ class BackupController {
         \Auth::requireAdmin();
         $backups = $this->files();
         $admin_page_title = 'Backup Database';
-        require __DIR__ . '/../../views/layouts/admin-header.php';
-        require __DIR__ . '/../../views/admin/backup/index.php';
-        require __DIR__ . '/../../views/layouts/admin-footer.php';
+        render('admin/backup/index', get_defined_vars());
     }
 
     public function run() {

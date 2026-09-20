@@ -16,8 +16,6 @@ class PageController {
         $og_type          = $ogType;
         $og_url           = 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $url;
 
-        require __DIR__ . '/../views/layouts/header.php';
-        require __DIR__ . '/../' . $view;
-        require __DIR__ . '/../views/layouts/footer.php';
+        render(str_replace(['views/', '.php'], '', $view), get_defined_vars());
     }
 }
