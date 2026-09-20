@@ -11,7 +11,7 @@ class OrderController {
     }
 
     private function redirectBack($id) {
-        header("Location: /geprek-geh/admin/orders/{$id}");
+        header("Location: /admin/orders/{$id}");
         exit;
     }
 
@@ -118,7 +118,7 @@ class OrderController {
         $order = $this->order($id);
         if (!$order) {
             \flash_set('error', 'Pesanan tidak ditemukan.');
-            header('Location: /geprek-geh/admin/orders');
+            header('Location: /admin/orders');
             exit;
         }
         $items = \order_items($id);
@@ -182,7 +182,7 @@ class OrderController {
         $order = $this->order($id);
         if (!$order) {
             \flash_set('error', 'Pesanan tidak ditemukan.');
-            header('Location: /geprek-geh/admin/orders');
+            header('Location: /admin/orders');
             exit;
         }
 
@@ -241,7 +241,7 @@ class OrderController {
             'order',
             "Pesanan {$order['invoice_no']} diperbarui",
             $msg,
-            "/geprek-geh/orders/{$id}"
+            "/orders/{$id}"
         );
 
         // Email the customer when status actually changes (best-effort)
@@ -261,7 +261,7 @@ class OrderController {
         $order = $this->order($id);
         if (!$order) {
             \flash_set('error', 'Pesanan tidak ditemukan.');
-            header('Location: /geprek-geh/admin/orders');
+            header('Location: /admin/orders');
             exit;
         }
 
@@ -295,7 +295,7 @@ class OrderController {
             'payment',
             "Pembayaran {$order['invoice_no']} terverifikasi",
             'Pembayaran LUNAS. Pesanan kamu sedang diproses dapur.',
-            "/geprek-geh/orders/{$id}"
+            "/orders/{$id}"
         );
 
         \order_status_email($order['user_id'], $order['invoice_no'], 'Pembayaran LUNAS',

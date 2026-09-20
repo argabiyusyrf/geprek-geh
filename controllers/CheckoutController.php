@@ -16,7 +16,7 @@ class CheckoutController {
         );
         if (empty($items)) {
             flash_set('error', 'Keranjang kosong.');
-            redirect('/geprek-geh/cart');
+            redirect('/cart');
         }
         $promo = $_SESSION['promo'] ?? null;
         $app = require __DIR__ . '/../config/app.php';
@@ -94,7 +94,7 @@ class CheckoutController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/checkout');
+            redirect('/checkout');
         }
 
         $db = Database::getInstance();
@@ -180,7 +180,7 @@ class CheckoutController {
         if ($errors) {
             $_SESSION['checkout_old'] = ['recipient_name' => $recipient_name, 'phone' => $phone, 'address' => $address, 'province' => $province, 'city' => $city, 'district' => $district, 'village' => $village, 'postal_code' => $postal_code, 'address_id' => $address_id, 'payment_method' => $payment_method, 'notes' => $notes];
             $_SESSION['checkout_errors'] = $errors;
-            redirect('/geprek-geh/checkout');
+            redirect('/checkout');
         }
 
         $items = $db->fetchAll(
@@ -192,13 +192,13 @@ class CheckoutController {
 
         if (empty($items)) {
             flash_set('error', 'Keranjang kosong.');
-            redirect('/geprek-geh/cart');
+            redirect('/cart');
         }
 
         foreach ($items as $item) {
             if ($item['quantity'] > $item['stock']) {
                 flash_set('error', "Stok {$item['name']} tidak cukup.");
-                redirect('/geprek-geh/checkout');
+                redirect('/checkout');
             }
         }
 
@@ -261,7 +261,7 @@ $reserved = [];
                     stock_log($r['product_id'], (int) $r['qty'], "Pembatalan {$invoice} (stok habis saat checkout)");
                 }
                 flash_set('error', "Stok {$item['name']} habis saat checkout. Silakan periksa kembali.");
-                redirect('/geprek-geh/cart');
+                redirect('/cart');
             }
             stock_log($item['product_id'], -$item['quantity'], "Pesanan {$invoice} dibuat", Auth::id());
             $reserved[] = ['product_id' => $item['product_id'], 'qty' => $item['quantity']];
@@ -276,14 +276,14 @@ $reserved = [];
             "Pesanan {$invoice} dibuat",
             $payment_method === 'cod' ? 'Pesanan kamu sedang disiapkan. Bayar saat pesanan tiba.'
                                       : 'Pesanan kamu menunggu pembayaran.',
-            "/geprek-geh/orders/{$order_id}"
+            "/orders/{$order_id}"
         );
         $customer = Auth::user();
         NotificationController::pushToAdmins(
             'order',
             "Pesanan baru {$invoice}",
             'Dari ' . ($customer['name'] ?? 'Pelanggan') . '.',
-            "/geprek-geh/admin/orders/{$order_id}"
+            "/admin/orders/{$order_id}"
         );
 
         // Transactional email — order created (best-effort, never blocks order success)
@@ -299,7 +299,7 @@ $reserved = [];
         }
 
         flash_set('success', "Pesanan {$invoice} berhasil dibuat!");
-        header("Location: /geprek-geh/orders/{$order_id}");
+        header("Location: /orders/{$order_id}");
         exit;
     }
 }

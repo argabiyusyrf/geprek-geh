@@ -1,7 +1,7 @@
     </div>
 </div>
 
-<script src="/geprek-geh/vendor/lenis/lenis.min.js"></script>
-<script src="/geprek-geh/public/js/app.js?v=20260913f"></script>
+<script src="/vendor/lenis/lenis.min.js"></script>
+<script src="/public/js/app.js?v=20260913f"></script>
 </body>
 </html>

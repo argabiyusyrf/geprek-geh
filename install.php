@@ -1,7 +1,8 @@
 <?php
 /**
  * Geprek Geh — Installer & Seeder
- * Run: php install.php
+ * Run: php install.php              (seed penuh: admin + customer + kategori + produk + order)
+ *      php install.php --empty      (DB benar-benar kosong, HANYA akun admin)
  */
 
 require_once __DIR__ . '/config/database.php';
@@ -12,46 +13,68 @@ if (PHP_SAPI !== 'cli') {
     exit('Installer hanya bisa dijalankan dari CLI: php install.php');
 }
 
-echo "🍗 Geprek Geh — Installer\n";
+$args = $_SERVER['argv'] ?? [];
+$emptySeed = in_array('--empty', $args, true);
+
+$admin_name  = getenv('GEPREK_ADMIN_NAME')  ?: 'Admin Geprek Geh';
+$admin_email = getenv('GEPREK_ADMIN_EMAIL') ?: 'admin@geprekgeh.com';
+$admin_pass  = getenv('GEPREK_ADMIN_PASS')  ?: 'AdminGeprek123';
+
+echo "🍗 Geprek Geh — Installer" . ($emptySeed ? " [mode kosong — hanya admin]" : "") . "\n";
 echo str_repeat('─', 40) . "\n";
 
 try {
     $pdo = new PDO(
-        "mysql:host={$config['host']};charset={$config['charset']}",
+        "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}",
         $config['username'],
         $config['password'],
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
 
-    echo "✓ Koneksi database berhasil\n";
+    echo "✓ Koneksi database berhasil ({$config['dbname']})\n";
 
-    // Run schema
+    // Run schema — skip CREATE DATABASE/USE agar tidak bergantung nama DB lokal
+    // (DB remote InfinityFree punya nama sendiri, mis. if0_xxx_geprekgeh).
     $sql = file_get_contents(__DIR__ . '/database/schema.sql');
     $statements = array_filter(array_map('trim', explode(';', $sql)));
     foreach ($statements as $stmt) {
         if (!empty($stmt)) {
+            $head = strtoupper(substr(trim($stmt), 0, 30));
+            if (str_starts_with($head, 'CREATE DATABASE') || str_starts_with($head, 'USE ')) {
+                continue;
+            }
             $pdo->exec($stmt);
         }
     }
     echo "✓ Schema database berhasil dijalankan\n";
 
-    $pdo->exec("USE `{$config['dbname']}`");
-
-    // Clean existing seed data (idempotent re-run)
-    foreach (['cart', 'order_items', 'orders', 'products', 'categories'] as $t) {
+    // Bersihkan semua data (idempotent re-run) supaya DB benar-benar kosong.
+    foreach (['cart', 'order_items', 'orders', 'products', 'categories', 'addresses',
+              'notifications', 'order_logs', 'product_reviews', 'promo_codes', 'wishlists',
+              'stock_movements', 'password_resets', 'remember_tokens', 'sessions'] as $t) {
         $pdo->exec("DELETE FROM `{$t}`");
     }
+    $pdo->exec("DELETE FROM `users` WHERE role <> 'admin'");
 
-    // Seed admin + customer
-    $admin_pass = 'AdminGeprek123';
+    // Seed akun admin (satu-satunya data yang dipertahankan).
     $pdo->prepare("INSERT IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, 'admin')")
-        ->execute(['Admin Geprek Geh', 'admin@geprekgeh.com', password_hash($admin_pass, PASSWORD_DEFAULT)]);
+        ->execute([$admin_name, $admin_email, password_hash($admin_pass, PASSWORD_DEFAULT)]);
 
+    echo "✓ Akun admin: {$admin_email} / {$admin_pass}\n";
+
+    if ($emptySeed) {
+        echo "\n" . str_repeat('─', 40) . "\n";
+        echo "✅ Instalasi selesai (mode kosong)!\n";
+        echo "🌐 Buka: " . ($_SERVER['HTTP_HOST'] ?? '/') . "\n";
+        echo "🔑 Admin: {$admin_email} / {$admin_pass}\n";
+        exit(0);
+    }
+
+    // Seed customer + kategori + produk + order contoh (mode penuh).
     $cust_pass = 'Argaabiyyu123';
     $pdo->prepare("INSERT IGNORE INTO users (name, email, password, phone, role) VALUES (?, ?, ?, ?, 'customer')")
         ->execute(['Arga Abiyu', 'argaabiyyu@email.com', password_hash($cust_pass, PASSWORD_DEFAULT), '081234567890']);
 
-    echo "✓ Akun admin: admin@geprekgeh.com / {$admin_pass}\n";
     echo "✓ Akun customer: argaabiyyu@email.com / {$cust_pass}\n";
 
     // Seed categories
@@ -116,8 +139,8 @@ try {
 
     echo "\n" . str_repeat('─', 40) . "\n";
     echo "✅ Instalasi selesai!\n";
-    echo "🌐 Buka: http://localhost/geprek-geh/\n";
-    echo "🔑 Admin: admin@geprekgeh.com / {$admin_pass}\n";
+    echo "🌐 Buka: " . ($_SERVER['HTTP_HOST'] ?? '/') . "\n";
+    echo "🔑 Admin: {$admin_email} / {$admin_pass}\n";
     echo "👤 Customer: argaabiyyu@email.com / {$cust_pass}\n";
 
 } catch (PDOException $e) {

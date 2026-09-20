@@ -9,8 +9,8 @@ $__root = dirname(__DIR__);
 // Passthrough file statis untuk built-in server (php -S host:port index.php).
 // Di Apache ini sudah ditangani .htaccess (!-f / !-d), blok ini dormant.
 $_zp = rawurldecode(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '');
-if (str_starts_with($_zp, '/geprek-geh/') && strpos($_zp, '..') === false) {
-    $_zf = $__root . '/' . substr($_zp, strlen('/geprek-geh/'));
+if (str_starts_with($_zp, '/') && strpos($_zp, '..') === false) {
+    $_zf = $__root . $_zp;
     if (is_file($_zf)) {
         $_zm = [
             'css' => 'text/css', 'js' => 'application/javascript', 'mjs' => 'application/javascript',
@@ -32,10 +32,9 @@ if (str_starts_with($_zp, '/geprek-geh/') && strpos($_zp, '..') === false) {
 }
 unset($_zp, $_zf, $_zm, $_ze);
 
-// Workaround nginx: vhost pakai `try_files ... /geprek-geh/index.php` tanpa
-// `?$query_string`, sehingga query string HILANG saat fallback internal redirect.
-// (File PHP yang di-request langsung masih dapat query-nya.) Pulihkan dari
-// REQUEST_URI bila fastcgi tidak mengirimkan QUERY_STRING.
+// Workaround HTTP server tertentu: jika fastcgi/rewrite fallback memotong
+// query string (REQUEST_URI masih memuat "?", tapi QUERY_STRING kosong),
+// pulihkan parameter asli ke $_GET.
 if (empty($_SERVER['QUERY_STRING']) && isset($_SERVER['REQUEST_URI'])
     && strpos($_SERVER['REQUEST_URI'], '?') !== false) {
     $__q = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY) ?? '';
@@ -47,9 +46,6 @@ unset($__q);
 // Di Apache, .htaccess sudah mengirim ?url=, jadi blok ini hanya mengisi bila kosong.
 if (empty($_GET['url']) && isset($_SERVER['REQUEST_URI'])) {
     $__u = rawurldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '');
-    if (str_starts_with($__u, '/geprek-geh')) {
-        $__u = substr($__u, strlen('/geprek-geh'));
-    }
     $_GET['url'] = trim($__u, '/');
 }
 unset($__u);

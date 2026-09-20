@@ -9,7 +9,7 @@ $valid = (new PasswordResetController())->isValidLink($selector, $token);
     <div class="auth-shell">
         <div class="auth-brand">
             <div class="auth-brand-inner">
-                <a href="/geprek-geh/" class="brand auth-logo">
+                <a href="/" class="brand auth-logo">
                     <span class="brand-mark">G</span>
                     <span class="brand-word">Geprek Geh</span>
                 </a>
@@ -22,7 +22,7 @@ $valid = (new PasswordResetController())->isValidLink($selector, $token);
         </div>
 
         <div class="auth-panel">
-            <a href="/geprek-geh/" class="auth-back" aria-label="Kembali ke beranda">
+            <a href="/" class="auth-back" aria-label="Kembali ke beranda">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             </a>
             <div class="auth-card">
@@ -32,11 +32,11 @@ $valid = (new PasswordResetController())->isValidLink($selector, $token);
 
                     <?php if (!$valid): ?>
                         <div class="alert alert-error alert-static">Link reset sudah tidak valid atau kedaluwarsa. Silakan minta link baru.</div>
-                        <p class="auth-link"><a href="/geprek-geh/auth/forgot">Minta link baru</a></p>
+                        <p class="auth-link"><a href="/auth/forgot">Minta link baru</a></p>
                     <?php else: ?>
                         <p class="auth-sub">Buat password baru untuk akunmu. Minimal 6 karakter.</p>
 
-                        <form method="POST" action="/geprek-geh/auth/reset" id="resetForm" novalidate>
+                        <form method="POST" action="/auth/reset" id="resetForm" novalidate>
                             <?= csrf_field() ?>
                             <input type="hidden" name="selector" value="<?= e($selector) ?>">
                             <input type="hidden" name="token" value="<?= e($token) ?>">
@@ -78,7 +78,7 @@ $valid = (new PasswordResetController())->isValidLink($selector, $token);
                             </button>
                         </form>
 
-                        <p class="auth-link"><a href="/geprek-geh/auth/login">Kembali ke login</a></p>
+                        <p class="auth-link"><a href="/auth/login">Kembali ke login</a></p>
                     <?php endif; ?>
                 </div>
             </div>

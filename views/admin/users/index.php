@@ -12,8 +12,8 @@ if ($per !== 15) $extra_q['per'] = $per;
 
 $clear_params = $extra_q;
 unset($clear_params['q']);
-$search_clear_href = '/geprek-geh/admin/users' . ($clear_params ? '?' . http_build_query($clear_params) : '');
-$reset_href = '/geprek-geh/admin/users';
+$search_clear_href = '/admin/users' . ($clear_params ? '?' . http_build_query($clear_params) : '');
+$reset_href = '/admin/users';
 
 $page_window = [];
 if ($total_pages <= 7) {
@@ -29,7 +29,7 @@ if ($total_pages <= 7) {
 }
 $qp = $extra_q;
 $page_href = function (int $p) use ($qp) {
-    return '/geprek-geh/admin/users?' . http_build_query(['page' => $p] + $qp);
+    return '/admin/users?' . http_build_query(['page' => $p] + $qp);
 };
 
 $role_label = ['admin' => 'Admin', 'customer' => 'Pelanggan'][$role] ?? '';
@@ -77,7 +77,7 @@ $filter_bits = array_filter([$role_label, $blocked_label]);
 </div>
 
 <div class="menu-filters admin-orders-filters">
-    <form method="GET" action="/geprek-geh/admin/users" class="menu-toolbar">
+    <form method="GET" action="/admin/users" class="menu-toolbar">
         <div class="menu-filter-row">
             <?php if ($role !== ''): ?><input type="hidden" name="role" value="<?= e($role) ?>"><?php endif; ?>
             <?php if ($blocked !== ''): ?><input type="hidden" name="blocked" value="<?= e($blocked) ?>"><?php endif; ?>
@@ -213,14 +213,14 @@ $filter_bits = array_filter([$role_label, $blocked_label]);
                 </td>
                 <td>
                     <div class="table-actions">
-                        <a href="/geprek-geh/admin/users/<?= $u['id'] ?>" class="btn btn-sm btn-outline">Detail</a>
+                        <a href="/admin/users/<?= $u['id'] ?>" class="btn btn-sm btn-outline">Detail</a>
                         <?php if (!$isSelf): ?>
                             <button type="button" class="btn btn-sm btn-ghost" data-edit-user='<?= $uJson ?>'>Edit</button>
-<form method="POST" action="/geprek-geh/admin/users/<?= $u['id'] ?>/block" class="inline-form" data-confirm="<?= $isBlocked ? 'Buka blokir akun ' . e($u['name']) . '?' : 'Blokir akun ' . e($u['name']) . '? Pengguna tidak bisa login.' ?>">
+<form method="POST" action="/admin/users/<?= $u['id'] ?>/block" class="inline-form" data-confirm="<?= $isBlocked ? 'Buka blokir akun ' . e($u['name']) . '?' : 'Blokir akun ' . e($u['name']) . '? Pengguna tidak bisa login.' ?>">
     <?= csrf_field() ?>
     <button type="submit" class="btn btn-sm <?= $isBlocked ? 'btn-outline' : 'btn-ghost' ?>"><?= $isBlocked ? 'Buka' : 'Blokir' ?></button>
 </form>
-                            <form method="POST" action="/geprek-geh/admin/users/<?= $u['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus akun <?= e($u['name']) ?>? Seluruh pesanan, alamat, dan notifikasinya ikut terhapus.">
+                            <form method="POST" action="/admin/users/<?= $u['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus akun <?= e($u['name']) ?>? Seluruh pesanan, alamat, dan notifikasinya ikut terhapus.">
                                 <?= csrf_field() ?>
                                 <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
                             </form>
@@ -255,7 +255,7 @@ $filter_bits = array_filter([$role_label, $blocked_label]);
             <?php endif; ?>
         </div>
     <?php endif; ?>
-    <form method="GET" action="/geprek-geh/admin/users" class="menu-perpage">
+    <form method="GET" action="/admin/users" class="menu-perpage">
         <?php if ($role !== ''): ?><input type="hidden" name="role" value="<?= e($role) ?>"><?php endif; ?>
         <?php if ($blocked !== ''): ?><input type="hidden" name="blocked" value="<?= e($blocked) ?>"><?php endif; ?>
         <?php if ($q !== ''): ?><input type="hidden" name="q" value="<?= e($q) ?>"><?php endif; ?>
@@ -283,7 +283,7 @@ $filter_bits = array_filter([$role_label, $blocked_label]);
         </button>
     </div>
 
-    <form method="POST" action="/geprek-geh/admin/users" class="drawer-body" id="user-form">
+    <form method="POST" action="/admin/users" class="drawer-body" id="user-form">
         <?= csrf_field() ?>
 
         <div class="form-group">

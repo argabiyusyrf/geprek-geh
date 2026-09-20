@@ -4,7 +4,7 @@
     <div class="auth-shell">
         <div class="auth-brand">
             <div class="auth-brand-inner">
-                <a href="/geprek-geh/" class="brand auth-logo">
+                <a href="/" class="brand auth-logo">
                     <span class="brand-mark">G</span>
                     <span class="brand-word">Geprek Geh</span>
                 </a>
@@ -21,7 +21,7 @@
         </div>
 
         <div class="auth-panel">
-            <a href="/geprek-geh/" class="auth-back" aria-label="Lewati setup">
+            <a href="/" class="auth-back" aria-label="Lewati setup">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             </a>
             <div class="auth-card">
@@ -30,7 +30,7 @@
                     <h1>Akunmu, makin <em>aman</em></h1>
                     <p class="auth-sub">Buat <strong>kata kunci</strong> rahasia. Kalau nanti lupa password, kata kunci ini membantumu pulih <em>tanpa bergantung email</em>. Isi alamat juga kalau mau checkout lebih cepat.</p>
 
-                    <form method="POST" action="/geprek-geh/account/setup" id="setupForm" novalidate>
+                    <form method="POST" action="/account/setup" id="setupForm" novalidate>
                         <?= csrf_field() ?>
 
                         <div class="setup-steps">
@@ -102,12 +102,12 @@
                         </button>
                     </form>
 
-                    <form method="POST" action="/geprek-geh/account/setup/skip" id="setupSkipForm">
+                    <form method="POST" action="/account/setup/skip" id="setupSkipForm">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-ghost btn-block" id="setupSkipBtn">Lewati — atur nanti di Akun → Keamanan</button>
                     </form>
 
-                    <p class="auth-link">Urgent? <a href="/geprek-geh/auth/login">Ini bisa dilewati</a>.</p>
+                    <p class="auth-link">Urgent? <a href="/auth/login">Ini bisa dilewati</a>.</p>
                 </div>
             </div>
         </div>

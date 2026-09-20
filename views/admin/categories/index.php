@@ -94,7 +94,7 @@
                 <td>
                     <div class="table-actions">
                         <button type="button" class="btn btn-sm btn-outline" data-edit-category='<?= $cJson ?>'>Edit</button>
-                        <form method="POST" action="/geprek-geh/admin/categories/<?= $c['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="<?= $cCount > 0 ? 'Hapus kategori &ldquo;' . e($c['name']) . '&rdquo;? ' . $cCount . ' produk di dalamnya ikut terhapus (tidak bisa dibatalkan).' : 'Hapus kategori &ldquo;' . e($c['name']) . '&rdquo;?' ?>">
+                        <form method="POST" action="/admin/categories/<?= $c['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="<?= $cCount > 0 ? 'Hapus kategori &ldquo;' . e($c['name']) . '&rdquo;? ' . $cCount . ' produk di dalamnya ikut terhapus (tidak bisa dibatalkan).' : 'Hapus kategori &ldquo;' . e($c['name']) . '&rdquo;?' ?>">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
                         </form>
@@ -128,7 +128,7 @@
         </button>
     </div>
 
-    <form method="POST" action="/geprek-geh/admin/categories" class="drawer-body" id="category-form">
+    <form method="POST" action="/admin/categories" class="drawer-body" id="category-form">
         <?= csrf_field() ?>
 
         <div class="form-group">

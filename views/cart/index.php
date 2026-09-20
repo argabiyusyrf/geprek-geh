@@ -22,7 +22,7 @@
         </span>
         <h3>Keranjangmu masih kosong — untuk saat ini.</h3>
         <p>Yuk isi dengan geprek renyah dan sambal level sesuai seleramu. Kami masak per pesanan, jadi selalu hangat sampai depan pintu.</p>
-        <a href="/geprek-geh/products" class="btn btn-primary">Lihat Menu
+        <a href="/products" class="btn btn-primary">Lihat Menu
             <span class="btn-icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </span>
@@ -42,7 +42,7 @@
     <div class="cart-items">
         <div class="cart-list-head">
             <span class="cart-list-title">Item Pesanan</span>
-            <form method="POST" action="/geprek-geh/cart/clear" class="cart-clear-form" data-confirm="Semua item di keranjang akan dihapus. Lanjutkan?">
+            <form method="POST" action="/cart/clear" class="cart-clear-form" data-confirm="Semua item di keranjang akan dihapus. Lanjutkan?">
                 <?= csrf_field() ?>
                 <button type="submit" class="btn btn-sm btn-ghost btn-dangerghost">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
@@ -55,9 +55,9 @@
             $out = $item['stock'] <= 0;
         ?>
         <div class="cart-item" data-reveal>
-            <a class="cart-item-img" href="/geprek-geh/products/<?= e($item['slug']) ?>">
+            <a class="cart-item-img" href="/products/<?= e($item['slug']) ?>">
                 <?php if ($item['image']): ?>
-                    <img src="/geprek-geh/assets/uploads/products/<?= e($item['image']) ?>" alt="<?= e($item['name']) ?>" loading="lazy" decoding="async">
+                    <img src="/assets/uploads/products/<?= e($item['image']) ?>" alt="<?= e($item['name']) ?>" loading="lazy" decoding="async">
                 <?php else: ?>
                     <span class="cart-item-placeholder"><?= product_art($item['name'], $item['category_name'] ?? '', '', 160) ?></span>
                 <?php endif; ?>
@@ -66,7 +66,7 @@
             <div class="cart-item-body">
                 <span class="cart-item-cat"><?= e($item['category_name'] ?? '') ?></span>
                 <h3 class="cart-item-name">
-                    <a href="/geprek-geh/products/<?= e($item['slug']) ?>"><?= e($item['name']) ?></a>
+                    <a href="/products/<?= e($item['slug']) ?>"><?= e($item['name']) ?></a>
                 </h3>
                 <div class="cart-item-meta">
                     <span class="cart-item-price"><?= rupiah($item['price']) ?> / porsi</span>
@@ -76,7 +76,7 @@
                 </div>
 
                 <div class="cart-item-actions">
-                    <form method="POST" action="/geprek-geh/cart/update" class="cart-qty-form">
+                    <form method="POST" action="/cart/update" class="cart-qty-form">
                         <?= csrf_field() ?>
                         <input type="hidden" name="cart_id" value="<?= $item['id'] ?>">
                         <div class="cart-stepper" <?= $out || $item['stock'] === 1 ? 'data-disabled' : '' ?>>
@@ -91,7 +91,7 @@
                         <strong><?= rupiah($line_total) ?></strong>
                     </div>
 
-                    <form method="POST" action="/geprek-geh/cart/remove" class="cart-remove-form">
+                    <form method="POST" action="/cart/remove" class="cart-remove-form">
                         <?= csrf_field() ?>
                         <input type="hidden" name="cart_id" value="<?= $item['id'] ?>">
                         <button type="submit" class="cart-remove-btn" title="Hapus item">
@@ -104,7 +104,7 @@
         <?php endforeach; ?>
 
         <div class="cart-actions-row">
-            <a href="/geprek-geh/products" class="btn btn-ghost">
+            <a href="/products" class="btn btn-ghost">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 Lanjut Belanja
             </a>
@@ -145,27 +145,27 @@
                 <?php if ($promo): ?>
                 <div class="promo-applied-bar">
                     <span>Kode promo <strong><?= e($promo['code']) ?></strong> diterapkan</span>
-                    <form method="POST" action="/geprek-geh/promo/remove" class="inline-form inline-form--compact">
+                    <form method="POST" action="/promo/remove" class="inline-form inline-form--compact">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-ghost btn-sm btn-dangerghost">Hapus</button>
                     </form>
                 </div>
                 <?php endif; ?>
-                <form method="POST" action="/geprek-geh/promo/apply" class="promo-input-row">
+                <form method="POST" action="/promo/apply" class="promo-input-row">
                     <?= csrf_field() ?>
                     <input type="text" name="promo_code" placeholder="Masukkan kode promo..." value="<?= e($promo['code'] ?? '') ?>" maxlength="32" class="input promo-input">
                     <button type="submit" class="btn btn-ghost btn-sm">Terapkan</button>
                 </form>
             </div>
 
-            <a href="/geprek-geh/checkout" class="btn btn-primary btn-lg btn-block">
+            <a href="/checkout" class="btn btn-primary btn-lg btn-block">
                     Checkout Sekarang
                     <span class="btn-icon">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </span>
                 </a>
             <?php else: ?>
-                <a href="/geprek-geh/auth/login" class="btn btn-primary btn-lg btn-block">Masuk untuk Checkout</a>
+                <a href="/auth/login" class="btn btn-primary btn-lg btn-block">Masuk untuk Checkout</a>
             <?php endif; ?>
 
             <p class="cart-summary-note">

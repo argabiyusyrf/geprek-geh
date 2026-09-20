@@ -32,7 +32,7 @@ class CartController {
                 exit;
             }
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/products');
+            redirect('/products');
         }
         $db = Database::getInstance();
         $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
@@ -50,19 +50,19 @@ class CartController {
 
         if (!$product_id) {
             $respond(false, 'Produk tidak ditemukan.');
-            redirect('/geprek-geh/products');
+            redirect('/products');
         }
 
         $product = $db->fetchOne("SELECT * FROM products WHERE id = ? AND is_active = 1", [$product_id]);
         if (!$product) {
             $respond(false, 'Produk tidak ditemukan.');
-            header('Location: /geprek-geh/products');
+            header('Location: /products');
             exit;
         }
 
         if ($product['stock'] < $qty) {
             $respond(false, 'Stok tidak cukup.');
-            header("Location: /geprek-geh/products/{$product['slug']}");
+            header("Location: /products/{$product['slug']}");
             exit;
         }
 
@@ -97,14 +97,14 @@ class CartController {
         }
 
         $respond(true, 'Produk ditambahkan ke keranjang.', ['count' => CartController::count()]);
-        header('Location: /geprek-geh/cart');
+        header('Location: /cart');
         exit;
     }
 
     public function update() {
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/cart');
+            redirect('/cart');
         }
         $db = Database::getInstance();
         $cart_id = (int)($_POST['cart_id'] ?? 0);
@@ -123,34 +123,34 @@ class CartController {
                 flash_set('success', 'Keranjang diperbarui.');
             }
         }
-        header('Location: /geprek-geh/cart');
+        header('Location: /cart');
         exit;
     }
 
     public function remove() {
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/cart');
+            redirect('/cart');
         }
         $db = Database::getInstance();
         $cart_id = (int)($_POST['cart_id'] ?? 0);
         [$whereCol, $whereVal] = cart_where();
         $db->delete('cart', 'id = ? AND ' . $whereCol . ' = ?', [$cart_id, $whereVal]);
         flash_set('success', 'Produk dihapus dari keranjang.');
-        header('Location: /geprek-geh/cart');
+        header('Location: /cart');
         exit;
     }
 
     public function clear() {
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/cart');
+            redirect('/cart');
         }
         $db = Database::getInstance();
         [$whereCol, $whereVal] = cart_where();
         $db->delete('cart', $whereCol . ' = ?', [$whereVal]);
         flash_set('success', 'Keranjang telah dikosongkan.');
-        header('Location: /geprek-geh/cart');
+        header('Location: /cart');
         exit;
     }
 

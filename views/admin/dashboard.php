@@ -13,11 +13,11 @@
         </p>
     </div>
     <div class="admin-hero-actions">
-        <a href="/geprek-geh/admin/products/create" class="btn btn-primary btn-sm">
+        <a href="/admin/products/create" class="btn btn-primary btn-sm">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
             Produk Baru
         </a>
-        <a href="/geprek-geh/admin/orders" class="btn btn-ghost btn-sm">Kelola Pesanan</a>
+        <a href="/admin/orders" class="btn btn-ghost btn-sm">Kelola Pesanan</a>
     </div>
 </div>
 
@@ -32,12 +32,12 @@
             <small>Stok di bawah ambang batas <?= (int) $threshold ?> unit.</small>
         </div>
         <div class="stock-alert-actions">
-            <a href="/geprek-geh/admin/stock" class="btn btn-warning btn-xs">Kelola Stok</a>
+            <a href="/admin/stock" class="btn btn-warning btn-xs">Kelola Stok</a>
         </div>
     </div>
     <div class="stock-alert-list">
         <?php foreach ($low_stock as $p): ?>
-        <a class="stock-alert-item" href="/geprek-geh/admin/stock/<?= $p['id'] ?>">
+        <a class="stock-alert-item" href="/admin/stock/<?= $p['id'] ?>">
             <span class="stock-alert-name"><?= e($p['name']) ?></span>
             <span class="stock-alert-cat"><?= e($p['category_name']) ?></span>
             <?php if ((int)$p['stock'] === 0): ?>
@@ -194,7 +194,7 @@
             <div class="admin-title min">
                 <h3>Pesanan Terbaru</h3>
             </div>
-            <a href="/geprek-geh/admin/orders" class="admin-link">Lihat semua
+            <a href="/admin/orders" class="admin-link">Lihat semua
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
             </a>
         </div>
@@ -205,7 +205,7 @@
             <?php foreach ($recent_orders as $o):
                 [$sl, $bc] = format_status($o['status']);
             ?>
-            <a class="queue-item" href="/geprek-geh/admin/orders/<?= $o['id'] ?>">
+            <a class="queue-item" href="/admin/orders/<?= $o['id'] ?>">
                 <span class="queue-icon">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 </span>
@@ -229,19 +229,19 @@
         </div>
         <div class="quick-list">
             <span class="quick-group-label">Katalog</span>
-            <a class="quick-item" href="/geprek-geh/admin/products/create">
+            <a class="quick-item" href="/admin/products/create">
                 <span class="quick-icon quick-icon--accent">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
                 </span>
                 <span><strong>Tambah Produk</strong><small>Masukkan menu baru ke katalog</small></span>
             </a>
-            <a class="quick-item" href="/geprek-geh/admin/categories">
+            <a class="quick-item" href="/admin/categories">
                 <span class="quick-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg>
                 </span>
                 <span><strong>Atur Kategori</strong><small>Kelompokkan menu agar mudah dicari</small></span>
             </a>
-            <a class="quick-item" href="/geprek-geh/admin/stock">
+            <a class="quick-item" href="/admin/stock">
                 <span class="quick-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
                 </span>
@@ -249,19 +249,19 @@
             </a>
 
             <span class="quick-group-label">Penjualan</span>
-            <a class="quick-item" href="/geprek-geh/admin/orders">
+            <a class="quick-item" href="/admin/orders">
                 <span class="quick-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 </span>
                 <span><strong>Daftar Pesanan</strong><small>Proses &amp; lanjutkan status pesanan</small></span>
             </a>
-            <a class="quick-item" href="/geprek-geh/admin/promos">
+            <a class="quick-item" href="/admin/promos">
                 <span class="quick-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
                 </span>
                 <span><strong>Kelola Promo</strong><small>Buat diskon dengan kode promo</small></span>
             </a>
-            <a class="quick-item" href="/geprek-geh/admin/reports">
+            <a class="quick-item" href="/admin/reports">
                 <span class="quick-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
                 </span>
@@ -270,19 +270,19 @@
 
             <?php if (Auth::admin()): ?>
             <span class="quick-group-label">Sistem</span>
-            <a class="quick-item" href="/geprek-geh/admin/payments">
+            <a class="quick-item" href="/admin/payments">
                 <span class="quick-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
                 </span>
                 <span><strong>Metode Bayar</strong><small>Rekening bank &amp; e-wallet</small></span>
             </a>
-            <a class="quick-item" href="/geprek-geh/admin/users">
+            <a class="quick-item" href="/admin/users">
                 <span class="quick-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
                 </span>
                 <span><strong>Kelola Pelanggan</strong><small>Lihat &amp; kelola user terdaftar</small></span>
             </a>
-            <a class="quick-item" href="/geprek-geh/admin/backup">
+            <a class="quick-item" href="/admin/backup">
                 <span class="quick-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 1 10-10"/><path d="M22 12v7a3 3 0 0 1-3 3"/><path d="M16 16l6 3-6 3z"/></svg>
                 </span>

@@ -9,7 +9,7 @@ class BackupController {
     private function files(): array {
         $dir = $this->dir();
         if (!is_dir($dir)) return [];
-        $files = glob($dir . '/geprek-geh-*.sql.gz');
+        $files = glob($dir . '-*.sql.gz');
         if (!$files) return [];
         usort($files, fn($a, $b) => filemtime($b) <=> filemtime($a));
         $out = [];
@@ -35,14 +35,14 @@ class BackupController {
         \Auth::requireAdmin();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
-            header('Location: /geprek-geh/admin/backup');
+            header('Location: /admin/backup');
             exit;
         }
         $config = require __DIR__ . '/../../config/database.php';
         $dir = $this->dir();
         if (!is_dir($dir)) @mkdir($dir, 0775, true);
         @chmod($dir, 0777);
-        $file = $dir . '/geprek-geh-' . date('Ymd-His') . '.sql.gz';
+        $file = $dir . '-' . date('Ymd-His') . '.sql.gz';
         $cmd = sprintf(
             'mysqldump --no-tablespaces --single-transaction --quick -h %s -u %s %s %s 2>&1 | gzip > %s',
             escapeshellarg($config['host']),
@@ -56,12 +56,12 @@ class BackupController {
             @unlink($file);
             $detail = is_array($out) ? mb_substr(implode("\n", $out), 0, 400) : '';
             \flash_set('error', 'Backup gagal dibuat.' . ($detail !== '' ? ' Keterangan: ' . $detail : ''));
-            header('Location: /geprek-geh/admin/backup');
+            header('Location: /admin/backup');
             exit;
         }
         @chmod($file, 0664);
         \flash_set('success', 'Backup berhasil dibuat: ' . basename($file));
-        header('Location: /geprek-geh/admin/backup');
+        header('Location: /admin/backup');
         exit;
     }
 
@@ -88,19 +88,19 @@ class BackupController {
         \Auth::requireAdmin();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
-            header('Location: /geprek-geh/admin/backup');
+            header('Location: /admin/backup');
             exit;
         }
         $name = basename((string) $name);
         if (!preg_match('/^geprek-geh-[0-9]{8}-[0-9]{6}\.sql\.gz$/', $name)) {
             \flash_set('error', 'Nama backup tidak valid.');
-            header('Location: /geprek-geh/admin/backup');
+            header('Location: /admin/backup');
             exit;
         }
         $file = $this->dir() . '/' . $name;
         if (is_file($file)) @unlink($file);
         \flash_set('success', 'Backup ' . $name . ' dihapus.');
-        header('Location: /geprek-geh/admin/backup');
+        header('Location: /admin/backup');
         exit;
     }
 }

@@ -3,7 +3,7 @@ class HomeController {
     public function index() {
         // Customer yang lupa set kata kunci recovery → arahkan ke setup (kecuali sengaja dilewati).
         if (Auth::check() && ($_SESSION['role'] ?? '') !== 'admin' && empty($_SESSION['skip_setup']) && !Auth::keywordSet()) {
-            redirect('/geprek-geh/account/setup');
+            redirect('/account/setup');
         }
         $featured = ProductRepo::publicList(
             'p.is_active = 1 AND p.is_featured = 1',

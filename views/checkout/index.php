@@ -13,7 +13,7 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
         <h1>Checkout</h1>
         <p class="sub">Selesaikan pengiriman &amp; pembayaran. Pesananmu langsung diteruskan ke dapur begitu tombol diproses.</p>
 
-        <a href="/geprek-geh/cart" class="back-to-cart back-to-cart--top">
+        <a href="/cart" class="back-to-cart back-to-cart--top">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             Kembali ke keranjang
         </a>
@@ -37,7 +37,7 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
     </header>
 </div>
 
-<form method="POST" action="/geprek-geh/checkout" class="checkout-form">
+<form method="POST" action="/checkout" class="checkout-form">
     <?= csrf_field() ?>
 
     <div class="checkout-grid">
@@ -221,7 +221,7 @@ $ewallet = $payment_details['ewallet'] ?? ['name' => 'E-Wallet', 'number' => '-'
                                 <div class="order-item-media">
                                     <div class="order-item-thumb">
                                         <?php if ($item['image']): ?>
-                                            <img src="/geprek-geh/assets/uploads/products/<?= e($item['image']) ?>" alt="<?= e($item['name']) ?>" loading="lazy">
+                                            <img src="/assets/uploads/products/<?= e($item['image']) ?>" alt="<?= e($item['name']) ?>" loading="lazy">
                                         <?php else: ?>
                                             <span class="order-item-placeholder"><?= product_art($item['name'], $item['category_name'] ?? '', '', 80) ?></span>
                                         <?php endif; ?>

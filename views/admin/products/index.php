@@ -46,7 +46,7 @@
                 <div class="seller">
                     <span class="seller-rank r<?= min(3, $rank) ?>"><?= str_pad((string) $rank, 2, '0', STR_PAD_LEFT) ?></span>
                     <?php if ($t['image']): ?>
-                        <img class="seller-thumb" src="/geprek-geh/assets/uploads/products/<?= e($t['image']) ?>" loading="lazy" alt="">
+                        <img class="seller-thumb" src="/assets/uploads/products/<?= e($t['image']) ?>" loading="lazy" alt="">
                     <?php else: ?>
                         <?= product_art($t['name'], $t['category_name'], 'seller-thumb seller-art') ?>
                     <?php endif; ?>
@@ -85,7 +85,7 @@
                 <?php else: foreach ($low_stock_items as $ls): $_ls_out = (int) $ls['stock'] === 0; ?>
                 <div class="watch-item">
                     <?php if ($ls['image']): ?>
-                        <img class="watch-item-art" src="/geprek-geh/assets/uploads/products/<?= e($ls['image']) ?>" loading="lazy" alt="">
+                        <img class="watch-item-art" src="/assets/uploads/products/<?= e($ls['image']) ?>" loading="lazy" alt="">
                     <?php else: ?>
                         <?= product_art($ls['name'], $ls['category_name'], 'watch-item-art watch-art') ?>
                     <?php endif; ?>
@@ -98,7 +98,7 @@
                     </span>
                 </div>
                 <?php endforeach; ?>
-                <a class="watch-item-more" href="/geprek-geh/admin/products?sort=stock_low">
+                <a class="watch-item-more" href="/admin/products?sort=stock_low">
                     Kelola stok produk
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
                 </a>
@@ -128,23 +128,23 @@ $catHref = function ($cid) use ($keep, $status) {
     $qs = $keep;
     if ($cid > 0) $qs['category'] = $cid;
     if ($status !== '') $qs['status'] = $status;
-    return '/geprek-geh/admin/products' . ($qs ? '?' . http_build_query($qs) : '');
+    return '/admin/products' . ($qs ? '?' . http_build_query($qs) : '');
 };
 $statusHref = function ($st) use ($keep, $category) {
     $qs = $keep;
     if ($category > 0) $qs['category'] = $category;
     if ($st !== '') $qs['status'] = $st;
-    return '/geprek-geh/admin/products' . ($qs ? '?' . http_build_query($qs) : '');
+    return '/admin/products' . ($qs ? '?' . http_build_query($qs) : '');
 };
 ?>
 <section class="menu-filters" aria-label="Filter produk">
     <div class="menu-toolbar">
-        <form method="GET" action="/geprek-geh/admin/products" class="menu-filter-row">
+        <form method="GET" action="/admin/products" class="menu-filter-row">
             <div class="menu-toolbar-top">
                 <div class="menu-search">
                     <svg class="menu-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
                     <input type="text" name="q" placeholder="Cari produk atau slug…" value="<?= e($q) ?>" class="menu-search-input" autocomplete="off" aria-label="Cari produk">
-                    <?php if ($q !== ''): ?><a href="/geprek-geh/admin/products" class="menu-search-clear" aria-label="Bersihkan pencarian">&times;</a><?php endif; ?>
+                    <?php if ($q !== ''): ?><a href="/admin/products" class="menu-search-clear" aria-label="Bersihkan pencarian">&times;</a><?php endif; ?>
                 </div>
                 <span class="menu-sort">
                     <span class="menu-sort-label">Urutkan</span>
@@ -194,7 +194,7 @@ $statusHref = function ($st) use ($keep, $category) {
                 <?php else: ?>
                     Tidak ada produk yang cocok dengan filter
                 <?php endif; ?>
-                <?php if ($filter_active): ?> — <a href="/geprek-geh/admin/products" class="menu-results-reset">Reset filter</a><?php endif; ?>
+                <?php if ($filter_active): ?> — <a href="/admin/products" class="menu-results-reset">Reset filter</a><?php endif; ?>
             </span>
         </div>
     </div>
@@ -234,7 +234,7 @@ $statusHref = function ($st) use ($keep, $category) {
             <tr>
                 <td>
                     <?php if ($p['image']): ?>
-                        <img src="/geprek-geh/assets/uploads/products/<?= e($p['image']) ?>" class="table-thumb" loading="lazy">
+                        <img src="/assets/uploads/products/<?= e($p['image']) ?>" class="table-thumb" loading="lazy">
                     <?php else: ?>
                         <div class="table-thumb-placeholder"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 11.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0z"/><path d="M11 7V3M13.5 4.5L8.5 6.5M15 7.5l-6 1.5"/><path d="M6 1l-1 3M9 2L7.5 4"/></svg></div>
                     <?php endif; ?>
@@ -269,7 +269,7 @@ $statusHref = function ($st) use ($keep, $category) {
                 <td>
                     <div class="table-actions">
                         <button type="button" class="btn btn-sm btn-outline" data-edit-product='<?= $pJson ?>'>Edit</button>
-                        <form method="POST" action="/geprek-geh/admin/products/<?= $p['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus produk ini? Tindakan ini tidak bisa dibatalkan.">
+                        <form method="POST" action="/admin/products/<?= $p['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus produk ini? Tindakan ini tidak bisa dibatalkan.">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
                         </form>
@@ -284,13 +284,13 @@ $statusHref = function ($st) use ($keep, $category) {
 <?php if ($total_pages > 1): ?>
 <nav class="menu-pagination" aria-label="Navigasi halaman produk">
     <?php if ($page > 1): ?>
-        <a class="menu-page-btn" href="/geprek-geh/admin/products?<?= e(http_build_query(array_merge($filter, ['page' => $page - 1]))) ?>" aria-label="Halaman sebelumnya">&laquo;</a>
+        <a class="menu-page-btn" href="/admin/products?<?= e(http_build_query(array_merge($filter, ['page' => $page - 1]))) ?>" aria-label="Halaman sebelumnya">&laquo;</a>
     <?php endif; ?>
     <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-        <a class="menu-page-btn <?= $i === $page ? 'active' : '' ?>" href="/geprek-geh/admin/products?<?= e(http_build_query(array_merge($filter, ['page' => $i]))) ?>"><?= $i ?></a>
+        <a class="menu-page-btn <?= $i === $page ? 'active' : '' ?>" href="/admin/products?<?= e(http_build_query(array_merge($filter, ['page' => $i]))) ?>"><?= $i ?></a>
     <?php endfor; ?>
     <?php if ($page < $total_pages): ?>
-        <a class="menu-page-btn" href="/geprek-geh/admin/products?<?= e(http_build_query(array_merge($filter, ['page' => $page + 1]))) ?>" aria-label="Halaman berikutnya">&raquo;</a>
+        <a class="menu-page-btn" href="/admin/products?<?= e(http_build_query(array_merge($filter, ['page' => $page + 1]))) ?>" aria-label="Halaman berikutnya">&raquo;</a>
     <?php endif; ?>
 </nav>
 <?php endif; ?>
@@ -298,7 +298,7 @@ $statusHref = function ($st) use ($keep, $category) {
     <?php if ($filter_active): ?>
         <div class="admin-empty">
             <p>Tidak ada produk yang cocok dengan pencarian atau filter.</p>
-            <a href="/geprek-geh/admin/products" class="btn btn-outline btn-sm">Reset filter</a>
+            <a href="/admin/products" class="btn btn-outline btn-sm">Reset filter</a>
         </div>
     <?php else: ?>
         <div class="admin-empty">
@@ -319,7 +319,7 @@ $statusHref = function ($st) use ($keep, $category) {
         </button>
     </div>
 
-    <form method="POST" action="/geprek-geh/admin/products" enctype="multipart/form-data" class="drawer-body" id="product-form">
+    <form method="POST" action="/admin/products" enctype="multipart/form-data" class="drawer-body" id="product-form">
         <?= csrf_field() ?>
 
         <div class="form-group">

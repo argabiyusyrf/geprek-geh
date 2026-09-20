@@ -4,7 +4,7 @@
     <div class="auth-shell">
         <div class="auth-brand">
             <div class="auth-brand-inner">
-                <a href="/geprek-geh/" class="brand auth-logo">
+                <a href="/" class="brand auth-logo">
                     <span class="brand-mark">G</span>
                     <span class="brand-word">Geprek Geh</span>
                 </a>
@@ -22,7 +22,7 @@
         </div>
 
         <div class="auth-panel">
-            <a href="/geprek-geh/" class="auth-back" aria-label="Kembali ke beranda">
+            <a href="/" class="auth-back" aria-label="Kembali ke beranda">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             </a>
             <div class="auth-card">
@@ -35,7 +35,7 @@
                         <div class="alert alert-error alert-static"><?= e($reg_errors['_global']) ?></div>
                     <?php endif; ?>
 
-                    <form method="POST" action="/geprek-geh/auth/register" id="registerForm" novalidate>
+                    <form method="POST" action="/auth/register" id="registerForm" novalidate>
                         <?= csrf_field() ?>
 
                         <div class="reg-fields">
@@ -102,7 +102,7 @@
                             <span class="reg-terms-box">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
                             </span>
-                            <span class="reg-terms-text">Saya setuju dengan <a href="/geprek-geh/pages/terms" target="_blank">Syarat &amp; Ketentuan</a> dan <a href="/geprek-geh/pages/privacy" target="_blank">Kebijakan Privasi</a>.</span>
+                            <span class="reg-terms-text">Saya setuju dengan <a href="/pages/terms" target="_blank">Syarat &amp; Ketentuan</a> dan <a href="/pages/privacy" target="_blank">Kebijakan Privasi</a>.</span>
                         </label>
                         <div class="field-error<?= !empty($reg_errors['terms']) ? '' : '" hidden' ?>" data-for="reg-terms"><?= e($reg_errors['terms'] ?? '') ?></div>
 
@@ -121,7 +121,7 @@
                         <span>atau</span>
                     </div>
 
-                    <a href="/geprek-geh/auth/login" class="btn btn-outline btn-block btn-lg reg-login-alt">
+                    <a href="/auth/login" class="btn btn-outline btn-block btn-lg reg-login-alt">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
                         Sudah punya akun? Login
                     </a>

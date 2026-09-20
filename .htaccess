@@ -1,8 +1,9 @@
 RewriteEngine On
-RewriteBase /geprek-geh/
+RewriteBase /
 
-# ─── Block sensitive directories (config, DB schema, logs, scripts) ──
-RewriteRule ^(?:database|config|scripts|logs)(?:/|$) - [F,L]
+# ─── Block sensitive directories (kode aplikasi, config, DB schema, logs) ──
+RewriteRule ^(?:core|controllers|views|database|config|scripts|logs)(?:/|$) - [F,L]
+RewriteRule ^(?:install|router|auto-push)\.php$ - [F,L]
 
 # ─── Favicon: serve SVG for /favicon.ico requests ──────────────
 RewriteCond %{REQUEST_URI} =/favicon.ico
@@ -24,10 +25,13 @@ RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
     Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
 </IfModule>
 
+# ─── No PHP execution in uploads ────────────────────────────────
+RewriteRule ^assets/uploads/.*\.(php|phtml|php3|php4|php5|php7|phar)(\.|$) - [F,L]
+
 # ─── Disable directory listing ─────────────────────────────────
 Options -Indexes
 
-# ─── Block access to sensitive dotfiles ────────────────────────
+# ─── Block access to sensitive dotfiles & .env ──────────────────
 <FilesMatch "^\.">
     Require all denied
 </FilesMatch>

@@ -12,7 +12,7 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
 
 <div class="page-top">
     <div class="breadcrumb">
-        <a href="/geprek-geh/orders">Pesanan Saya</a>
+        <a href="/orders">Pesanan Saya</a>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         <span><?= e($order['invoice_no']) ?></span>
     </div>
@@ -83,14 +83,14 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
                     <div class="order-item">
                         <div class="order-item-thumb">
                             <?php if ($item['image']): ?>
-                                <img src="/geprek-geh/assets/uploads/products/<?= e($item['image']) ?>" alt="<?= e($item['name']) ?>" loading="lazy">
+                                <img src="/assets/uploads/products/<?= e($item['image']) ?>" alt="<?= e($item['name']) ?>" loading="lazy">
                             <?php else: ?>
                                 <span class="order-item-placeholder"><?= product_art($item['name'], $item['category_name'] ?? '', '', 90) ?></span>
                             <?php endif; ?>
                             <span class="order-item-qty"><?= $item['quantity'] ?></span>
                         </div>
                         <div class="order-item-info">
-                            <a class="order-item-name" href="/geprek-geh/products/<?= e($item['slug']) ?>"><?= e($item['name']) ?></a>
+                            <a class="order-item-name" href="/products/<?= e($item['slug']) ?>"><?= e($item['name']) ?></a>
                             <span class="order-item-price"><?= rupiah($item['price']) ?> / porsi</span>
                         </div>
                         <span class="order-item-total"><?= rupiah($item['price'] * $item['quantity']) ?></span>
@@ -193,10 +193,10 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
                         <?php if ($order['payment_account_no']): ?><span class="proof-saved-item"><strong>No. Rekening:</strong> <?= e($order['payment_account_no']) ?></span><?php endif; ?>
                         <?php if ($order['payment_account_name']): ?><span class="proof-saved-item"><strong>Nama:</strong> <?= e($order['payment_account_name']) ?></span><?php endif; ?>
                     </div>
-                    <img src="/geprek-geh/assets/uploads/payments/<?= e($order['payment_proof']) ?>" alt="Bukti" class="proof-img">
+                    <img src="/assets/uploads/payments/<?= e($order['payment_proof']) ?>" alt="Bukti" class="proof-img">
                 <?php else: ?>
                     <p class="proof-hint">Lengkapi data pembayaran lalu unggah buktinya agar verifikasi lebih cepat.</p>
-                <form method="POST" action="/geprek-geh/orders/<?= $order['id'] ?>/upload-proof" enctype="multipart/form-data" class="proof-form">
+                <form method="POST" action="/orders/<?= $order['id'] ?>/upload-proof" enctype="multipart/form-data" class="proof-form">
                     <?= csrf_field() ?>
 
                     <div class="proof-fields-grid">
@@ -327,7 +327,7 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
         $is_done = in_array($order['status'], ['delivered', 'cancelled'], true);
     ?>
     <?php if ($can_cancel): ?>
-        <form method="POST" action="/geprek-geh/orders/<?= $order['id'] ?>/cancel" class="card order-cancel-box" data-cancel-form data-confirm-msg="Yakin ingin membatalkan pesanan ini?" novalidate>
+        <form method="POST" action="/orders/<?= $order['id'] ?>/cancel" class="card order-cancel-box" data-cancel-form data-confirm-msg="Yakin ingin membatalkan pesanan ini?" novalidate>
             <?= csrf_field() ?>
             <div class="cancel-reason-field">
                 <label class="cancel-reason-label" for="cancel-reason-<?= $order['id'] ?>">Alasan Pembatalan <span class="text-muted">* wajib</span></label>
@@ -342,7 +342,7 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
     <?php endif; ?>
 
     <?php if (!empty($can_receive)): ?>
-        <form method="POST" action="/geprek-geh/orders/<?= $order['id'] ?>/receive" data-confirm="Konfirmasi bahwa pesanan sudah sampai & siap dinikmati?">
+        <form method="POST" action="/orders/<?= $order['id'] ?>/receive" data-confirm="Konfirmasi bahwa pesanan sudah sampai & siap dinikmati?">
             <?= csrf_field() ?>
             <button type="submit" class="btn btn-primary btn-block">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
@@ -357,7 +357,7 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
     <?php endif; ?>
 
     <?php if ($order['status'] === 'delivered'): ?>
-        <form method="POST" action="/geprek-geh/orders/<?= $order['id'] ?>/reorder">
+        <form method="POST" action="/orders/<?= $order['id'] ?>/reorder">
             <?= csrf_field() ?>
             <button type="submit" class="btn btn-outline btn-block">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.64-6.36M3 3v6h6"/></svg>
@@ -369,9 +369,9 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
 </div>
 
 <div class="order-more">
-    <a href="/geprek-geh/products" class="btn btn-ghost">
+    <a href="/products" class="btn btn-ghost">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         Lanjut Belanja
     </a>
-    <a href="/geprek-geh/orders" class="btn btn-outline">Lihat Semua Pesanan</a>
+    <a href="/orders" class="btn btn-outline">Lihat Semua Pesanan</a>
 </div>

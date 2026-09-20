@@ -55,7 +55,7 @@ class StockController {
         $product = \ProductRepo::byId($id);
         if (!$product) {
             \flash_set('error', 'Produk tidak ditemukan.');
-            header('Location: /geprek-geh/admin/stock');
+            header('Location: /admin/stock');
             exit;
         }
 
@@ -74,7 +74,7 @@ class StockController {
         \Auth::requireStaff();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
-            header('Location: /geprek-geh/admin/stock');
+            header('Location: /admin/stock');
             exit;
         }
         $db = \Database::getInstance();
@@ -83,7 +83,7 @@ class StockController {
         $product = $db->fetchOne("SELECT * FROM products WHERE id = ?", [$id]);
         if (!$product) {
             \flash_set('error', 'Produk tidak ditemukan.');
-            header('Location: /geprek-geh/admin/stock');
+            header('Location: /admin/stock');
             exit;
         }
 
@@ -91,7 +91,7 @@ class StockController {
         $note = trim($_POST['note'] ?? '');
         if ($qty <= 0) {
             \flash_set('error', 'Jumlah stok harus lebih dari 0.');
-            header("Location: /geprek-geh/admin/stock/{$id}");
+            header("Location: /admin/stock/{$id}");
             exit;
         }
         if ($qty > 99999) $qty = 99999;
@@ -107,7 +107,7 @@ class StockController {
         ]);
 
         \flash_set('success', "Stok {$product['name']} ditambah {$qty}. Total sekarang: {$new_stock}.");
-        header("Location: /geprek-geh/admin/stock/{$id}");
+        header("Location: /admin/stock/{$id}");
         exit;
     }
 }

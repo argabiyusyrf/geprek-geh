@@ -26,14 +26,14 @@ class WishlistController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/wishlist');
+            redirect('/wishlist');
         }
         $db = Database::getInstance();
         $id = (int) $id;
         $product = $db->fetchOne("SELECT name FROM products WHERE id = ?", [$id]);
         if (!$product) {
             flash_set('error', 'Produk tidak ditemukan.');
-            redirect('/geprek-geh/products');
+            redirect('/products');
         }
         $exists = $db->fetchOne(
             "SELECT id FROM wishlists WHERE user_id = ? AND product_id = ?",
@@ -49,7 +49,7 @@ class WishlistController {
 
         // Kembali ke halaman asal (hanya path lokal, hindari open redirect).
         $back = trim((string) ($_SERVER['HTTP_REFERER'] ?? ''));
-        $path = ($back !== '' ? parse_url($back, PHP_URL_PATH) : '') ?: '/geprek-geh/products';
+        $path = ($back !== '' ? parse_url($back, PHP_URL_PATH) : '') ?: '/products';
         redirect($path);
     }
 }

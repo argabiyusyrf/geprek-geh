@@ -1,5 +1,5 @@
 <div class="breadcrumb">
-    <a href="/geprek-geh/admin">Dashboard</a>
+    <a href="/admin">Dashboard</a>
     <span>/</span>
     <span>Notifikasi ke Pelanggan</span>
 </div>
@@ -16,7 +16,7 @@
         <header class="order-card-head">
             <h3>Kirim Notifikasi</h3>
         </header>
-        <form method="POST" action="/geprek-geh/admin/notifications" class="notif-form">
+        <form method="POST" action="/admin/notifications" class="notif-form">
             <?= csrf_field() ?>
 
             <div class="form-group">

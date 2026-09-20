@@ -24,8 +24,8 @@ if ($per !== 15) $extra_q['per'] = $per;
 $clear_params = $extra_q;
 unset($clear_params['q']);
 if ($status !== '') $clear_params['status'] = $status;
-$search_clear_href = '/geprek-geh/admin/promos' . ($clear_params ? '?' . http_build_query($clear_params) : '');
-$reset_href = '/geprek-geh/admin/promos';
+$search_clear_href = '/admin/promos' . ($clear_params ? '?' . http_build_query($clear_params) : '');
+$reset_href = '/admin/promos';
 $page_window = [];
 if ($total_pages <= 7) {
     $page_window = range(1, $total_pages);
@@ -41,7 +41,7 @@ if ($total_pages <= 7) {
 $qp = $extra_q;
 if ($status !== '') $qp['status'] = $status;
 $page_href = function (int $p) use ($qp) {
-    return '/geprek-geh/admin/promos?' . http_build_query(['page' => $p] + $qp);
+    return '/admin/promos?' . http_build_query(['page' => $p] + $qp);
 };
 $days_left = fn($ts) => (int) ceil(($ts - $now) / 86400);
 $days_past = fn($ts) => (int) floor(($now - $ts) / 86400);
@@ -94,7 +94,7 @@ $days_past = fn($ts) => (int) floor(($now - $ts) / 86400);
 </div>
 
 <div class="menu-filters admin-orders-filters">
-    <form method="GET" action="/geprek-geh/admin/promos" class="menu-toolbar">
+    <form method="GET" action="/admin/promos" class="menu-toolbar">
         <div class="menu-filter-row">
 <?php if ($status !== ''): ?><input type="hidden" name="status" value="<?= e($status) ?>"><?php endif; ?>
             <?php if ($per !== 15): ?><input type="hidden" name="per" value="<?= e($per) ?>"><?php endif; ?>
@@ -137,7 +137,7 @@ $days_past = fn($ts) => (int) floor(($now - $ts) / 86400);
                     <?php foreach ($status_tabs as $key => [$label, $tone]):
                         $pill_params = $extra_q;
                         if ($key !== '') $pill_params['status'] = $key;
-                        $pill_href = '/geprek-geh/admin/promos' . ($pill_params ? '?' . http_build_query($pill_params) : '');
+                        $pill_href = '/admin/promos' . ($pill_params ? '?' . http_build_query($pill_params) : '');
                         $count = $kpis[$key === 'active' ? 'aktif' : ($key === 'upcoming' ? 'akan_tiba' : ($key === 'expired' ? 'berakhir' : ($key === 'inactive' ? 'nonaktif' : 'total')))];
                     ?>
                         <a href="<?= e($pill_href) ?>"
@@ -262,11 +262,11 @@ $days_past = fn($ts) => (int) floor(($now - $ts) / 86400);
                 <td>
                     <div class="table-actions">
                         <button type="button" class="btn btn-sm btn-outline" data-edit-promo='<?= $pJson ?>'>Edit</button>
-                        <form method="POST" action="/geprek-geh/admin/promos/<?= $p['id'] ?>/toggle" class="inline-form">
+                        <form method="POST" action="/admin/promos/<?= $p['id'] ?>/toggle" class="inline-form">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-ghost"><?= $state_key === 'active' ? 'Nonaktifkan' : 'Aktifkan' ?></button>
                         </form>
-                        <form method="POST" action="/geprek-geh/admin/promos/<?= $p['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus kode promo <?= e($p['code']) ?>?">
+                        <form method="POST" action="/admin/promos/<?= $p['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus kode promo <?= e($p['code']) ?>?">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
                         </form>
@@ -298,7 +298,7 @@ $days_past = fn($ts) => (int) floor(($now - $ts) / 86400);
             <?php endif; ?>
         </div>
     <?php endif; ?>
-    <form method="GET" action="/geprek-geh/admin/promos" class="menu-perpage">
+    <form method="GET" action="/admin/promos" class="menu-perpage">
         <?php if ($status !== ''): ?><input type="hidden" name="status" value="<?= e($status) ?>"><?php endif; ?>
         <?php if ($q !== ''): ?><input type="hidden" name="q" value="<?= e($q) ?>"><?php endif; ?>
         <?php if ($sort !== 'terbaru'): ?><input type="hidden" name="sort" value="<?= e($sort) ?>"><?php endif; ?>
@@ -324,7 +324,7 @@ $days_past = fn($ts) => (int) floor(($now - $ts) / 86400);
         </button>
     </div>
 
-    <form method="POST" action="/geprek-geh/admin/promos" class="drawer-body" id="promo-form" novalidate>
+    <form method="POST" action="/admin/promos" class="drawer-body" id="promo-form" novalidate>
         <?= csrf_field() ?>
 
         <div class="form-group">

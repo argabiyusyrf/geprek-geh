@@ -11,7 +11,7 @@
     <meta property="og:title" content="<?= e(($page_title ?? 'Geprek Geh') . ' — Geprek Geh') ?>">
     <meta property="og:description" content="<?= e($page_description ?? 'Ayam geprek renyah, sambal level sesuai seleramu, diantar hangat.') ?>">
     <meta property="og:type" content="<?= e($og_type ?? 'website') ?>">
-    <meta property="og:url" content="<?= e('http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/geprek-geh/')) ?>">
+    <meta property="og:url" content="<?= e('http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/')) ?>">
     <?php if (!empty($og_image)): ?>
         <meta property="og:image" content="<?= e($og_image) ?>">
     <?php endif; ?>
@@ -23,12 +23,12 @@
         <meta name="twitter:image" content="<?= e($og_image) ?>">
     <?php endif; ?>
 
-    <link rel="canonical" href="<?= e('http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/geprek-geh/')) ?>">
-    <link rel="icon" type="image/svg+xml" href="/geprek-geh/public/favicon.svg">
+    <link rel="canonical" href="<?= e('http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/')) ?>">
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="/geprek-geh/public/fonts/fonts.css">
-    <link rel="stylesheet" href="/geprek-geh/vendor/css/lenis.css">
-    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260913f">
+    <link rel="stylesheet" href="/public/fonts/fonts.css">
+    <link rel="stylesheet" href="/vendor/css/lenis.css">
+    <link rel="stylesheet" href="/public/css/style.css?v=20260913f">
 
     <?= SeoController::organizationJsonLd() ?>
     <?= $page_jsonld ?? '' ?>
@@ -38,13 +38,13 @@
 
 <nav class="island-nav">
     <div class="nav-pill">
-        <a href="/geprek-geh/" class="brand">
+        <a href="/" class="brand">
             <span class="brand-mark">G</span>
             <span class="brand-word">Geprek Geh</span>
         </a>
 
         <?php $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
-        <a href="/geprek-geh/products" class="nav-center-link <?= $uri === '/geprek-geh/products' || str_starts_with($uri, '/geprek-geh/products/') ? 'is-active' : '' ?>">Menu</a>
+        <a href="/products" class="nav-center-link <?= $uri === '/products' || str_starts_with($uri, '/products/') ? 'is-active' : '' ?>">Menu</a>
 
         <div class="nav-actions">
             <button type="button" class="cart-link cart-trigger icon-trigger" data-open-drawer aria-label="Keranjang">
@@ -52,7 +52,7 @@
                 <span class="notif-dot" data-cart-count="<?= CartController::count() ?>" <?= CartController::count() > 0 ? '' : 'style="display:none"' ?>><?= CartController::count() ?></span>
             </button>
             <?php if (Auth::check()): ?>
-                <a href="/geprek-geh/wishlist" class="cart-link icon-trigger wish-nav-link" aria-label="Daftar keinginan">
+                <a href="/wishlist" class="cart-link icon-trigger wish-nav-link" aria-label="Daftar keinginan">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
                     <?php $wish_count = count(wishlist_ids()); ?>
                     <span class="notif-dot" data-wish-count="<?= $wish_count ?>" <?= $wish_count > 0 ? '' : 'style="display:none"' ?>><?= $wish_count ?></span>
@@ -71,7 +71,7 @@
                         <div class="notif-panel-head">
                             <strong>Notifikasi</strong>
                             <?php if ($unread > 0): ?>
-                                <form method="POST" action="/geprek-geh/account/notifications/read-all" data-notif-readall>
+                                <form method="POST" action="/account/notifications/read-all" data-notif-readall>
                                     <?= csrf_field() ?>
                                     <button type="submit" class="notif-readall">Tandai semua dibaca</button>
                                 </form>
@@ -82,7 +82,7 @@
                                 <div class="notif-empty">Belum ada notifikasi.</div>
                             <?php else: ?>
                                 <?php foreach ($notifs as $n): ?>
-                                <a href="<?= e($n['link'] ?? '/geprek-geh/account') ?>" class="notif-item<?= $n['is_read'] ? '' : ' unread' ?>" data-read-url="<?= $n['is_read'] ? '' : '/geprek-geh/account/notifications/' . (int)$n['id'] . '/read' ?>">
+                                <a href="<?= e($n['link'] ?? '/account') ?>" class="notif-item<?= $n['is_read'] ? '' : ' unread' ?>" data-read-url="<?= $n['is_read'] ? '' : '/account/notifications/' . (int)$n['id'] . '/read' ?>">
                                     <span class="notif-pip"></span>
                                     <span class="notif-body">
                                         <span class="notif-title"><?= e($n['title']) ?></span>
@@ -94,7 +94,7 @@
                             <?php endif; ?>
                         </div>
                         <div class="notif-foot">
-                            <a href="/geprek-geh/account/notifications" class="notif-seeall">Lihat Semua Notifikasi</a>
+                            <a href="/account/notifications" class="notif-seeall">Lihat Semua Notifikasi</a>
                         </div>
                     </div>
                 </div>
@@ -109,22 +109,22 @@
                             <strong><?= e($_SESSION['user_name']) ?></strong>
                             <span><?= e($_SESSION['user_email'] ?? '') ?></span>
                         </div>
-                        <a href="/geprek-geh/account" role="menuitem">
+                        <a href="/account" role="menuitem">
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             Profil Saya
                         </a>
-                        <a href="/geprek-geh/orders" role="menuitem">
+                        <a href="/orders" role="menuitem">
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
                             Pesanan Saya
                         </a>
                         <?php if (Auth::admin()): ?>
-                            <a href="/geprek-geh/admin" role="menuitem">
+                            <a href="/admin" role="menuitem">
                                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
                                 Admin Panel
                             </a>
                         <?php endif; ?>
                         <div class="account-menu-sep"></div>
-                        <form method="POST" action="/geprek-geh/auth/logout">
+                        <form method="POST" action="/auth/logout">
                             <?= csrf_field() ?>
                             <button type="submit" role="menuitem" class="danger overlay-link-btn">
                                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
@@ -135,8 +135,8 @@
                 </div>
             <?php endif; ?>
             <?php if (!Auth::check()): ?>
-                <a href="/geprek-geh/auth/login" class="btn btn-sm btn-ghost">Masuk</a>
-                <a href="/geprek-geh/auth/register" class="btn btn-sm btn-primary">Daftar</a>
+                <a href="/auth/login" class="btn btn-sm btn-ghost">Masuk</a>
+                <a href="/auth/register" class="btn btn-sm btn-primary">Daftar</a>
             <?php endif; ?>
             <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
                 <span></span><span></span>
@@ -155,22 +155,22 @@
         </div>
         <nav class="overlay-links" role="navigation">
             <?php $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
-            <a class="overlay-link <?= $uri === '/geprek-geh/products' || str_starts_with($uri, '/geprek-geh/products/') ? 'is-active' : '' ?>" href="/geprek-geh/products"><small>01</small> Menu</a>
-            <a class="overlay-link cart-link" href="/geprek-geh/cart"><small>02</small> Keranjang<span class="cart-count" data-cart-count="<?= CartController::count() ?>"><?= CartController::count() ?></span></a>
+            <a class="overlay-link <?= $uri === '/products' || str_starts_with($uri, '/products/') ? 'is-active' : '' ?>" href="/products"><small>01</small> Menu</a>
+            <a class="overlay-link cart-link" href="/cart"><small>02</small> Keranjang<span class="cart-count" data-cart-count="<?= CartController::count() ?>"><?= CartController::count() ?></span></a>
             <?php if (!Auth::check()): ?>
-                <a class="overlay-link <?= $uri === '/geprek-geh/auth/login' ? 'is-active' : '' ?>" href="/geprek-geh/auth/login"><small>03</small> Masuk</a>
-                <a class="overlay-link <?= $uri === '/geprek-geh/auth/register' ? 'is-active' : '' ?>" href="/geprek-geh/auth/register"><small>04</small> Daftar</a>
+                <a class="overlay-link <?= $uri === '/auth/login' ? 'is-active' : '' ?>" href="/auth/login"><small>03</small> Masuk</a>
+                <a class="overlay-link <?= $uri === '/auth/register' ? 'is-active' : '' ?>" href="/auth/register"><small>04</small> Daftar</a>
             <?php else: ?>
-                <a class="overlay-link <?= $uri === '/geprek-geh/account' ? 'is-active' : '' ?>" href="/geprek-geh/account"><small>03</small> Profil Saya</a>
-                <a class="overlay-link <?= $uri === '/geprek-geh/wishlist' ? 'is-active' : '' ?>" href="/geprek-geh/wishlist"><small class="ov-num">04</small> Daftar Keinginan<span class="cart-count" data-wish-count><?= count(wishlist_ids()) ?></span></a>
-                <a class="overlay-link <?= $uri === '/geprek-geh/orders' || str_starts_with($uri, '/geprek-geh/orders/') ? 'is-active' : '' ?>" href="/geprek-geh/orders"><small>05</small> Pesanan Saya</a>
+                <a class="overlay-link <?= $uri === '/account' ? 'is-active' : '' ?>" href="/account"><small>03</small> Profil Saya</a>
+                <a class="overlay-link <?= $uri === '/wishlist' ? 'is-active' : '' ?>" href="/wishlist"><small class="ov-num">04</small> Daftar Keinginan<span class="cart-count" data-wish-count><?= count(wishlist_ids()) ?></span></a>
+                <a class="overlay-link <?= $uri === '/orders' || str_starts_with($uri, '/orders/') ? 'is-active' : '' ?>" href="/orders"><small>05</small> Pesanan Saya</a>
                 <?php if (Auth::admin()): ?>
-                    <a class="overlay-link" href="/geprek-geh/admin"><small class="ov-num">06</small> Admin Panel</a>
+                    <a class="overlay-link" href="/admin"><small class="ov-num">06</small> Admin Panel</a>
                 <?php endif; ?>
             <?php endif; ?>
         </nav>
         <div class="overlay-cta">
-            <a href="/geprek-geh/products" class="btn btn-primary">Pesan Sekarang
+            <a href="/products" class="btn btn-primary">Pesan Sekarang
                 <span class="btn-icon">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
                 </span>

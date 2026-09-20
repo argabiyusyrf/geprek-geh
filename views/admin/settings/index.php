@@ -9,7 +9,7 @@ $val = fn($k) => e($settings[$k] ?? '');
     </div>
 </div>
 
-<form method="POST" action="/geprek-geh/admin/settings" class="settings-form">
+<form method="POST" action="/admin/settings" class="settings-form">
     <?= csrf_field() ?>
 
     <div class="card order-card settings-section">
@@ -57,7 +57,7 @@ $val = fn($k) => e($settings[$k] ?? '');
             <h3>Metode Pembayaran</h3>
         </header>
         <div class="settings-pay-info">
-            <p>Rekening bank dan e-wallet dikelola dari halaman <a href="/geprek-geh/admin/payments"><strong>Metode Pembayaran</strong></a>. Tambahkan, ubah, atau nonaktifkan metode di sana — perubahan langsung berlaku di halaman checkout.</p>
+            <p>Rekening bank dan e-wallet dikelola dari halaman <a href="/admin/payments"><strong>Metode Pembayaran</strong></a>. Tambahkan, ubah, atau nonaktifkan metode di sana — perubahan langsung berlaku di halaman checkout.</p>
         </div>
     </div>
 

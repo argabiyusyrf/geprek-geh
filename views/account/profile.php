@@ -21,7 +21,7 @@
 <!-- ============ PILL TABS ============ -->
 <div class="account-tabs" data-reveal>
     <?php foreach ($tabs as $key => [$label, $icon]): ?>
-        <a href="/geprek-geh/account?tab=<?= $key ?>" class="account-tab <?= $tab === $key ? 'is-active' : '' ?>">
+        <a href="/account?tab=<?= $key ?>" class="account-tab <?= $tab === $key ? 'is-active' : '' ?>">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><?= $icon ?></svg>
             <?= $label ?>
         </a>
@@ -75,20 +75,20 @@
         <section class="card account-card account-card--full" data-reveal>
             <div class="account-card-head">
                 <h3>Pesanan Terakhir</h3>
-                <a href="/geprek-geh/orders" class="btn btn-ghost btn-sm">Lihat Semua
+                <a href="/orders" class="btn btn-ghost btn-sm">Lihat Semua
                     <span class="btn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
                 </a>
             </div>
             <?php if (empty($recent_orders)): ?>
                 <div class="account-empty">
                     <p>Belum ada pesanan. Yuk mulai belanja menu favoritmu.</p>
-                    <a href="/geprek-geh/products" class="btn btn-primary btn-sm">Mulai Belanja</a>
+                    <a href="/products" class="btn btn-primary btn-sm">Mulai Belanja</a>
                 </div>
             <?php else: ?>
                 <?php $o = $recent_orders[0];
                     [$status_label, $badge_class] = format_status($o['status']);
                 ?>
-                <a href="/geprek-geh/orders/<?= $o['id'] ?>" class="account-order-single">
+                <a href="/orders/<?= $o['id'] ?>" class="account-order-single">
                     <span class="invoice"><?= e($o['invoice_no']) ?></span>
                     <span class="order-date"><?= date('d M Y, H:i', strtotime($o['created_at'])) ?></span>
                     <span class="badge <?= $badge_class ?>"><?= $status_label ?></span>
@@ -104,11 +104,11 @@
                 <p class="address-full"><?= e($default_addr['address']) ?></p>
                 <?php $region = array_filter([$default_addr['village'], $default_addr['district'], $default_addr['city'], $default_addr['province']], fn($v) => !empty($v)); ?>
                 <?php if ($region): ?><p class="address-region"><?= e(implode(', ', $region)) ?></p><?php endif; ?>
-                <p class="address-link"><a href="/geprek-geh/account?tab=addresses">Kelola alamat</a></p>
+                <p class="address-link"><a href="/account?tab=addresses">Kelola alamat</a></p>
             <?php else: ?>
                 <div class="account-empty account-empty--compact">
                     <p>Belum ada alamat tersimpan.</p>
-                    <a href="/geprek-geh/account?tab=addresses" class="btn btn-primary btn-sm">Tambah Alamat</a>
+                    <a href="/account?tab=addresses" class="btn btn-primary btn-sm">Tambah Alamat</a>
                 </div>
             <?php endif; ?>
         </section>
@@ -116,7 +116,7 @@
 
     <div class="overview-shortcuts">
         <?php foreach ($shortcuts as $key => [$label, $icon]): ?>
-            <a href="/geprek-geh/account?tab=<?= $key ?>" class="sc-card" data-reveal>
+            <a href="/account?tab=<?= $key ?>" class="sc-card" data-reveal>
                 <span class="sc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><?= $icon ?></svg></span>
                 <span class="sc-label"><?= $label ?></span>
                 <svg class="sc-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -138,7 +138,7 @@
         <section class="card account-card" data-reveal>
             <h3>Biodata</h3>
             <p class="account-lead">Perbarui informasi kontak yang dipakai untuk pesanan.</p>
-            <form method="POST" action="/geprek-geh/account">
+            <form method="POST" action="/account">
                 <?= csrf_field() ?>
                 <div class="form-group">
                     <label for="pf-name">Nama Lengkap</label>
@@ -177,15 +177,15 @@
                 </div>
 
                 <nav class="profile-quick">
-                    <a href="/geprek-geh/account?tab=security">
+                    <a href="/account?tab=security">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                         Keamanan & Password
                     </a>
-                    <a href="/geprek-geh/account?tab=addresses">
+                    <a href="/account?tab=addresses">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
                         Kelola Alamat
                     </a>
-                    <a href="/geprek-geh/orders">
+                    <a href="/orders">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V7a3 3 0 0 1 6 0v4"/><path d="M4 9h16l1 11H3L4 9z"/></svg>
                         Pesanan Saya
                     </a>
@@ -210,7 +210,7 @@
             <h3>Ubah Password</h3>
             <p class="account-lead">Ganti password secara berkala untuk melindungi akunmu.</p>
             <?php if (!empty($pwd_errors['general'])): ?><div class="alert alert-error"><?= e($pwd_errors['general']) ?></div><?php endif; ?>
-            <form method="POST" action="/geprek-geh/account/password">
+            <form method="POST" action="/account/password">
                 <?= csrf_field() ?>
                 <div class="form-group">
                     <label for="pf-curpass">Password Lama</label>
@@ -253,7 +253,7 @@
         <section class="card account-card" data-reveal>
             <h3>Ubah Email</h3>
             <p class="account-lead">Ganti alamat email untuk login dan menerima notifikasi. Konfirmasi dengan password aktif.</p>
-            <form method="POST" action="/geprek-geh/account/email">
+            <form method="POST" action="/account/email">
                 <?= csrf_field() ?>
                 <div class="form-group">
                     <label for="pf-newemail">Email Baru</label>
@@ -288,7 +288,7 @@
             </div>
 
             <?php if (!empty($kw_errors['general'])): ?><div class="alert alert-error"><?= e($kw_errors['general']) ?></div><?php endif; ?>
-            <form method="POST" action="/geprek-geh/account/keyword">
+            <form method="POST" action="/account/keyword">
                 <?= csrf_field() ?>
                 <div class="form-group">
                     <label for="pf-keywd"><?= $keyword_set ? 'Kata Kunci Baru' : 'Kata Kunci Akun' ?></label>
@@ -347,14 +347,14 @@
             <?php if ($twofa_enabled): ?>
                 <p class="twofa-hint">2FA aktif untuk email <strong><?= e($user['email']) ?></strong>. Siapkan aplikasi authenticator (Google Authenticator, Authy, 1Password, dll) bila pindah perangkat.</p>
                 <div class="twofa-actions">
-                    <form method="POST" action="/geprek-geh/account/2fa/recovery" data-reveal>
+                    <form method="POST" action="/account/2fa/recovery" data-reveal>
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-ghost btn-block">Ganti Recovery Code</button>
                     </form>
                 </div>
                 <div class="twofa-disable">
                     <p class="twofa-hint">Nonaktifkan 2FA? Masukkan kode dari authenticator atau salah satu recovery code.</p>
-                    <form method="POST" action="/geprek-geh/account/2fa/disable"
+                    <form method="POST" action="/account/2fa/disable"
                           data-confirm="Nonaktifkan autentikasi 2 langkah? Keamanan akun akan berkurang.">
                         <?= csrf_field() ?>
                         <div class="form-group">
@@ -400,7 +400,7 @@
                     <span class="twofa-step-num">2</span>
                     <div>
                         <p>Masukkan kode 6 digit yang tampil di aplikasi untuk mengaktifkan.</p>
-                        <form method="POST" action="/geprek-geh/account/2fa/confirm">
+                        <form method="POST" action="/account/2fa/confirm">
                             <?= csrf_field() ?>
                             <div class="form-group">
                                 <label for="twofa-conf">Kode Verifikasi</label>
@@ -411,7 +411,7 @@
                             </div>
                             <div class="twofa-inline-actions">
                                 <button type="submit" class="btn btn-primary">Aktifkan 2FA</button>
-                                <button type="submit" formaction="/geprek-geh/account/2fa/cancel" formnovalidate class="btn btn-ghost">Batal</button>
+                                <button type="submit" formaction="/account/2fa/cancel" formnovalidate class="btn btn-ghost">Batal</button>
                             </div>
                         </form>
                     </div>
@@ -419,7 +419,7 @@
 
             <?php else: ?>
                 <p class="twofa-hint">Melindungi akun dengan kode berubah-ubah dari aplikasi authenticator. Tanpa 2FA, siapa pun yang tahu password bisa masuk ke akunmu.</p>
-                <form method="POST" action="/geprek-geh/account/2fa/setup">
+                <form method="POST" action="/account/2fa/setup">
                     <?= csrf_field() ?>
                     <button type="submit" class="btn btn-primary btn-block">Aktifkan 2FA</button>
                 </form>
@@ -496,12 +496,12 @@
                         </div>
                         <div class="address-card-foot">
                             <?php if ((int) $ad['is_default'] !== 1): ?>
-                                <form method="POST" action="/geprek-geh/account/addresses/<?= $ad['id'] ?>/set-default" class="address-inline-form">
+                                <form method="POST" action="/account/addresses/<?= $ad['id'] ?>/set-default" class="address-inline-form">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="address-link">Set Utama</button>
                                 </form>
                             <?php endif; ?>
-                            <form method="POST" action="/geprek-geh/account/addresses/<?= $ad['id'] ?>/delete" class="address-inline-form"
+                            <form method="POST" action="/account/addresses/<?= $ad['id'] ?>/delete" class="address-inline-form"
                                   data-confirm="Hapus alamat ini?">
                                 <?= csrf_field() ?>
                                 <button type="submit" class="address-link address-link--danger">Hapus</button>
@@ -530,7 +530,7 @@
                 return $def;
             };
             $fdef = $edit_addr ? (int) $edit_addr['is_default'] : 0;
-            $drawerAction = $edit_addr ? '/geprek-geh/account/addresses/' . $edit_addr['id'] : '/geprek-geh/account/addresses';
+            $drawerAction = $edit_addr ? '/account/addresses/' . $edit_addr['id'] : '/account/addresses';
         ?>
 
         <form method="POST" action="<?= $drawerAction ?>" class="drawer-body" id="address-form" data-lenis-prevent>
@@ -651,7 +651,7 @@
                             </div>
                         </div>
                         <?php if (!$s['is_current']): ?>
-                            <form method="POST" action="/geprek-geh/account/sessions/<?= $s['id'] ?>/revoke" class="session-revoke">
+                            <form method="POST" action="/account/sessions/<?= $s['id'] ?>/revoke" class="session-revoke">
                                 <?= csrf_field() ?>
                                 <button type="submit" class="btn btn-ghost btn-sm" data-confirm="Revoke sesi ini? Perangkat akan logout.">Logout</button>
                             </form>
@@ -662,7 +662,7 @@
 
             <?php if (count($sessions) > 1): ?>
                 <div class="session-footer">
-                    <form method="POST" action="/geprek-geh/account/sessions/revoke-all"
+                    <form method="POST" action="/account/sessions/revoke-all"
                           data-confirm="Logout semua perangkat lain? Hanya sesi ini yang tetap aktif.">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-danger btn-sm">Logout Semua Perangkat Lain</button>
@@ -699,7 +699,7 @@
                     <b>Notifikasi Email</b>
                     <span><?= (int) ($user['notify_email'] ?? 0) === 1 ? 'Aktif' : 'Nonaktif' ?></span>
                 </div>
-<form method="POST" action="/geprek-geh/account/notifications/toggle" class="settings-toggle-form">
+<form method="POST" action="/account/notifications/toggle" class="settings-toggle-form">
                         <?= csrf_field() ?>
                         <label class="switch">
                             <input type="submit" class="switch-input" style="display:none">
@@ -715,14 +715,14 @@
                     <b>Autentikasi 2 Langkah</b>
                     <span><?= (int) ($user['totp_enabled'] ?? 0) === 1 ? 'Aktif' : 'Nonaktif' ?></span>
                 </div>
-                <a href="/geprek-geh/account?tab=security" class="btn btn-ghost btn-sm">Kelola</a>
+                <a href="/account?tab=security" class="btn btn-ghost btn-sm">Kelola</a>
             </div>
             <div class="settings-item settings-item--danger">
                 <div class="settings-item-info">
                     <b>Hapus Akun</b>
                     <span class="text-muted">Non-aktifkan akun dan hapus semua data pribadi.</span>
                 </div>
-                <form method="POST" action="/geprek-geh/account/delete" class="inline-form" data-confirm="Yakin ingin menghapus akun? Semua data pesanan dan alamat akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.">
+                <form method="POST" action="/account/delete" class="inline-form" data-confirm="Yakin ingin menghapus akun? Semua data pesanan dan alamat akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.">
                     <?= csrf_field() ?>
                     <button type="submit" class="btn btn-danger btn-sm">Hapus Akun</button>
                 </form>

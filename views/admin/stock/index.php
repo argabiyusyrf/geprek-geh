@@ -4,7 +4,7 @@ $q = $q ?? '';
 ?>
 
 <div class="breadcrumb">
-    <a href="/geprek-geh/admin">Dashboard</a>
+    <a href="/admin">Dashboard</a>
     <span>/</span>
     <span>Manajemen Stok</span>
 </div>
@@ -48,14 +48,14 @@ $q = $q ?? '';
 </div>
 
 <div class="menu-filters admin-orders-filters">
-    <form method="GET" action="/geprek-geh/admin/stock" class="menu-toolbar">
+    <form method="GET" action="/admin/stock" class="menu-toolbar">
         <div class="menu-filter-row">
             <div class="menu-toolbar-top">
                 <div class="menu-search">
                     <svg class="menu-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
                     <input type="search" name="q" placeholder="Cari produk…" value="<?= e($q) ?>" class="menu-search-input" autocomplete="off" aria-label="Cari produk">
                     <?php if ($q !== ''): ?>
-                        <a href="/geprek-geh/admin/stock" class="menu-search-clear" aria-label="Bersihkan pencarian">&times;</a>
+                        <a href="/admin/stock" class="menu-search-clear" aria-label="Bersihkan pencarian">&times;</a>
                     <?php endif; ?>
                 </div>
                 <span class="menu-sort">
@@ -132,7 +132,7 @@ $q = $q ?? '';
                     </td>
                     <td>
                         <div class="table-actions">
-                            <a href="/geprek-geh/admin/stock/<?= $p['id'] ?>" class="btn btn-sm btn-outline">Detail &amp; Tambah Stok</a>
+                            <a href="/admin/stock/<?= $p['id'] ?>" class="btn btn-sm btn-outline">Detail &amp; Tambah Stok</a>
                         </div>
                     </td>
                 </tr>
@@ -147,13 +147,13 @@ $q = $q ?? '';
     <?php if ($total_pages > 1): ?>
         <div class="menu-pagination-pages">
             <?php if ($page > 1): ?>
-                <a href="/geprek-geh/admin/stock?page=<?= $page - 1 ?>&sort=<?= e($sort) ?><?= $q !== '' ? '&q=' . e(urlencode($q)) : '' ?>" class="menu-page-btn">&laquo;</a>
+                <a href="/admin/stock?page=<?= $page - 1 ?>&sort=<?= e($sort) ?><?= $q !== '' ? '&q=' . e(urlencode($q)) : '' ?>" class="menu-page-btn">&laquo;</a>
             <?php endif; ?>
             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <a href="/geprek-geh/admin/stock?page=<?= $i ?>&sort=<?= e($sort) ?><?= $q !== '' ? '&q=' . e(urlencode($q)) : '' ?>" class="menu-page-btn <?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
+                <a href="/admin/stock?page=<?= $i ?>&sort=<?= e($sort) ?><?= $q !== '' ? '&q=' . e(urlencode($q)) : '' ?>" class="menu-page-btn <?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
             <?php endfor; ?>
             <?php if ($page < $total_pages): ?>
-                <a href="/geprek-geh/admin/stock?page=<?= $page + 1 ?>&sort=<?= e($sort) ?><?= $q !== '' ? '&q=' . e(urlencode($q)) : '' ?>" class="menu-page-btn">&raquo;</a>
+                <a href="/admin/stock?page=<?= $page + 1 ?>&sort=<?= e($sort) ?><?= $q !== '' ? '&q=' . e(urlencode($q)) : '' ?>" class="menu-page-btn">&raquo;</a>
             <?php endif; ?>
         </div>
     <?php endif; ?>

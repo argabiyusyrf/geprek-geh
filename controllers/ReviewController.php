@@ -4,7 +4,7 @@ class ReviewController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/products');
+            redirect('/products');
         }
 
         $product_id = (int)($_POST['product_id'] ?? 0);
@@ -13,14 +13,14 @@ class ReviewController {
 
         if ($product_id < 1 || $rating < 1 || $rating > 5) {
             flash_set('error', 'Rating tidak valid.');
-            redirect('/geprek-geh/products');
+            redirect('/products');
         }
 
         $db = Database::getInstance();
         $product = $db->fetchOne("SELECT id, slug FROM products WHERE id = ? AND is_active = 1", [$product_id]);
         if (!$product) {
             flash_set('error', 'Produk tidak ditemukan.');
-            redirect('/geprek-geh/products');
+            redirect('/products');
         }
 
         $existing = $db->fetchOne(
@@ -37,7 +37,7 @@ class ReviewController {
             );
             if (!$has_delivered) {
                 flash_set('error', 'Hanya pembeli terverifikasi yang bisa memberi ulasan.');
-                redirect('/geprek-geh/products/' . $product['slug']);
+                redirect('/products/' . $product['slug']);
             }
         }
 
@@ -52,14 +52,14 @@ class ReviewController {
                 $fields['image'] = $photo;
             } elseif ($photo === false) {
                 // upload gagal validasi → flash sudah terisi
-                redirect('/geprek-geh/products/' . $product['slug']);
+                redirect('/products/' . $product['slug']);
             }
             $db->update('product_reviews', $fields, 'id = ?', [$existing['id']]);
             flash_set('success', 'Review berhasil diperbarui.');
         } else {
             $photo = $this->handlePhotoUpload();
             if ($photo === false) {
-                redirect('/geprek-geh/products/' . $product['slug']);
+                redirect('/products/' . $product['slug']);
             }
             $db->insert('product_reviews', [
                 'product_id' => $product_id,
@@ -71,7 +71,7 @@ class ReviewController {
             flash_set('success', 'Review berhasil ditambahkan. Terima kasih!');
         }
 
-        redirect('/geprek-geh/products/' . $product['slug']);
+        redirect('/products/' . $product['slug']);
     }
 
     /** Upload foto ulasan opsional. Return nama file, null tanpa file, atau false bila gagal validasi. */
@@ -107,7 +107,7 @@ class ReviewController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/products');
+            redirect('/products');
         }
 
         $db = Database::getInstance();
@@ -117,12 +117,12 @@ class ReviewController {
         );
         if (!$review) {
             flash_set('error', 'Review tidak ditemukan.');
-            redirect('/geprek-geh/products');
+            redirect('/products');
         }
 
         $this->deletePhotoFile($review['image'] ?? null);
         $db->delete('product_reviews', 'id = ?', [$id]);
         flash_set('success', 'Review berhasil dihapus.');
-        redirect('/geprek-geh/products/' . $review['slug']);
+        redirect('/products/' . $review['slug']);
     }
 }

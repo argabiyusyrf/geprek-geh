@@ -17,7 +17,7 @@
     <div class="err">
         <h1>500</h1>
         <p>Ups! Terjadi kesalahan tak terduga. Tim kami sudah diberi tahu.</p>
-        <a href="/geprek-geh/">Kembali ke Beranda</a>
+        <a href="/">Kembali ke Beranda</a>
     </div>
 </body>
 </html>

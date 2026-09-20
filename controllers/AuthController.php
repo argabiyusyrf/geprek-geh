@@ -1,7 +1,7 @@
 <?php
 class AuthController {
     public function loginForm() {
-        if (Auth::check()) redirect('/geprek-geh/');
+        if (Auth::check()) redirect('/');
         $login_old = $_SESSION['login_old'] ?? null;
         unset($_SESSION['login_old']);
         render('auth/login', get_defined_vars());
@@ -10,7 +10,7 @@ class AuthController {
     public function login() {
         if (!verify_csrf()) {
             flash_set('error', 'Sesi tidak valid, silakan coba lagi.');
-            header('Location: /geprek-geh/auth/login');
+            header('Location: /auth/login');
             exit;
         }
         $email    = strtolower(trim($_POST['email'] ?? ''));
@@ -20,14 +20,14 @@ class AuthController {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 190) {
             $_SESSION['login_old'] = ['email' => $email];
             flash_set('error', 'Format email tidak valid.');
-            header('Location: /geprek-geh/auth/login');
+            header('Location: /auth/login');
             exit;
         }
 
         if (!RateLimiter::attempt('login:' . $email, 5, 300)) {
             $_SESSION['login_old'] = ['email' => $email];
             flash_set('error', 'Terlalu banyak percobaan. Coba lagi dalam 5 menit.');
-            header('Location: /geprek-geh/auth/login');
+            header('Location: /auth/login');
             exit;
         }
 
@@ -35,14 +35,14 @@ class AuthController {
         if (!$user) {
             $_SESSION['login_old'] = ['email' => $email];
             flash_set('error', 'Email atau password salah.');
-            header('Location: /geprek-geh/auth/login');
+            header('Location: /auth/login');
             exit;
         }
 
         if ((int) ($user['is_blocked'] ?? 0) === 1) {
             $_SESSION['login_old'] = ['email' => $email];
             flash_set('error', 'Akun ini diblokir oleh admin. Hubungi admin untuk info lebih lanjut.');
-            header('Location: /geprek-geh/auth/login');
+            header('Location: /auth/login');
             exit;
         }
 
@@ -53,7 +53,7 @@ class AuthController {
             $_SESSION['twofa_role']     = $user['role'];
             $_SESSION['twofa_remember'] = $remember ? 1 : 0;
             flash_set('info', 'Masukkan kode verifikasi 2FA untuk melanjutkan.');
-            header('Location: /geprek-geh/auth/2fa');
+            header('Location: /auth/2fa');
             exit;
         }
 
@@ -61,19 +61,19 @@ class AuthController {
     }
 
     public function twoFactorForm() {
-        if (Auth::check()) redirect('/geprek-geh/');
-        if (empty($_SESSION['twofa_uid'])) redirect('/geprek-geh/auth/login');
+        if (Auth::check()) redirect('/');
+        if (empty($_SESSION['twofa_uid'])) redirect('/auth/login');
         $app = require __DIR__ . '/../config/app.php';
         $twofa_name = $_SESSION['twofa_name'] ?? '';
         render('auth/twofactor', get_defined_vars());
     }
 
     public function twoFactorSubmit() {
-        if (Auth::check()) redirect('/geprek-geh/');
-        if (empty($_SESSION['twofa_uid'])) redirect('/geprek-geh/auth/login');
+        if (Auth::check()) redirect('/');
+        if (empty($_SESSION['twofa_uid'])) redirect('/auth/login');
         if (!verify_csrf()) {
             flash_set('error', 'Sesi tidak valid, silakan coba lagi.');
-            header('Location: /geprek-geh/auth/2fa');
+            header('Location: /auth/2fa');
             exit;
         }
 
@@ -83,14 +83,14 @@ class AuthController {
         if (!$user || (int) $user['totp_enabled'] !== 1) {
             unset($_SESSION['twofa_uid'], $_SESSION['twofa_name'], $_SESSION['twofa_role']);
             flash_set('error', 'Sesi tidak valid, silakan login kembali.');
-            header('Location: /geprek-geh/auth/login');
+            header('Location: /auth/login');
             exit;
         }
 
         if ((int) ($user['is_blocked'] ?? 0) === 1) {
             unset($_SESSION['twofa_uid'], $_SESSION['twofa_name'], $_SESSION['twofa_role']);
             flash_set('error', 'Akun ini diblokir oleh admin. Hubungi admin untuk info lebih lanjut.');
-            header('Location: /geprek-geh/auth/login');
+            header('Location: /auth/login');
             exit;
         }
 
@@ -98,7 +98,7 @@ class AuthController {
 
         if (!RateLimiter::attempt('2fa:' . ($_SESSION['twofa_uid'] ?? 'x'), 5, 300)) {
             flash_set('error', 'Terlalu banyak percobaan 2FA. Coba lagi dalam 5 menit.');
-            header('Location: /geprek-geh/auth/2fa');
+            header('Location: /auth/2fa');
             exit;
         }
 
@@ -115,12 +115,12 @@ class AuthController {
         }
 
         flash_set('error', 'Kode 2FA salah atau sudah kedaluwarsa.');
-        header('Location: /geprek-geh/auth/2fa');
+        header('Location: /auth/2fa');
         exit;
     }
 
     public function registerForm() {
-        if (Auth::check()) redirect('/geprek-geh/');
+        if (Auth::check()) redirect('/');
         $reg_old = $_SESSION['reg_old'] ?? null;
         $reg_errors = $_SESSION['reg_errors'] ?? null;
         unset($_SESSION['reg_old'], $_SESSION['reg_errors']);
@@ -131,7 +131,7 @@ class AuthController {
         if (!verify_csrf()) {
             $_SESSION['login_old'] = ['email' => $_POST['email'] ?? '', 'name' => $_POST['name'] ?? ''];
             flash_set('error', 'Sesi tidak valid, silakan coba lagi.');
-            header('Location: /geprek-geh/auth/register');
+            header('Location: /auth/register');
             exit;
         }
         $name     = trim($_POST['name'] ?? '');
@@ -154,7 +154,7 @@ class AuthController {
         if ($fatal) {
             $_SESSION['reg_old'] = ['name' => $name, 'email' => $email, 'phone' => $phone, 'terms' => $terms === '1' ? '1' : ''];
             $_SESSION['reg_errors'] = $errors;
-            header('Location: /geprek-geh/auth/register');
+            header('Location: /auth/register');
             exit;
         }
 
@@ -193,18 +193,18 @@ class AuthController {
         if ($errors) {
             $_SESSION['reg_old']     = ['name' => $name, 'email' => $email, 'phone' => $phone, 'terms' => $terms === '1' ? '1' : ''];
             $_SESSION['reg_errors']  = $errors;
-            header('Location: /geprek-geh/auth/register');
+            header('Location: /auth/register');
             exit;
         }
 
         if (Auth::register($name, $email, $password, $phone)) {
             flash_set('success', 'Registrasi berhasil! Selamat datang, ' . $name . '!');
-            header('Location: /geprek-geh/account/setup');
+            header('Location: /account/setup');
         } else {
             $errors['email'] = 'Email sudah terdaftar. Gunakan email lain atau silakan login.';
             $_SESSION['reg_old']     = ['name' => $name, 'email' => $email, 'phone' => $phone, 'terms' => $terms === '1' ? '1' : ''];
             $_SESSION['reg_errors']  = $errors;
-            header('Location: /geprek-geh/auth/register');
+            header('Location: /auth/register');
         }
         exit;
     }

@@ -1,13 +1,18 @@
 # AGENTS.md
 
-Vanilla PHP 8.4 MVC e-commerce ("Geprek Geh"), served from `/var/www/html/geprek-geh`. No Composer, no npm, no build step, no tests.
+Vanilla PHP 8.4 MVC e-commerce ("Geprek Geh"), served from `/var/www/html`. No Composer, no npm, no build step, no tests.
 
 ## Setup & run
-- Install/seeds DB: `php install.php` (idempotent; recreates schema, re-seeds. On re-run clears only `cart/order_items/orders/products/categories`, not users). Production credentials are hardcoded in `install.php`. `install.php` refuses to run from a web request (CLI only).
-- DB config: `config/database.php` reads `GG_DB_*` env vars, falling back to a gitignored `.env` (see `.env.example`). Live local creds live ONLY in `.env`, never committed.
-- Schema: `database/schema.sql` is **STALE/incomplete** — see Gotchas. The live MySQL DB is the real source of truth.
-- Run: **nginx** (`/etc/nginx/sites-enabled/default`) serves app at base path `/geprek-geh` via PHP 8.4-FPM. The repo's `.htaccess` is **inert** here (Apache-only); all routing/security lives in the nginx vhost. Fallback for local dev: `php -S localhost:8080 router.php`.
-- Verify changes with `php -l file.php` + manual browse at `http://localhost/geprek-geh/` (Playwright browser available). No lint/test tooling exists.
+- Install/seeds DB: `php install.php` (idempotent; recreates schema, re-seeds). Mode seeder ada 2:
+  - `php install.php` — seed penuh (admin + 1 customer + kategori + produk + order contoh) untuk dev.
+  - `php install.php --empty` — **DB benar-benar kosong, HANYA 1 akun admin** (yang dipakai production). Nama/email/pass admin via env `GEPREK_ADMIN_NAME/EMAIL/PASS` (fallback `Admin Geprek Geh` / `admin@geprekgeh.com` / `AdminGeprek123`). `install.php` refuses web requests (CLI only).
+  - Skema tak lagi hardcode nama DB lokal: statement `CREATE DATABASE` / `USE` di `schema.sql` di-skip, koneksi langsung ke `$config['dbname']`.
+- Alternatif seed tanpa CLI (hosting shared): import `database/production.sql` (schema + hanya akun admin) via phpMyAdmin. **Jangan import `schema.sql` langsung** — baris `CREATE DATABASE geprek_geh; USE geprek_geh` salah di DB yang nama database-nya beda.
+- DB config: `config/database.php` reads `GG_DB_*` env vars, falling back to a gitignored `.env` (see `.env.example` + contoh production di bawah GEPREK lines). Live creds (lokal mau pun InfinityFree) live ONLY in `.env`, never committed.
+- Schema: `database/schema.sql` **synced** dengan live DB (19 tabel: addresses, notifications, order_logs, totp_secret/totp_enabled/totp_recovery, notify_email dsb). Dumping ulang dari live (`mysqldump -d`) setelah menambah tabel/kolom.
+- Run lokal: **nginx** (`/etc/nginx/sites-enabled/default`) serves app at base path `/` via PHP 8.4-FPM. `.htaccess` is **inert** locally (nginx) tapi **AKTIF & jadi garda utama di production** (InfinityFree = Apache/LiteSpeed). Fallback dev: `php -S localhost:8080 router.php`. Static passthrough untuk php -S ada di bootstrap (`$_zp`/`$_ze`) — dormant di Apache.
+- Production (InfinityFree `geprekgeh.page.gd`): deploy semua file via FTP ke webroot (`.htaccess` aktif), upload `.env` berisi `GG_DB_HOST=sql102.infinityfree.com`, `GG_DB_USER=if0_...`, `GG_DB_PASS`, `GG_DB_NAME=if0_..._geprekgeh`, lalu seed DB via `php install.php --empty` jika ada CLI/terminal hosting, atau import `database/production.sql` via phpMyAdmin hPanel.
+- Verify changes with `php -l file.php` + manual browse at `http://localhost/` (Playwright browser available). No lint/test tooling exists.
 - Sessions are hardened via `session_set_cookie_params` in `config/bootstrap.php` (httponly, SameSite=Lax). Don't remove; keep it before `session_start()`.
 
 ## Architecture
@@ -19,9 +24,9 @@ Vanilla PHP 8.4 MVC e-commerce ("Geprek Geh"), served from `/var/www/html/geprek
 - Every POST must render `csrf_field()` in the form and call `verify_csrf()` (or `AuthController` pattern) in the handler.
 
 ## Gotchas
-- **`database/schema.sql` is stale** — it predates the codebase and is missing `addresses`, `notifications`, `order_logs` tables and `users.notify_email` / `totp_secret` / `totp_enabled` / `totp_recovery` columns that controllers rely on. A fresh `php install.php` on an empty DB builds an app broken with missing-table/column SQL errors. The live MySQL DB is the source of truth — run `php install.php` (and read live `SHOW CREATE TABLE`) instead of trusting schema.sql. Do NOT add new app columns/tables without applying them to the live DB too (schema.sql alone won't provision them).
-- Base path `/geprek-geh` is hardcoded in `.htaccess`, `router.php`, `config/bootstrap.php`, and every view link/redirect (`Auth::logout`, `requireLogin`, etc.). Moving the app requires changing all of them.
-- **Perlindungan web aktif ada di nginx vhost (`/etc/nginx/sites-enabled/default`), BUKAN di `.htaccess`** — `.htaccess` di repo hanya untuk dokumentasi/fallback Apache (inert). Vhost memblokir `database/`, `config/`, `scripts/`, `logs/` (403), menolak eksekusi PHP di `assets/uploads/`, melarang dotfile, dan menyetel header keamanan (nosniff, X-Frame-Options, Referrer-Policy, Permissions-Policy, CSP). Bila menyentuh keamanan/perutean HTTP, edit vhost nginx + reload (`sudo nginx -t && sudo nginx -s reload`), lalu verifikasi dengan curl.
+- **`database/schema.sql` sudah sync 19 tabel dengan live DB** (addresses, notifications, order_logs, totp_secret/enabled/recovery, notify_email dsb — verified via fresh install & import). Tapi tetaplah `SHOW CREATE TABLE` dari live sebagai otoritas saat ragu, dan jangan ubah schema.sql tanpa menerapkannya ke live DB pula. Perhatikan `schema.sql` mengandung baris `CREATE DATABASE`/`USE` nama lokal — hanya cocok untuk CLI lokal, bukan import phpMyAdmin remote.
+- Base path `` is hardcoded in `.htaccess`, `router.php`, `config/bootstrap.php`, and every view link/redirect (`Auth::logout`, `requireLogin`, etc.). Moving the app requires changing all of them.
+- **Perlindungan web aktif ada di nginx vhost (`/etc/nginx/sites-enabled/default`), BUKAN di `.htaccess`** — `.htaccess` di repo hanya untuk dokumentasi/fallback Apache (inert). Vhost memblokir `database/`, `config/`, `scripts/`, `logs/` (403), menolak eksekusi PHP di `assets/uploads/`, melarang dotfile, dan menyetel header keamanan (nosniff, X-Frame-Options, Referrer-Policy, Permissions-Policy, CSP). Bila menyentuh keamanan/perutean HTTP, edit vhost nginx + reload (`sudo nginx -t && sudo nginx -s reload`), lalu verifikasi dengan curl. **Di production (InfinityFree) sebaliknya: `.htaccess` = garda utama** — sudah diperkuat untuk memblokir core/config/scripts/logs/install/router/auto-push + menolak eksekusi PHP di `assets/uploads/` + deny dotfile/.env. Jaga sinkron antara proteksi vhost nginx & `.htaccess`.
 - `auto-push.sh` runs every minute via cron: any file change is auto-committed (`auto: <timestamp>`) and pushed to `origin/main`. Do not manually `git add/commit/push` unless asked — your edits are version-controlled automatically. `logs/`, `assets/uploads/`, dan file `.playwright-mcp/` (artifact browser) harus dihapus sebelum bertumpuk. Saat ini cron auto-push **nonaktif** — commit manual bila ditanya.
 - Payment proof uploads live in `assets/uploads/` (gitignored).
 - Omit dotfiles php lint passes for `public/fonts/*.woff2` (binary, not PHP).

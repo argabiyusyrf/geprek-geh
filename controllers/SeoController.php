@@ -2,7 +2,7 @@
 class SeoController {
     public function sitemap() {
         $db = Database::getInstance();
-        $base = 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/geprek-geh';
+        $base = 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '';
 
         $urls = [];
         // Static routes
@@ -51,7 +51,7 @@ class SeoController {
     }
 
     public function robots() {
-        $base = 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/geprek-geh';
+        $base = 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '';
         header('Content-Type: text/plain; charset=utf-8');
         echo "User-agent: *\n";
         echo "Disallow: /admin\n";
@@ -68,7 +68,7 @@ class SeoController {
 
     /** Inject JSON-LD into product detail view. */
     public static function productJsonLd(array $product): string {
-        $base = 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/geprek-geh';
+        $base = 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '';
         $ld = [
             '@context'    => 'https://schema.org',
             '@type'       => 'Product',
@@ -90,7 +90,7 @@ class SeoController {
     }
 
     public static function organizationJsonLd(): string {
-        $base = 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/geprek-geh';
+        $base = 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '';
         $ld = [
             '@context'    => 'https://schema.org',
             '@type'       => 'Restaurant',

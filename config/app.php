@@ -5,7 +5,7 @@ if ($_app_cache !== null) return $_app_cache;
 $app = [
     'name'     => 'Geprek Geh',
     'tagline'  => 'Geprek Pedas Nikmat',
-    'url'      => '/geprek-geh',
+    'url'      => '',
     'currency' => 'Rp',
     'tax_rate' => 0.11,
     'shipping' => 5000,

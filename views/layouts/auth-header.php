@@ -11,7 +11,7 @@
     <meta property="og:title" content="<?= e(($page_title ?? 'Geprek Geh') . ' — Geprek Geh') ?>">
     <meta property="og:description" content="<?= e($page_description ?? 'Ayam geprek renyah, sambal level sesuai seleramu, diantar hangat.') ?>">
     <meta property="og:type" content="<?= e($og_type ?? 'website') ?>">
-    <meta property="og:url" content="<?= e('http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/geprek-geh/')) ?>">
+    <meta property="og:url" content="<?= e('http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/')) ?>">
     <?php if (!empty($og_image)): ?>
         <meta property="og:image" content="<?= e($og_image) ?>">
     <?php endif; ?>
@@ -23,12 +23,12 @@
         <meta name="twitter:image" content="<?= e($og_image) ?>">
     <?php endif; ?>
 
-    <link rel="canonical" href="<?= e('http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/geprek-geh/')) ?>">
-    <link rel="icon" type="image/svg+xml" href="/geprek-geh/public/favicon.svg">
+    <link rel="canonical" href="<?= e('http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/')) ?>">
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="/geprek-geh/public/fonts/fonts.css">
-    <link rel="stylesheet" href="/geprek-geh/vendor/css/lenis.css">
-    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260913f">
+    <link rel="stylesheet" href="/public/fonts/fonts.css">
+    <link rel="stylesheet" href="/vendor/css/lenis.css">
+    <link rel="stylesheet" href="/public/css/style.css?v=20260913f">
 
     <?= SeoController::organizationJsonLd() ?>
     <?= $page_jsonld ?? '' ?>

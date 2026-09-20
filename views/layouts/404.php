@@ -21,8 +21,8 @@
         <h1>404</h1>
         <p>Halaman yang kamu cari tidak ditemukan atau sudah dipindahkan.</p>
         <div class="err-links">
-            <a href="/geprek-geh/" class="primary">Beranda</a>
-            <a href="/geprek-geh/products" class="ghost">Lihat Menu</a>
+            <a href="/" class="primary">Beranda</a>
+            <a href="/products" class="ghost">Lihat Menu</a>
         </div>
     </div>
 </body>

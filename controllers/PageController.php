@@ -3,11 +3,11 @@
 class PageController {
 
     public function terms() {
-        $this->render('Syarat &amp; Ketentuan', 'Ketentuan penggunaan layanan Geprek Geh.', 'website', '/geprek-geh/pages/terms', 'views/pages/terms.php');
+        $this->render('Syarat &amp; Ketentuan', 'Ketentuan penggunaan layanan Geprek Geh.', 'website', '/pages/terms', 'views/pages/terms.php');
     }
 
     public function privacy() {
-        $this->render('Kebijakan Privasi', 'Bagaimana Geprek Geh mengelola dan melindungi data pribadimu.', 'website', '/geprek-geh/pages/privacy', 'views/pages/privacy.php');
+        $this->render('Kebijakan Privasi', 'Bagaimana Geprek Geh mengelola dan melindungi data pribadimu.', 'website', '/pages/privacy', 'views/pages/privacy.php');
     }
 
     private function render($title, $description, $ogType, $url, $view) {

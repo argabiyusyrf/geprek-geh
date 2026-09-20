@@ -4,92 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin — Geprek Geh</title>
-    <link rel="icon" type="image/svg+xml" href="/geprek-geh/public/favicon.svg">
-    <link rel="stylesheet" href="/geprek-geh/public/fonts/fonts.css">
-    <link rel="stylesheet" href="/geprek-geh/vendor/css/lenis.css">
-    <link rel="stylesheet" href="/geprek-geh/public/css/style.css?v=20260913f">
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg">
+    <link rel="stylesheet" href="/public/fonts/fonts.css">
+    <link rel="stylesheet" href="/vendor/css/lenis.css">
+    <link rel="stylesheet" href="/public/css/style.css?v=20260913f">
     <script>document.documentElement.classList.add('js');</script>
 </head>
 <body class="admin-body">
 
 <aside class="sidebar">
     <div class="sidebar-header">
-        <a href="/geprek-geh/admin" class="brand">
+        <a href="/admin" class="brand">
             <span class="brand-mark">G</span>
             <span class="brand-word">Geprek Geh</span>
             <?php if (!Auth::admin()): ?><span class="staff-badge">Staff</span><?php endif; ?>
         </a>
     </div>
     <nav class="sidebar-nav">
-        <a href="/geprek-geh/admin" class="<?= basename($_SERVER['REQUEST_URI']) === 'admin' ? 'active' : '' ?>">
+        <a href="/admin" class="<?= basename($_SERVER['REQUEST_URI']) === 'admin' ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
             Dashboard
         </a>
 
         <span class="nav-label">Katalog</span>
-        <a href="/geprek-geh/admin/products" class="<?= strpos($_SERVER['REQUEST_URI'], 'products') !== false ? 'active' : '' ?>">
+        <a href="/admin/products" class="<?= strpos($_SERVER['REQUEST_URI'], 'products') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
             Produk
         </a>
-        <a href="/geprek-geh/admin/categories" class="<?= strpos($_SERVER['REQUEST_URI'], 'categories') !== false ? 'active' : '' ?>">
+        <a href="/admin/categories" class="<?= strpos($_SERVER['REQUEST_URI'], 'categories') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg>
             Kategori
         </a>
-        <a href="/geprek-geh/admin/stock" class="<?= strpos($_SERVER['REQUEST_URI'], 'stock') !== false ? 'active' : '' ?>">
+        <a href="/admin/stock" class="<?= strpos($_SERVER['REQUEST_URI'], 'stock') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg>
             Stok
         </a>
 
         <span class="nav-label">Transaksi</span>
-        <a href="/geprek-geh/admin/orders" class="<?= strpos($_SERVER['REQUEST_URI'], 'orders') !== false ? 'active' : '' ?>">
+        <a href="/admin/orders" class="<?= strpos($_SERVER['REQUEST_URI'], 'orders') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             Pesanan
         </a>
-        <a href="/geprek-geh/admin/promos" class="<?= strpos($_SERVER['REQUEST_URI'], 'promos') !== false ? 'active' : '' ?>">
+        <a href="/admin/promos" class="<?= strpos($_SERVER['REQUEST_URI'], 'promos') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
             Kode Promo
         </a>
-        <a href="/geprek-geh/admin/reports" class="<?= strpos($_SERVER['REQUEST_URI'], 'reports') !== false ? 'active' : '' ?>">
+        <a href="/admin/reports" class="<?= strpos($_SERVER['REQUEST_URI'], 'reports') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
             Laporan
         </a>
 
         <span class="nav-label">Komunitas</span>
-        <a href="/geprek-geh/admin/reviews" class="<?= strpos($_SERVER['REQUEST_URI'], 'reviews') !== false ? 'active' : '' ?>">
+        <a href="/admin/reviews" class="<?= strpos($_SERVER['REQUEST_URI'], 'reviews') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
             Ulasan
         </a>
-        <a href="/geprek-geh/admin/notifications" class="<?= strpos($_SERVER['REQUEST_URI'], 'notifications') !== false ? 'active' : '' ?>">
+        <a href="/admin/notifications" class="<?= strpos($_SERVER['REQUEST_URI'], 'notifications') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
             Notifikasi
         </a>
 
         <?php if (Auth::admin()): ?>
         <span class="nav-label">Sistem</span>
-        <a href="/geprek-geh/admin/payments" class="<?= strpos($_SERVER['REQUEST_URI'], 'payments') !== false ? 'active' : '' ?>">
+        <a href="/admin/payments" class="<?= strpos($_SERVER['REQUEST_URI'], 'payments') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
             Metode Bayar
         </a>
-        <a href="/geprek-geh/admin/users" class="<?= strpos($_SERVER['REQUEST_URI'], 'users') !== false ? 'active' : '' ?>">
+        <a href="/admin/users" class="<?= strpos($_SERVER['REQUEST_URI'], 'users') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             Pengguna
         </a>
-        <a href="/geprek-geh/admin/settings" class="<?= strpos($_SERVER['REQUEST_URI'], 'settings') !== false ? 'active' : '' ?>">
+        <a href="/admin/settings" class="<?= strpos($_SERVER['REQUEST_URI'], 'settings') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             Pengaturan
         </a>
-        <a href="/geprek-geh/admin/backup" class="<?= strpos($_SERVER['REQUEST_URI'], 'backup') !== false ? 'active' : '' ?>">
+        <a href="/admin/backup" class="<?= strpos($_SERVER['REQUEST_URI'], 'backup') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 1 10-10"/><path d="M22 12v7a3 3 0 0 1-3 3"/><path d="M16 16l6 3-6 3z"/></svg>
             Backup DB
         </a>
         <?php endif; ?>
 
         <hr>
-        <a href="/geprek-geh/" target="_blank">
+        <a href="/" target="_blank">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
             Lihat Website
         </a>
-        <form method="POST" action="/geprek-geh/auth/logout">
+        <form method="POST" action="/auth/logout">
             <?= csrf_field() ?>
             <button type="submit">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
@@ -100,24 +100,24 @@
 </aside>
 
 <nav class="admin-mobile-nav">
-    <a href="/geprek-geh/admin" class="<?= basename($_SERVER['REQUEST_URI']) === 'admin' ? 'active' : '' ?>">Dashboard</a>
+    <a href="/admin" class="<?= basename($_SERVER['REQUEST_URI']) === 'admin' ? 'active' : '' ?>">Dashboard</a>
     <span class="nav-label">Katalog</span>
-    <a href="/geprek-geh/admin/products" class="<?= strpos($_SERVER['REQUEST_URI'], 'products') !== false ? 'active' : '' ?>">Produk</a>
-    <a href="/geprek-geh/admin/categories" class="<?= strpos($_SERVER['REQUEST_URI'], 'categories') !== false ? 'active' : '' ?>">Kategori</a>
-    <a href="/geprek-geh/admin/stock" class="<?= strpos($_SERVER['REQUEST_URI'], 'stock') !== false ? 'active' : '' ?>">Stok</a>
+    <a href="/admin/products" class="<?= strpos($_SERVER['REQUEST_URI'], 'products') !== false ? 'active' : '' ?>">Produk</a>
+    <a href="/admin/categories" class="<?= strpos($_SERVER['REQUEST_URI'], 'categories') !== false ? 'active' : '' ?>">Kategori</a>
+    <a href="/admin/stock" class="<?= strpos($_SERVER['REQUEST_URI'], 'stock') !== false ? 'active' : '' ?>">Stok</a>
     <span class="nav-label">Transaksi</span>
-    <a href="/geprek-geh/admin/orders" class="<?= strpos($_SERVER['REQUEST_URI'], 'orders') !== false ? 'active' : '' ?>">Pesanan</a>
-    <a href="/geprek-geh/admin/promos" class="<?= strpos($_SERVER['REQUEST_URI'], 'promos') !== false ? 'active' : '' ?>">Promo</a>
-    <a href="/geprek-geh/admin/reports" class="<?= strpos($_SERVER['REQUEST_URI'], 'reports') !== false ? 'active' : '' ?>">Laporan</a>
+    <a href="/admin/orders" class="<?= strpos($_SERVER['REQUEST_URI'], 'orders') !== false ? 'active' : '' ?>">Pesanan</a>
+    <a href="/admin/promos" class="<?= strpos($_SERVER['REQUEST_URI'], 'promos') !== false ? 'active' : '' ?>">Promo</a>
+    <a href="/admin/reports" class="<?= strpos($_SERVER['REQUEST_URI'], 'reports') !== false ? 'active' : '' ?>">Laporan</a>
     <span class="nav-label">Komunitas</span>
-    <a href="/geprek-geh/admin/reviews" class="<?= strpos($_SERVER['REQUEST_URI'], 'reviews') !== false ? 'active' : '' ?>">Ulasan</a>
-    <a href="/geprek-geh/admin/notifications" class="<?= strpos($_SERVER['REQUEST_URI'], 'notifications') !== false ? 'active' : '' ?>">Notifikasi</a>
+    <a href="/admin/reviews" class="<?= strpos($_SERVER['REQUEST_URI'], 'reviews') !== false ? 'active' : '' ?>">Ulasan</a>
+    <a href="/admin/notifications" class="<?= strpos($_SERVER['REQUEST_URI'], 'notifications') !== false ? 'active' : '' ?>">Notifikasi</a>
     <?php if (Auth::admin()): ?>
     <span class="nav-label">Sistem</span>
-    <a href="/geprek-geh/admin/payments" class="<?= strpos($_SERVER['REQUEST_URI'], 'payments') !== false ? 'active' : '' ?>">Metode Bayar</a>
-    <a href="/geprek-geh/admin/users" class="<?= strpos($_SERVER['REQUEST_URI'], 'users') !== false ? 'active' : '' ?>">Pengguna</a>
-    <a href="/geprek-geh/admin/settings" class="<?= strpos($_SERVER['REQUEST_URI'], 'settings') !== false ? 'active' : '' ?>">Pengaturan</a>
-    <a href="/geprek-geh/admin/backup" class="<?= strpos($_SERVER['REQUEST_URI'], 'backup') !== false ? 'active' : '' ?>">Backup DB</a>
+    <a href="/admin/payments" class="<?= strpos($_SERVER['REQUEST_URI'], 'payments') !== false ? 'active' : '' ?>">Metode Bayar</a>
+    <a href="/admin/users" class="<?= strpos($_SERVER['REQUEST_URI'], 'users') !== false ? 'active' : '' ?>">Pengguna</a>
+    <a href="/admin/settings" class="<?= strpos($_SERVER['REQUEST_URI'], 'settings') !== false ? 'active' : '' ?>">Pengaturan</a>
+    <a href="/admin/backup" class="<?= strpos($_SERVER['REQUEST_URI'], 'backup') !== false ? 'active' : '' ?>">Backup DB</a>
     <?php endif; ?>
 </nav>
 
@@ -140,24 +140,24 @@
                         <strong>Akses Cepat</strong>
                         <span>Tindakan umum</span>
                     </div>
-                    <a href="/geprek-geh/admin/products/create" role="menuitem">
+                    <a href="/admin/products/create" role="menuitem">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
                         Tambah Produk
                     </a>
-                    <a href="/geprek-geh/admin/categories" role="menuitem">
+                    <a href="/admin/categories" role="menuitem">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg>
                         Kategori
                     </a>
-                    <a href="/geprek-geh/admin/orders" role="menuitem">
+                    <a href="/admin/orders" role="menuitem">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                         Daftar Pesanan
                     </a>
-                    <a href="/geprek-geh/admin/promos" role="menuitem">
+                    <a href="/admin/promos" role="menuitem">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
                         Kode Promo
                     </a>
                     <div class="account-menu-sep"></div>
-                    <a href="/geprek-geh/" role="menuitem" target="_blank">
+                    <a href="/" role="menuitem" target="_blank">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                         Lihat Website
                     </a>
@@ -181,7 +181,7 @@
                         <div class="notif-foot">Belum ada notifikasi.</div>
                     <?php else: ?>
                         <?php foreach ($adminNotifs as $n): ?>
-                        <a href="<?= e($n['link'] ?? '/geprek-geh/admin/orders') ?>" role="menuitem" class="notif-item<?= $n['is_read'] ? '' : ' admin-unread' ?>">
+                        <a href="<?= e($n['link'] ?? '/admin/orders') ?>" role="menuitem" class="notif-item<?= $n['is_read'] ? '' : ' admin-unread' ?>">
                             <span class="notif-pip <?= $n['type'] === 'payment' ? 'stock' : ($n['type'] === 'order' ? 'pending' : 'user') ?>"></span>
                             <span class="notif-body"><b><?= e($n['title']) ?></b><span><?= e($n['message'] ?? time_ago($n['created_at'])) ?></span></span>
                         </a>
@@ -190,7 +190,7 @@
                     <div class="account-menu-sep"></div>
                     <div class="notif-foot">
                         <?php if ($adminUnread > 0): ?>
-                            <form method="POST" action="/geprek-geh/account/notifications/read-all" class="notif-readall-form">
+                            <form method="POST" action="/account/notifications/read-all" class="notif-readall-form">
                                 <?= csrf_field() ?>
                                 <button type="submit" class="notif-readall">Tandai semua dibaca</button>
                             </form>
@@ -212,16 +212,16 @@
                         <strong><?= e($_SESSION['user_name']) ?></strong>
                         <span><?= e($_SESSION['user_email'] ?? '') ?></span>
                     </div>
-                    <a href="/geprek-geh/admin" role="menuitem">
+                    <a href="/admin" role="menuitem">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
                         Dashboard
                     </a>
-                    <a href="/geprek-geh/" role="menuitem" target="_blank">
+                    <a href="/" role="menuitem" target="_blank">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                         Lihat Website
                     </a>
                     <div class="account-menu-sep"></div>
-                    <form method="POST" action="/geprek-geh/auth/logout">
+                    <form method="POST" action="/auth/logout">
                         <?= csrf_field() ?>
                         <button type="submit" role="menuitem" class="danger overlay-link-btn">
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>

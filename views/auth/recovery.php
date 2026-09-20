@@ -4,7 +4,7 @@
     <div class="auth-shell">
         <div class="auth-brand">
             <div class="auth-brand-inner">
-                <a href="/geprek-geh/" class="brand auth-logo">
+                <a href="/" class="brand auth-logo">
                     <span class="brand-mark">G</span>
                     <span class="brand-word">Geprek Geh</span>
                 </a>
@@ -21,7 +21,7 @@
         </div>
 
         <div class="auth-panel">
-            <a href="/geprek-geh/auth/forgot" class="auth-back" aria-label="Kembali ke lupa password">
+            <a href="/auth/forgot" class="auth-back" aria-label="Kembali ke lupa password">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             </a>
             <div class="auth-card">
@@ -30,7 +30,7 @@
                     <h1>Atur <em>ulang</em></h1>
                     <p class="auth-sub">Bukti kata kunci sudah terverifikasi untuk <strong><?= e($rc_name ?? 'akunmu') ?></strong>. Buat password baru (minimal 6 karakter).</p>
 
-                    <form method="POST" action="/geprek-geh/auth/recovery" id="recoveryForm" novalidate>
+                    <form method="POST" action="/auth/recovery" id="recoveryForm" novalidate>
                         <?= csrf_field() ?>
 
                         <div class="form-group reg-field-icon">
@@ -70,7 +70,7 @@
                         </button>
                     </form>
 
-                    <p class="auth-link"><a href="/geprek-geh/auth/login">Kembali ke login</a></p>
+                    <p class="auth-link"><a href="/auth/login">Kembali ke login</a></p>
                 </div>
             </div>
         </div>

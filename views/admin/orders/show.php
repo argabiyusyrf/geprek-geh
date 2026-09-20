@@ -58,14 +58,14 @@ $weekly_remaining = max(0, 3 - $weekly_cancels);
 $weekly_out = $weekly_remaining <= 0;
 ?>
 
-<a href="/geprek-geh/admin/orders" class="back-link">
+<a href="/admin/orders" class="back-link">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     Kembali ke Pesanan
 </a>
 <div class="breadcrumb">
-    <a href="/geprek-geh/admin">Dashboard</a>
+    <a href="/admin">Dashboard</a>
     <span>/</span>
-    <a href="/geprek-geh/admin/orders">Pesanan</a>
+    <a href="/admin/orders">Pesanan</a>
     <span>/</span>
     <span><?= e($order['invoice_no']) ?></span>
 </div>
@@ -101,7 +101,7 @@ $weekly_out = $weekly_remaining <= 0;
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             Salin Rincian
         </button>
-        <a href="/geprek-geh/admin/orders/<?= $order['id'] ?>/print" target="_blank" rel="noopener" class="btn btn-sm btn-primary">
+        <a href="/admin/orders/<?= $order['id'] ?>/print" target="_blank" rel="noopener" class="btn btn-sm btn-primary">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
             Cetak
         </a>
@@ -208,7 +208,7 @@ $weekly_out = $weekly_remaining <= 0;
                 <div class="oitem">
                     <div class="oitem-thumb">
                         <?php if (!empty($item['image'])): ?>
-                            <img src="/geprek-geh/assets/uploads/products/<?= e($item['image']) ?>" alt="<?= e($item['name']) ?>" loading="lazy">
+                            <img src="/assets/uploads/products/<?= e($item['image']) ?>" alt="<?= e($item['name']) ?>" loading="lazy">
                         <?php else: ?>
                             <span class="oitem-ph"><?= e(mb_strtoupper(mb_substr($item['name'], 0, 1))) ?></span>
                         <?php endif; ?>
@@ -296,8 +296,8 @@ $weekly_out = $weekly_remaining <= 0;
             <?php if ($proof_exists): ?>
             <div class="proof-box">
                 <span class="meta-label">Bukti Pembayaran</span>
-                <a href="/geprek-geh/assets/uploads/payments/<?= e($order['payment_proof']) ?>" target="_blank" rel="noopener" class="proof-preview">
-                    <img src="/geprek-geh/assets/uploads/payments/<?= e($order['payment_proof']) ?>" alt="Bukti pembayaran" loading="lazy">
+                <a href="/assets/uploads/payments/<?= e($order['payment_proof']) ?>" target="_blank" rel="noopener" class="proof-preview">
+                    <img src="/assets/uploads/payments/<?= e($order['payment_proof']) ?>" alt="Bukti pembayaran" loading="lazy">
                     <span class="proof-zoom">Perbesar bukti</span>
                 </a>
             </div>
@@ -308,7 +308,7 @@ $weekly_out = $weekly_remaining <= 0;
             <?php endif; ?>
 
             <?php if ($can_verify): ?>
-            <form method="POST" action="/geprek-geh/admin/orders/<?= $order['id'] ?>/verify-payment" class="order-action" data-confirm="Tandai pembayaran pesanan ini LUNAS? Status akan otomatis lanjut ke &quot;Diproses&quot; bila masih menunggu.">
+            <form method="POST" action="/admin/orders/<?= $order['id'] ?>/verify-payment" class="order-action" data-confirm="Tandai pembayaran pesanan ini LUNAS? Status akan otomatis lanjut ke &quot;Diproses&quot; bila masih menunggu.">
                 <?= csrf_field() ?>
                 <button type="submit" class="btn btn-success">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
@@ -339,7 +339,7 @@ $weekly_out = $weekly_remaining <= 0;
                 $step_i = 0;
             ?>
             <p class="status-now">Saat ini <strong><?= $status_label ?></strong> — pilih langkah berikutnya. Langkah yang sudah terlewati <span class="text-muted">abu-abu &amp; nonaktif</span>.</p>
-            <form method="POST" action="/geprek-geh/admin/orders/<?= $order['id'] ?>/status" class="status-stepper-form" data-status-stepper>
+            <form method="POST" action="/admin/orders/<?= $order['id'] ?>/status" class="status-stepper-form" data-status-stepper>
                 <?= csrf_field() ?>
                 <div class="status-stepper">
                     <?php foreach ($steps as $key => $label):

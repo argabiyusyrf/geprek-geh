@@ -17,7 +17,7 @@ Toko online ayam geprek berbasis **PHP 8.4 MVC** murni (tanpa Composer, tanpa fr
 ├── index.php          # Entrypoint tunggal + registrasi semua route
 ├── install.php        # Installer & seeder database (idempotent)
 ├── router.php         # Router untuk php -S (meniru .htaccess)
-├── .htaccess          # Rewrite Apache (base path /geprek-geh)
+├── .htaccess          # Rewrite Apache (base path )
 ├── config/            # app.php (pengaturan), database.php (kredensial MySQL)
 ├── core/              # Router, Database, Auth, Totp, helpers
 ├── controllers/       # Kontroller (plain class); admin/ ber-namespace Admin\
@@ -29,13 +29,14 @@ Toko online ayam geprek berbasis **PHP 8.4 MVC** murni (tanpa Composer, tanpa fr
 ## Setup
 
 1. Salin `.env.example` → `.env`, isi kredensial MySQL (`GG_DB_HOST`, `GG_DB_NAME`, `GG_DB_USER`, `GG_DB_PASS`). File `.env` di-gitignore — jangan ikut tercommit.
-2. Jalankan installer (membuat schema + seed data):
+2. Jalankan installer — ada 2 mode:
 
    ```bash
-   php install.php
+   php install.php          # dev: schema + seed penuh (admin + customer + kategori + produk + order)
+   php install.php --empty  # production: DB benar-benar kosong, HANYA 1 akun admin
    ```
 
-   `install.php` bersifat idempotent — jalankan ulang kapan pun untuk reset data seed (hanya menghapus `cart/order_items/orders/products/categories`, akun pengguna tetap). Password admin/customer dipakai dari env `GEPREK_ADMIN_PASS` / `GEPREK_CUSTOMER_PASS` (bila kosong, digenerate acak) dan dicetak di output terminal.
+   `install.php` bersifat idempotent — jalankan ulang kapan pun untuk reset data. Nama/email/password admin dari env `GEPREK_ADMIN_NAME` / `GEPREK_ADMIN_EMAIL` / `GEPREK_ADMIN_PASS` (fallback `Admin Geprek Geh` / `admin@geprekgeh.com` / `AdminGeprek123`).
 
 3. Jalankan server:
 
@@ -44,12 +45,21 @@ Toko online ayam geprek berbasis **PHP 8.4 MVC** murni (tanpa Composer, tanpa fr
    php -S localhost:8080 router.php
 
    # Opsi B — Apache (docroot /var/www/html), buka:
-   #         http://localhost/geprek-geh/
+   #         http://localhost/
    ```
+
+## Deployment production (InfinityFree)
+
+1. Deploy semua file ke webroot via FTP (`.htaccess` aktif sebagai garda keamanan).
+2. Upload `.env` berisi `GG_DB_HOST=sql102.infinityfree.com`, `GG_DB_USER=if0_...`, `GG_DB_PASS=...`, `GG_DB_NAME=if0_..._geprekgeh` (lihat bagian "PRODUCTION" di `.env.example`).
+3. Seed DB — salah satu:
+   - Jika hosting menyediakan CLI/terminal: `php install.php --empty`
+   - Tanpa CLI: import `database/production.sql` (schema + hanya admin) via phpMyAdmin di hPanel. **Jangan import `schema.sql`** — baris `CREATE DATABASE/USE` menunjuk nama DB lokal.
+4. Result: DB production benar-benar kosong kecuali 1 akun admin.
 
 ## Akun seed
 
-Login admin & customer dibuat oleh `php install.php` — password dari env `GEPREK_ADMIN_PASS` / `GEPREK_CUSTOMER_PASS` atau digenerate acak (tercetak di terminal). Setelah login pertama, ganti password via menu akun.
+Login admin dibuat oleh `php install.php` — nama/email/password dari env `GEPREK_ADMIN_NAME` / `GEPREK_ADMIN_EMAIL` / `GEPREK_ADMIN_PASS` (fallback tercetak di terminal). Mode penuh juga membuat customer seed `argaabiyyu@email.com`. Setelah login pertama, ganti password via menu akun.
 
 ## Fitur
 
@@ -66,7 +76,7 @@ Semua route didaftarkan di `index.php` via `$router->get()/post()` — pola `{pa
 
 ## Catatan pengembangan
 
-- Base path `/geprek-geh` di-hardcode di `.htaccess`, `router.php`, `index.php`, dan setiap link/redirect — jangan digeser tanpa mengubah semuanya.
+- Base path `/` di-hardcode di `.htaccess`, `router.php`, `config/bootstrap.php`, dan setiap link/redirect — jangan digeser tanpa mengubah semuanya.
 - `auto-push.sh` (cron tiap menit) otomatis commit + push perubahan ke `origin/main` (`auto: <timestamp>`).
 - `logs/` dan `assets/uploads/` (bukti pembayaran) di-gitignore.
 

@@ -19,22 +19,22 @@ $cs = cart_summary();
             </span>
             <strong>Keranjang kosong</strong>
             <p>Yuk pilih menu favoritmu &amp; mulai pesan.</p>
-            <a href="/geprek-geh/products" class="btn btn-primary btn-block" data-close-drawer>Lihat Menu</a>
+            <a href="/products" class="btn btn-primary btn-block" data-close-drawer>Lihat Menu</a>
         </div>
     <?php else: ?>
         <ul class="drawer-list">
             <?php foreach ($cs['items'] as $d): $d_total = $d['price'] * $d['quantity']; ?>
             <li class="drawer-item">
-                <a class="drawer-media" href="/geprek-geh/products/<?= e($d['slug']) ?>" data-close-drawer>
+                <a class="drawer-media" href="/products/<?= e($d['slug']) ?>" data-close-drawer>
                     <?php if ($d['image']): ?>
-                        <img src="/geprek-geh/assets/uploads/products/<?= e($d['image']) ?>" alt="<?= e($d['name']) ?>" loading="lazy">
+                        <img src="/assets/uploads/products/<?= e($d['image']) ?>" alt="<?= e($d['name']) ?>" loading="lazy">
                     <?php else: ?>
                         <?= product_art($d['name'], $d['category_name'], '', 200) ?>
                     <?php endif; ?>
                 </a>
                 <div class="drawer-info">
                     <span class="drawer-cat"><?= e($d['category_name']) ?></span>
-                    <a class="drawer-name" href="/geprek-geh/products/<?= e($d['slug']) ?>" data-close-drawer><?= e($d['name']) ?></a>
+                    <a class="drawer-name" href="/products/<?= e($d['slug']) ?>" data-close-drawer><?= e($d['name']) ?></a>
                     <div class="drawer-meta">
                         <span class="drawer-price"><?= rupiah($d['price']) ?></span>
                         <span class="drawer-qty">&times;<?= $d['quantity'] ?></span>
@@ -42,7 +42,7 @@ $cs = cart_summary();
                 </div>
                 <div class="drawer-side">
                     <strong><?= rupiah($d_total) ?></strong>
-                    <form method="POST" action="/geprek-geh/cart/remove">
+                    <form method="POST" action="/cart/remove">
                         <?= csrf_field() ?>
                         <input type="hidden" name="cart_id" value="<?= $d['id'] ?>">
                         <button class="drawer-remove" type="submit" aria-label="Hapus <?= e($d['name']) ?>">
@@ -63,16 +63,16 @@ $cs = cart_summary();
         <strong><?= rupiah($cs['subtotal']) ?></strong>
     </div>
     <p class="drawer-foot-note">Pajak &amp; ongkir dihitung saat checkout.</p>
-    <a href="/geprek-geh/cart" class="btn btn-ghost btn-block" data-close-drawer>Lihat Keranjang</a>
+    <a href="/cart" class="btn btn-ghost btn-block" data-close-drawer>Lihat Keranjang</a>
     <?php if (Auth::check()): ?>
-        <a href="/geprek-geh/checkout" class="btn btn-primary btn-block">
+        <a href="/checkout" class="btn btn-primary btn-block">
             Checkout Sekarang
             <span class="btn-icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </span>
         </a>
     <?php else: ?>
-        <a href="/geprek-geh/auth/login" class="btn btn-primary btn-block">Masuk untuk Checkout</a>
+        <a href="/auth/login" class="btn btn-primary btn-block">Masuk untuk Checkout</a>
     <?php endif; ?>
 </footer>
 <?php endif; ?>

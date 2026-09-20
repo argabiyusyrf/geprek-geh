@@ -45,10 +45,10 @@ class NotificationController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/');
+            redirect('/');
         }
         Database::getInstance()->update('notifications', ['is_read' => 1], 'user_id = ?', [Auth::id()]);
-        $back = $_SERVER['HTTP_REFERER'] ?? '/geprek-geh/';
+        $back = $_SERVER['HTTP_REFERER'] ?? '/';
         header('Location: ' . $back);
         exit;
     }

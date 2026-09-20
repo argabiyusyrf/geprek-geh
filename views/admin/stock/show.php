@@ -3,9 +3,9 @@ $low = (int) $product['stock'] <= 0 ? 'out' : ((int) $product['stock'] <= $thres
 ?>
 
 <div class="breadcrumb">
-    <a href="/geprek-geh/admin">Dashboard</a>
+    <a href="/admin">Dashboard</a>
     <span>/</span>
-    <a href="/geprek-geh/admin/stock">Manajemen Stok</a>
+    <a href="/admin/stock">Manajemen Stok</a>
     <span>/</span>
     <span>Detail</span>
 </div>
@@ -42,7 +42,7 @@ $low = (int) $product['stock'] <= 0 ? 'out' : ((int) $product['stock'] <= $thres
 
     <div class="card order-card stock-restock-card">
         <h3>Tambah Stok (Restock)</h3>
-        <form method="POST" action="/geprek-geh/admin/stock/<?= (int) $product['id'] ?>/restock" class="stock-restock-form">
+        <form method="POST" action="/admin/stock/<?= (int) $product['id'] ?>/restock" class="stock-restock-form">
             <?= csrf_field() ?>
             <div class="form-row">
                 <div class="form-group">

@@ -25,7 +25,7 @@ class NotificationController {
         \Auth::requireStaff();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
-            header('Location: /geprek-geh/admin/notifications');
+            header('Location: /admin/notifications');
             exit;
         }
         $db = \Database::getInstance();
@@ -38,7 +38,7 @@ class NotificationController {
 
         if ($title === '') {
             \flash_set('error', 'Judul notifikasi wajib diisi.');
-            header('Location: /geprek-geh/admin/notifications');
+            header('Location: /admin/notifications');
             exit;
         }
         if (mb_strlen($title) > 150) $title = mb_substr($title, 0, 150);
@@ -50,7 +50,7 @@ class NotificationController {
             $users = $db->fetchAll("SELECT id FROM users WHERE role = 'customer'");
             if (!$users) {
                 \flash_set('error', 'Belum ada pelanggan terdaftar.');
-                header('Location: /geprek-geh/admin/notifications');
+                header('Location: /admin/notifications');
                 exit;
             }
             foreach ($users as $u) {
@@ -66,13 +66,13 @@ class NotificationController {
         } else {
             if ($user_id < 1) {
                 \flash_set('error', 'Pilih pelanggan tujuan.');
-                header('Location: /geprek-geh/admin/notifications');
+                header('Location: /admin/notifications');
                 exit;
             }
             $user = $db->fetchOne("SELECT id FROM users WHERE id = ? AND role = 'customer'", [$user_id]);
             if (!$user) {
                 \flash_set('error', 'Pelanggan tidak ditemukan.');
-                header('Location: /geprek-geh/admin/notifications');
+                header('Location: /admin/notifications');
                 exit;
             }
             $db->insert('notifications', [
@@ -85,7 +85,7 @@ class NotificationController {
             \flash_set('success', 'Notifikasi terkirim ke pelanggan.');
         }
 
-        header('Location: /geprek-geh/admin/notifications');
+        header('Location: /admin/notifications');
         exit;
     }
 }

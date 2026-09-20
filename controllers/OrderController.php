@@ -9,7 +9,7 @@ class OrderController {
         );
         if (!$order) {
             flash_set('error', 'Pesanan tidak ditemukan.');
-            redirect('/geprek-geh/orders');
+            redirect('/orders');
         }
         return $order;
     }
@@ -129,23 +129,23 @@ class OrderController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/orders');
+            redirect('/orders');
         }
         $db = Database::getInstance();
         $order = $this->findUserOrder($id);
 
         if (!in_array($order['status'], ['pending', 'processing'], true) || $order['payment_status'] !== 'unpaid') {
             flash_set('error', 'Bukti hanya bisa diupload untuk pesanan menunggu yang belum dibayar.');
-            redirect('/geprek-geh/orders/' . $order['id']);
+            redirect('/orders/' . $order['id']);
         }
         if (!payment_requires_proof($order['payment_method'])) {
             flash_set('error', 'Pesanan COD tidak memerlukan upload bukti.');
-            redirect('/geprek-geh/orders/' . $order['id']);
+            redirect('/orders/' . $order['id']);
         }
 
         if (!isset($_FILES['proof']) || $_FILES['proof']['error'] !== UPLOAD_ERR_OK) {
             flash_set('error', 'Gagal mengupload file. Pastikan kamu memilih file bukti.');
-            redirect('/geprek-geh/orders/' . $order['id']);
+            redirect('/orders/' . $order['id']);
         }
 
         $file = $_FILES['proof'];
@@ -156,11 +156,11 @@ class OrderController {
 
         if ($file['size'] > $max_bytes) {
             flash_set('error', 'Ukuran file maksimal 2MB.');
-            redirect('/geprek-geh/orders/' . $order['id']);
+            redirect('/orders/' . $order['id']);
         }
         if (!in_array($ext, $allowed_ext, true)) {
             flash_set('error', 'Format file tidak didukung. Gunakan PNG, JPG, WebP, atau HEIC.');
-            redirect('/geprek-geh/orders/' . $order['id']);
+            redirect('/orders/' . $order['id']);
         }
 
         // Secondary check on the real mime from the uploaded content
@@ -170,7 +170,7 @@ class OrderController {
         $image_mimes = ['image/png', 'image/jpeg', 'image/webp', 'image/heic', 'image/heif', 'image/heic-sequence'];
         if (!in_array($detected, $image_mimes, true)) {
             flash_set('error', 'File yang diunggah bukan gambar yang valid.');
-            redirect('/geprek-geh/orders/' . $order['id']);
+            redirect('/orders/' . $order['id']);
         }
 
         // Tertiary check: actually try to decode the image. This catches
@@ -179,7 +179,7 @@ class OrderController {
         $allowed_image_types = [IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_WEBP];
         if (!$imageInfo || !in_array($imageInfo[2], $allowed_image_types, true)) {
             flash_set('error', 'File yang diunggah bukan gambar yang valid.');
-            redirect('/geprek-geh/orders/' . $order['id']);
+            redirect('/orders/' . $order['id']);
         }
 
         // Verify declared extension matches detected image type
@@ -187,7 +187,7 @@ class OrderController {
         $realExt = $typeToExt[$imageInfo[2]] ?? null;
         if (!$realExt || !in_array($ext, [$realExt, $realExt === 'jpg' ? 'jpeg' : $realExt], true)) {
             flash_set('error', 'Ekstensi file tidak cocok dengan isi gambar.');
-            redirect('/geprek-geh/orders/' . $order['id']);
+            redirect('/orders/' . $order['id']);
         }
 
         $filename = 'proof_' . $order['id'] . '_' . time() . '.' . $ext;
@@ -209,33 +209,33 @@ class OrderController {
                 'payment',
                 "Bukti bayar baru — {$order['invoice_no']}",
                 'Menunggu verifikasi pembayaran.',
-                "/geprek-geh/admin/orders/{$id}"
+                "/admin/orders/{$id}"
             );
             flash_set('success', 'Bukti pembayaran berhasil diupload.');
         } else {
             flash_set('error', 'Gagal menyimpan file. Silakan coba lagi.');
         }
-        redirect('/geprek-geh/orders/' . $order['id']);
+        redirect('/orders/' . $order['id']);
     }
 
     public function cancel($id) {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/orders');
+            redirect('/orders');
         }
         $db = Database::getInstance();
         $order = $this->findUserOrder($id);
 
         if ($order['status'] !== 'pending') {
             flash_set('error', 'Pesanan hanya bisa dibatalkan selama masih berstatus "Menunggu".');
-            redirect('/geprek-geh/orders/' . $id);
+            redirect('/orders/' . $id);
         }
 
         $reason = trim($_POST['cancel_reason'] ?? '');
         if ($reason === '') {
             flash_set('error', 'Alasan pembatalan wajib diisi.');
-            redirect('/geprek-geh/orders/' . $id);
+            redirect('/orders/' . $id);
         }
 
         $data = ['status'        => 'cancelled',
@@ -252,7 +252,7 @@ class OrderController {
             'order',
             "Pesanan {$order['invoice_no']} dibatalkan",
             'Oleh ' . ($_SESSION['user_name'] ?? 'Pelanggan') . '. Alasan: ' . mb_substr($reason, 0, 180) . '. Stok dikembalikan.' . $refund_note,
-            "/geprek-geh/admin/orders/{$id}"
+            "/admin/orders/{$id}"
         );
 
         order_status_email(Auth::id(), $order['invoice_no'], 'Dibatalkan',
@@ -260,21 +260,21 @@ class OrderController {
 
         flash_set('success', 'Pesanan berhasil dibatalkan.'
             . ($order['payment_status'] === 'paid' ? ' Pembayaran akan di-refund.' : ' Stok telah dikembalikan.'));
-        redirect('/geprek-geh/orders/' . $id);
+        redirect('/orders/' . $id);
     }
 
     public function receive($id) {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/orders');
+            redirect('/orders');
         }
         $db = Database::getInstance();
         $order = $this->findUserOrder($id);
 
         if ($order['status'] !== 'shipped') {
             flash_set('error', 'Pesanan hanya bisa diselesaikan setelah statusnya "Sedang Dikirim".');
-            redirect('/geprek-geh/orders/' . $id);
+            redirect('/orders/' . $id);
         }
 
         $data = ['status' => 'delivered'];
@@ -294,27 +294,27 @@ class OrderController {
             'order',
             "Pesanan {$order['invoice_no']} selesai",
             'Terima kasih sudah berbelanja di Geprek Geh.',
-            "/geprek-geh/orders/{$id}"
+            "/orders/{$id}"
         );
         NotificationController::pushToAdmins(
             'order',
             "Pesanan {$order['invoice_no']} dikonfirmasi diterima",
             'Dikonsumsi pembeli. Pesanan selesai.',
-            "/geprek-geh/admin/orders/{$id}"
+            "/admin/orders/{$id}"
         );
 
         order_status_email(Auth::id(), $order['invoice_no'], 'Selesai',
             'Terima kasih sudah berbelanja di Geprek Geh!');
 
         flash_set('success', 'Terima kasih! Pesanan ditandai selesai.');
-        redirect('/geprek-geh/orders/' . $id);
+        redirect('/orders/' . $id);
     }
 
     public function reorder($id) {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/orders');
+            redirect('/orders');
         }
         $db = Database::getInstance();
         $order = $this->findUserOrder($id);
@@ -327,7 +327,7 @@ class OrderController {
         );
         if (empty($items)) {
             flash_set('error', 'Tidak ada item untuk diulang.');
-            redirect('/geprek-geh/orders/' . $id);
+            redirect('/orders/' . $id);
         }
 
         $added = 0;
@@ -360,6 +360,6 @@ class OrderController {
         } else {
             flash_set('error', 'Tidak ada item yang bisa diulang karena stok tidak cukup.');
         }
-        redirect('/geprek-geh/cart');
+        redirect('/cart');
     }
 }

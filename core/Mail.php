@@ -9,7 +9,7 @@
  * Reads:
  *   GEPREK_MAIL_FROM        default "Geprek Geh <no-reply@geprekgeh.com>"
  *   GEPREK_MAIL_FROM_NAME   default "Geprek Geh"
- *   GEPREK_MAIL_LOG_PATH    default /var/www/html/geprek-geh/logs/mail.log
+ *   GEPREK_MAIL_LOG_PATH    default <project-root>/logs/mail.log
  *   (smtp)
  *   GEPREK_SMTP_HOST / PORT / USER / PASS / ENC (tls|ssl|none)
  */
@@ -21,7 +21,7 @@ class Mail {
 
     private static function logPath(): string {
         $env = getenv('GEPREK_MAIL_LOG_PATH');
-        $path = $env ?: '/var/www/html/geprek-geh/logs/mail.log';
+        $path = $env ?: dirname(__DIR__, 2) . '/logs/mail.log';
         if (!is_dir(dirname($path))) @mkdir(dirname($path), 0775, true);
         return $path;
     }

@@ -115,13 +115,13 @@ class ProductController {
 
     public function create() {
         \Auth::requireStaff();
-        header('Location: /geprek-geh/admin/products?create=1');
+        header('Location: /admin/products?create=1');
         exit;
     }
 
     public function store() {
         \Auth::requireStaff();
-        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/products?create=1'); exit; }
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /admin/products?create=1'); exit; }
         $db = \Database::getInstance();
         $name = trim($_POST['name'] ?? '');
         $category_id = (int)($_POST['category_id'] ?? 0);
@@ -140,17 +140,17 @@ class ProductController {
         if ($name === '') {
             \form_stash(['name' => 'Nama produk tidak boleh kosong.'], $stash);
             \flash_set('error', 'Mohon periksa kembali isian form produk.');
-            header('Location: /geprek-geh/admin/products?create=1&error=1'); exit;
+            header('Location: /admin/products?create=1&error=1'); exit;
         }
         if (!$db->fetchOne("SELECT id FROM categories WHERE id = ?", [$category_id])) {
             \form_stash(['category_id' => 'Kategori tidak valid.'], $stash);
             \flash_set('error', 'Mohon periksa kembali isian form produk.');
-            header('Location: /geprek-geh/admin/products?create=1&error=1'); exit;
+            header('Location: /admin/products?create=1&error=1'); exit;
         }
         $image = $this->validImageUpload();
         if ($image === false) {
             \form_stash([], $stash);
-            header('Location: /geprek-geh/admin/products?create=1&error=1'); exit;
+            header('Location: /admin/products?create=1&error=1'); exit;
         }
 
         $new_id = (int) $db->insert('products', [
@@ -170,7 +170,7 @@ class ProductController {
         }
 
         \flash_set('success', 'Produk berhasil ditambahkan.');
-        header('Location: /geprek-geh/admin/products');
+        header('Location: /admin/products');
         exit;
     }
 
@@ -180,10 +180,10 @@ class ProductController {
         $product = $db->fetchOne("SELECT id FROM products WHERE id = ?", [$id]);
         if (!$product) {
             \flash_set('error', 'Produk tidak ditemukan.');
-            header('Location: /geprek-geh/admin/products');
+            header('Location: /admin/products');
             exit;
         }
-        header('Location: /geprek-geh/admin/products?edit=' . (int) $id);
+        header('Location: /admin/products?edit=' . (int) $id);
         exit;
     }
 
@@ -221,11 +221,11 @@ class ProductController {
     public function update($id) {
         \Auth::requireStaff();
         $id = (int) $id;
-        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/products'); exit; }
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /admin/products'); exit; }
         $db = \Database::getInstance();
         if (!$db->fetchOne("SELECT id FROM products WHERE id = ?", [$id])) {
             \flash_set('error', 'Produk tidak ditemukan.');
-            header('Location: /geprek-geh/admin/products');
+            header('Location: /admin/products');
             exit;
         }
         $name = trim($_POST['name'] ?? '');
@@ -245,17 +245,17 @@ class ProductController {
         if ($name === '') {
             \form_stash(['name' => 'Nama produk tidak boleh kosong.'], $stash);
             \flash_set('error', 'Mohon periksa kembali isian form produk.');
-            header('Location: /geprek-geh/admin/products?edit=' . $id . '&error=1'); exit;
+            header('Location: /admin/products?edit=' . $id . '&error=1'); exit;
         }
         if (!$db->fetchOne("SELECT id FROM categories WHERE id = ?", [$category_id])) {
             \form_stash(['category_id' => 'Kategori tidak valid.'], $stash);
             \flash_set('error', 'Mohon periksa kembali isian form produk.');
-            header('Location: /geprek-geh/admin/products?edit=' . $id . '&error=1'); exit;
+            header('Location: /admin/products?edit=' . $id . '&error=1'); exit;
         }
         $image = $this->validImageUpload();
         if ($image === false) {
             \form_stash([], $stash);
-            header('Location: /geprek-geh/admin/products?edit=' . $id . '&error=1'); exit;
+            header('Location: /admin/products?edit=' . $id . '&error=1'); exit;
         }
 
         $data = [
@@ -277,13 +277,13 @@ class ProductController {
             \stock_log($id, $diff, 'Edit stok via form produk');
         }
         \flash_set('success', 'Produk berhasil diupdate.');
-        header('Location: /geprek-geh/admin/products');
+        header('Location: /admin/products');
         exit;
     }
 
     public function delete($id) {
         \Auth::requireStaff();
-        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/products'); exit; }
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /admin/products'); exit; }
         $db = \Database::getInstance();
         $product = $db->fetchOne("SELECT image FROM products WHERE id = ?", [$id]);
         $db->delete('products', 'id = ?', [$id]);
@@ -292,7 +292,7 @@ class ProductController {
             if (is_file($file)) @unlink($file);
         }
         \flash_set('success', 'Produk berhasil dihapus.');
-        header('Location: /geprek-geh/admin/products');
+        header('Location: /admin/products');
         exit;
     }
 }

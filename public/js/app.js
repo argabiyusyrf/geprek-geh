@@ -649,7 +649,7 @@ document.addEventListener('click', (e) => {
 
 /* ── AJAX add-to-cart (no page reload) + toast feedback ── */
 (function ajaxCart() {
-    const forms = document.querySelectorAll('form[action="/geprek-geh/cart/add"]');
+    const forms = document.querySelectorAll('form[action="/cart/add"]');
     if (!forms.length) return;
 
     const container = document.createElement('div');
@@ -770,7 +770,7 @@ document.addEventListener('click', (e) => {
     window.closeCartDrawer = close;
 
     window.refreshCartDrawer = function () {
-        return fetch('/geprek-geh/cart/drawer', {
+        return fetch('/cart/drawer', {
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
             credentials: 'same-origin',
         })
@@ -815,7 +815,7 @@ document.addEventListener('click', (e) => {
     const formActionInput = form ? form.querySelector('[name="_form_action"]') : null;
 
     // Default form action (for add)
-    const addAction = '/geprek-geh/account/addresses';
+    const addAction = '/account/addresses';
 
     function resetForm() {
         if (!form) return;
@@ -861,7 +861,7 @@ document.addEventListener('click', (e) => {
     function openForEdit(data) {
         resetForm();
         // set form action to edit endpoint
-        form.setAttribute('action', '/geprek-geh/account/addresses/' + data.id);
+        form.setAttribute('action', '/account/addresses/' + data.id);
         if (titleEl) titleEl.textContent = 'Edit Alamat';
         // prefill fields
         const fields = ['label', 'recipient_name', 'phone', 'province', 'city', 'district', 'village', 'postal_code', 'address', 'notes'];
@@ -952,10 +952,10 @@ document.addEventListener('click', (e) => {
     const imgClear = drawer.querySelector('[data-pimg-clear]');
     const imgError = drawer.querySelector('[data-pimg-error]');
 
-    const addAction = '/geprek-geh/admin/products';
+    const addAction = '/admin/products';
     const categories = window.__gehCategories || [];
     const products = window.__gehProducts || [];
-    const PRODUCT_IMG_BASE = '/geprek-geh/assets/uploads/products/';
+    const PRODUCT_IMG_BASE = '/assets/uploads/products/';
     const IMG_MAX = 5 * 1024 * 1024;
     const IMG_ALLOWED = ['image/png', 'image/jpeg', 'image/webp'];
     const IMG_EXT = ['png', 'jpg', 'jpeg', 'webp'];
@@ -1122,7 +1122,7 @@ document.addEventListener('click', (e) => {
 
     function setEditState(id) {
         currentId = id;
-        form.setAttribute('action', '/geprek-geh/admin/products/' + id);
+        form.setAttribute('action', '/admin/products/' + id);
         if (titleEl) titleEl.textContent = 'Edit Produk';
         if (submitBtn) submitBtn.textContent = 'Simpan Perubahan';
     }
@@ -1276,7 +1276,7 @@ document.addEventListener('click', (e) => {
                 openForEdit(JSON.parse(btn.dataset.editProduct));
             } catch (_) {
                 const editId = btn.getAttribute('data-edit-product');
-                window.location.href = '/geprek-geh/admin/products?edit=' + encodeURIComponent(editId);
+                window.location.href = '/admin/products?edit=' + encodeURIComponent(editId);
             }
         });
     });
@@ -1334,7 +1334,7 @@ document.addEventListener('click', (e) => {
 
     function resetForm() {
         form.reset();
-        form.setAttribute('action', '/geprek-geh/admin/categories');
+        form.setAttribute('action', '/admin/categories');
         form.querySelectorAll('.is-invalid').forEach((el) => el.classList.remove('is-invalid'));
         form.querySelectorAll('.field-error').forEach((el) => el.remove());
         if (titleEl) titleEl.textContent = 'Tambah Kategori';
@@ -1367,7 +1367,7 @@ document.addEventListener('click', (e) => {
     function openForAdd() { resetForm(); open(); }
 
     function setEditState(id) {
-        form.setAttribute('action', '/geprek-geh/admin/categories/' + id);
+        form.setAttribute('action', '/admin/categories/' + id);
         if (titleEl) titleEl.textContent = 'Edit Kategori';
         if (submitBtn) submitBtn.textContent = 'Simpan Perubahan';
     }
@@ -1464,7 +1464,7 @@ document.addEventListener('click', (e) => {
 
     function resetForm() {
         form.reset();
-        form.setAttribute('action', '/geprek-geh/admin/promos');
+        form.setAttribute('action', '/admin/promos');
         form.querySelectorAll('.is-invalid').forEach((el) => el.classList.remove('is-invalid'));
         form.querySelectorAll('.field-error').forEach((el) => el.remove());
         if (titleEl) titleEl.textContent = 'Buat Kode Promo';
@@ -1502,7 +1502,7 @@ document.addEventListener('click', (e) => {
     function openForAdd() { resetForm(); open(); }
 
     function setEditState(id) {
-        form.setAttribute('action', '/geprek-geh/admin/promos/' + id);
+        form.setAttribute('action', '/admin/promos/' + id);
         if (titleEl) titleEl.textContent = 'Edit Kode Promo';
         if (submitBtn) submitBtn.textContent = 'Simpan Perubahan';
     }
@@ -1598,7 +1598,7 @@ document.addEventListener('click', (e) => {
 
     function resetForm() {
         form.reset();
-        form.setAttribute('action', '/geprek-geh/admin/users');
+        form.setAttribute('action', '/admin/users');
         form.querySelectorAll('.is-invalid').forEach((el) => el.classList.remove('is-invalid'));
         form.querySelectorAll('.field-error').forEach((el) => el.remove());
         if (titleEl) titleEl.textContent = 'Tambah Pengguna';
@@ -1631,7 +1631,7 @@ document.addEventListener('click', (e) => {
     function openForAdd() { resetForm(); open(); }
 
     function setEditState(id) {
-        form.setAttribute('action', '/geprek-geh/admin/users/' + id);
+        form.setAttribute('action', '/admin/users/' + id);
         if (titleEl) titleEl.textContent = 'Edit Pengguna';
         if (submitBtn) submitBtn.textContent = 'Simpan Perubahan';
         setPassMode(true);
@@ -1853,7 +1853,7 @@ document.addEventListener('click', (e) => {
 (function formLoading() {
     document.addEventListener('submit', (e) => {
         const form = e.target;
-        if (form.matches('form[action="/geprek-geh/cart/add"]')) return;
+        if (form.matches('form[action="/cart/add"]')) return;
         if (form.hasAttribute('data-no-loading')) return;
         const btn = form.querySelector('[type="submit"]');
         if (btn && !btn.disabled && !btn.classList.contains('reg-submit')) {

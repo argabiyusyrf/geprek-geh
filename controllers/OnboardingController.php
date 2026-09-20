@@ -9,7 +9,7 @@ class OnboardingController {
         Auth::requireLogin();
         // Sudah lengkap (kata kunci + minimal 1 alamat) → tidak perlu lagi.
         if (Auth::keywordSet() && $this->hasAddress(Auth::id())) {
-            redirect('/geprek-geh/');
+            redirect('/');
         }
         $setup_errors = $_SESSION['setup_errors'] ?? null;
         unset($_SESSION['setup_errors']);
@@ -23,7 +23,7 @@ class OnboardingController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account/setup');
+            redirect('/account/setup');
         }
         $db = Database::getInstance();
         $uid = Auth::id();
@@ -60,7 +60,7 @@ class OnboardingController {
         if ($errors) {
             $_SESSION['setup_errors'] = $errors;
             $_SESSION['setup_old']    = array_merge($addr, ['keyword' => $keyword]);
-            redirect('/geprek-geh/account/setup');
+            redirect('/account/setup');
         }
 
         Auth::setRecoveryKeyword($uid, $keyword);
@@ -78,7 +78,7 @@ class OnboardingController {
         }
 
         flash_set('success', 'Setup akun selesai! Selamat datang di Geprek Geh.');
-        redirect('/geprek-geh/');
+        redirect('/');
     }
 
     /** Lewati setup untuk sekarang — bisa di-set dari Akun > Keamanan. */
@@ -86,11 +86,11 @@ class OnboardingController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account/setup');
+            redirect('/account/setup');
         }
         $_SESSION['skip_setup'] = 1;
         flash_set('info', 'Kata kunci akun bisa kamu atur nanti dari menu Akun → Keamanan.');
-        redirect('/geprek-geh/');
+        redirect('/');
     }
 
     private function hasAddress(int $uid): bool {

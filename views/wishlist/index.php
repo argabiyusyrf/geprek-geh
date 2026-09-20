@@ -6,7 +6,7 @@
         <p class="page-sub">Produk favoritmu yang tersimpan — kapan pun siap, tinggal masukkan ke keranjang.</p>
     </div>
     <div class="page-header-actions">
-        <a href="/geprek-geh/products" class="btn btn-ghost">Lihat Semua Menu</a>
+        <a href="/products" class="btn btn-ghost">Lihat Semua Menu</a>
     </div>
 </div>
 
@@ -15,7 +15,7 @@
         <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
         <h3>Belum ada produk tersimpan</h3>
         <p>Klik ikon <span class="heart-pill">♥</span> pada produk yang kamu suka agar tersimpan di sini.</p>
-        <a href="/geprek-geh/products" class="btn btn-primary">Jelajahi Menu</a>
+        <a href="/products" class="btn btn-primary">Jelajahi Menu</a>
     </div>
 <?php else: ?>
     <div class="menu-bento">
@@ -24,9 +24,9 @@
         ?>
         <article class="product-card" data-reveal>
             <div class="product-card-core">
-                <a class="product-img" href="/geprek-geh/products/<?= e($p['slug']) ?>">
+                <a class="product-img" href="/products/<?= e($p['slug']) ?>">
                     <?php if ($p['image']): ?>
-                        <img src="/geprek-geh/assets/uploads/products/<?= e($p['image']) ?>" alt="<?= e($p['name']) ?>" loading="lazy">
+                        <img src="/assets/uploads/products/<?= e($p['image']) ?>" alt="<?= e($p['name']) ?>" loading="lazy">
                     <?php else: ?>
                         <?= product_art($p['name'], $p['category_name'] ?? '', '', 240) ?>
                     <?php endif; ?>
@@ -35,7 +35,7 @@
                 <div class="product-body">
                     <span class="product-cat"><?= e($p['category_name'] ?? '') ?></span>
                     <h3 class="product-title">
-                        <a href="/geprek-geh/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a>
+                        <a href="/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a>
                     </h3>
                     <?php if ((int) $p['review_count'] > 0): ?>
                     <div class="product-rating">
@@ -48,7 +48,7 @@
                     <div class="product-foot">
                         <b class="product-price"><?= rupiah($p['price']) ?></b>
                         <?php if (!$out_stock): ?>
-                            <form method="POST" action="/geprek-geh/cart/add" class="product-add-form">
+                            <form method="POST" action="/cart/add" class="product-add-form">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="product_id" value="<?= (int) $p['id'] ?>">
                                 <input type="hidden" name="quantity" value="1">
@@ -57,7 +57,7 @@
                                 </button>
                             </form>
                         <?php endif; ?>
-                        <form method="POST" action="/geprek-geh/wishlist/<?= (int) $p['id'] ?>/toggle" class="wish-form">
+                        <form method="POST" action="/wishlist/<?= (int) $p['id'] ?>/toggle" class="wish-form">
                             <?= csrf_field() ?>
                             <button type="submit" class="product-wish" title="Hapus dari daftar keinginan">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#D43E1B" stroke="#D43E1B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>

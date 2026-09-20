@@ -2,7 +2,7 @@
 $page_title = $product['name'];
 $page_description = mb_substr(strip_tags($product['description'] ?? ''), 0, 160);
 if (!empty($product['image'])) {
-    $og_image = 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/geprek-geh/assets/uploads/products/' . $product['image'];
+    $og_image = 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's' : '') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/assets/uploads/products/' . $product['image'];
 }
 $og_type = 'product';
 $page_jsonld = SeoController::productJsonLd($product);
@@ -11,9 +11,9 @@ $out_stock = $product['stock'] <= 0;
 
 <div class="pd-wrap">
     <nav class="pd-crumb" aria-label="Breadcrumb">
-        <a href="/geprek-geh/">Beranda</a><i>/</i>
-        <a href="/geprek-geh/products">Menu</a><i>/</i>
-        <a href="/geprek-geh/products?category=<?= e($product['category_slug']) ?>"><?= e($product['category_name']) ?></a><i>/</i>
+        <a href="/">Beranda</a><i>/</i>
+        <a href="/products">Menu</a><i>/</i>
+        <a href="/products?category=<?= e($product['category_slug']) ?>"><?= e($product['category_name']) ?></a><i>/</i>
         <span><?= e($product['name']) ?></span>
     </nav>
 
@@ -21,7 +21,7 @@ $out_stock = $product['stock'] <= 0;
         <!-- Visual -->
         <div class="pd-visual" data-pd-visual>
             <?php if ($product['image']): ?>
-                <img class="pd-photo" src="/geprek-geh/assets/uploads/products/<?= e($product['image']) ?>" alt="<?= e($product['name']) ?>">
+                <img class="pd-photo" src="/assets/uploads/products/<?= e($product['image']) ?>" alt="<?= e($product['name']) ?>">
             <?php else: ?>
                 <?= product_art($product['name'], $product['category_name'], 'pd-art', 900) ?>
             <?php endif; ?>
@@ -114,7 +114,7 @@ $out_stock = $product['stock'] <= 0;
                 <p class="pd-tiny">Total akhir pajak + ongkir dihitung dan tampil jelas di halaman checkout &mdash; tanpa biaya tersembunyi.</p>
 
                 <?php if ($product['stock'] > 0): ?>
-                <form method="POST" action="/geprek-geh/cart/add" class="pd-form">
+                <form method="POST" action="/cart/add" class="pd-form">
                     <?= csrf_field() ?>
                     <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
                     <div class="pd-qty">
@@ -134,7 +134,7 @@ $out_stock = $product['stock'] <= 0;
                 <?php endif; ?>
 
                 <?php $wish_ids = wishlist_ids(); $is_wished = isset($wish_ids[(int) $product['id']]); ?>
-                <form method="POST" action="/geprek-geh/wishlist/<?= (int) $product['id'] ?>/toggle" class="pd-wish-form">
+                <form method="POST" action="/wishlist/<?= (int) $product['id'] ?>/toggle" class="pd-wish-form">
                     <?= csrf_field() ?>
                     <button type="submit" class="btn btn-ghost btn-lg pd-wish" title="<?= $is_wished ? 'Hapus dari daftar keinginan' : 'Simpan ke daftar keinginan' ?>">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="<?= $is_wished ? 'currentColor' : 'none' ?>" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
@@ -201,7 +201,7 @@ $out_stock = $product['stock'] <= 0;
                 <?php endif; ?>
             </div>
         </div>
-        <form method="POST" action="/geprek-geh/reviews" class="review-form" enctype="multipart/form-data">
+        <form method="POST" action="/reviews" class="review-form" enctype="multipart/form-data">
             <?= csrf_field() ?>
             <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
             <div class="review-rating-input" data-rating-input>
@@ -225,7 +225,7 @@ $out_stock = $product['stock'] <= 0;
                     </span>
                 </label>
                 <?php if ($my_photo): ?>
-                    <img src="/geprek-geh/assets/uploads/reviews/<?= e($my_photo) ?>" class="review-photo-preview" alt="Foto review-mu">
+                    <img src="/assets/uploads/reviews/<?= e($my_photo) ?>" class="review-photo-preview" alt="Foto review-mu">
                 <?php endif; ?>
             </div>
 
@@ -243,7 +243,7 @@ $out_stock = $product['stock'] <= 0;
         <?php endif; ?>
     <?php else: ?>
     <div class="review-login-hint" data-reveal>
-        <a href="/geprek-geh/auth/login">Masuk</a> untuk menulis ulasan.
+        <a href="/auth/login">Masuk</a> untuk menulis ulasan.
     </div>
     <?php endif; ?>
 
@@ -278,12 +278,12 @@ $out_stock = $product['stock'] <= 0;
                         <p class="review-body"><?= e($rv['comment']) ?></p>
                     <?php endif; ?>
                     <?php if (!empty($rv['image'])): ?>
-                        <a href="/geprek-geh/assets/uploads/reviews/<?= e($rv['image']) ?>" target="_blank" rel="noopener" class="review-photo">
-                            <img src="/geprek-geh/assets/uploads/reviews/<?= e($rv['image']) ?>" alt="Foto ulasan <?= e($rv['user_name']) ?>" loading="lazy">
+                        <a href="/assets/uploads/reviews/<?= e($rv['image']) ?>" target="_blank" rel="noopener" class="review-photo">
+                            <img src="/assets/uploads/reviews/<?= e($rv['image']) ?>" alt="Foto ulasan <?= e($rv['user_name']) ?>" loading="lazy">
                         </a>
                     <?php endif; ?>
                     <?php if (Auth::id() === $rv['user_id']): ?>
-                        <form method="POST" action="/geprek-geh/reviews/<?= $rv['id'] ?>/delete" class="review-delete" data-confirm="Hapus ulasan ini?">
+                        <form method="POST" action="/reviews/<?= $rv['id'] ?>/delete" class="review-delete" data-confirm="Hapus ulasan ini?">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-sm btn-ghost btn-dangerghost">Hapus</button>
                         </form>
@@ -301,7 +301,7 @@ $out_stock = $product['stock'] <= 0;
             <span class="eyebrow" data-reveal>Lengkapi</span>
             <h2 class="section-title" data-reveal>Menu serupa<br>&amp; favorit</h2>
         </div>
-        <a href="/geprek-geh/products" class="section-link" data-reveal>Semua menu
+        <a href="/products" class="section-link" data-reveal>Semua menu
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
         </a>
     </div>
@@ -311,9 +311,9 @@ $out_stock = $product['stock'] <= 0;
         ?>
             <article class="product-card" data-reveal>
                 <div class="product-card-core">
-                    <a class="product-img" href="/geprek-geh/products/<?= e($p['slug']) ?>">
+                    <a class="product-img" href="/products/<?= e($p['slug']) ?>">
                         <?php if ($p['image']): ?>
-                            <img src="/geprek-geh/assets/uploads/products/<?= e($p['image']) ?>" alt="<?= e($p['name']) ?>" loading="lazy">
+                            <img src="/assets/uploads/products/<?= e($p['image']) ?>" alt="<?= e($p['name']) ?>" loading="lazy">
                         <?php else: ?>
                             <?= product_art($p['name'], $p['category_name'], '', 240) ?>
                         <?php endif; ?>
@@ -323,7 +323,7 @@ $out_stock = $product['stock'] <= 0;
                     </a>
                     <div class="product-body">
                         <span class="product-cat"><?= e($p['category_name']) ?></span>
-                        <h3 class="product-title"><a href="/geprek-geh/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a></h3>
+                        <h3 class="product-title"><a href="/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a></h3>
                         <?php if ($p['review_count'] > 0): ?>
                         <div class="product-rating">
                             <?php for ($s = 1; $s <= 5; $s++): ?>
@@ -338,7 +338,7 @@ $out_stock = $product['stock'] <= 0;
                         <div class="product-foot">
                             <b class="product-price"><?= rupiah($p['price']) ?></b>
                             <?php if (!$out_stock): ?>
-                                <form method="POST" action="/geprek-geh/cart/add" class="product-add-form">
+                                <form method="POST" action="/cart/add" class="product-add-form">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
                                     <input type="hidden" name="quantity" value="1">

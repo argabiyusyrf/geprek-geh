@@ -10,7 +10,7 @@ $fr_old   = $fr_old ?? '';
     <div class="auth-shell">
         <div class="auth-brand">
             <div class="auth-brand-inner">
-                <a href="/geprek-geh/" class="brand auth-logo">
+                <a href="/" class="brand auth-logo">
                     <span class="brand-mark">G</span>
                     <span class="brand-word">Geprek Geh</span>
                 </a>
@@ -27,7 +27,7 @@ $fr_old   = $fr_old ?? '';
         </div>
 
         <div class="auth-panel">
-            <a href="/geprek-geh/" class="auth-back" aria-label="Kembali ke beranda">
+            <a href="/" class="auth-back" aria-label="Kembali ke beranda">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             </a>
             <div class="auth-card">
@@ -42,7 +42,7 @@ $fr_old   = $fr_old ?? '';
 
                     <?php if ($fr_error): ?><div class="alert alert-error alert-static"><?= e($fr_error) ?></div><?php endif; ?>
 
-                    <form method="POST" action="/geprek-geh/auth/forgot" id="forgotMethodForm" novalidate>
+                    <form method="POST" action="/auth/forgot" id="forgotMethodForm" novalidate>
                         <?= csrf_field() ?>
                         <input type="hidden" name="step" value="method">
 
@@ -90,7 +90,7 @@ $fr_old   = $fr_old ?? '';
                         </button>
                     </form>
 
-                    <p class="auth-link"><a href="/geprek-geh/auth/forgot?restart=1">Bukan email itu &mdash; ganti</a></p>
+                    <p class="auth-link"><a href="/auth/forgot?restart=1">Bukan email itu &mdash; ganti</a></p>
 
                 <?php elseif ($fr_step === 'sent'): ?>
                     <?php // ── LANGKAH 3a: link email terkirim ── ?>
@@ -101,8 +101,8 @@ $fr_old   = $fr_old ?? '';
                     <h1>Link <em>terkirim</em></h1>
                     <p class="auth-sub">Tautan reset sudah kami kirim ke <strong><?= e($fr_email) ?></strong>.
                         Cek kotak masuk <em>(atau folder spam)</em> lalu klik tautan tersebut. Berlaku <strong>60 menit</strong>.</p>
-                    <p class="auth-link" style="margin-top:4px"><a href="/geprek-geh/auth/login">Kembali ke login</a></p>
-                    <p class="auth-link"><a href="/geprek-geh/auth/forgot?restart=1">Ganti email / metode</a></p>
+                    <p class="auth-link" style="margin-top:4px"><a href="/auth/login">Kembali ke login</a></p>
+                    <p class="auth-link"><a href="/auth/forgot?restart=1">Ganti email / metode</a></p>
 
                 <?php else: ?>
                     <?php // ── LANGKAH 1: cek email ── ?>
@@ -112,7 +112,7 @@ $fr_old   = $fr_old ?? '';
 
                     <?php if ($fr_error): ?><div class="alert alert-error alert-static"><?= e($fr_error) ?></div><?php endif; ?>
 
-                    <form method="POST" action="/geprek-geh/auth/forgot" id="forgotEmailForm">
+                    <form method="POST" action="/auth/forgot" id="forgotEmailForm">
                         <?= csrf_field() ?>
                         <input type="hidden" name="step" value="email">
                         <div class="form-group reg-field-icon">
@@ -134,7 +134,7 @@ $fr_old   = $fr_old ?? '';
                     </form>
                 <?php endif; ?>
 
-                    <p class="auth-link">Ingat passwordnya? <a href="/geprek-geh/auth/login">Login di sini</a></p>
+                    <p class="auth-link">Ingat passwordnya? <a href="/auth/login">Login di sini</a></p>
                 </div>
             </div>
         </div>

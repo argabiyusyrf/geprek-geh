@@ -36,16 +36,16 @@ unset($clear_params['q']);
 if ($from !== '') $clear_params['from'] = $from;
 if ($to !== '') $clear_params['to'] = $to;
 if ($status !== '') $clear_params['status'] = $status;
-$search_clear_href = '/geprek-geh/admin/orders' . ($clear_params ? '?' . http_build_query($clear_params) : '');
+$search_clear_href = '/admin/orders' . ($clear_params ? '?' . http_build_query($clear_params) : '');
 $date_reset_params = $extra_q;
 if ($status !== '') $date_reset_params['status'] = $status;
-$date_reset_href = '/geprek-geh/admin/orders' . ($date_reset_params ? '?' . http_build_query($date_reset_params) : '');
+$date_reset_href = '/admin/orders' . ($date_reset_params ? '?' . http_build_query($date_reset_params) : '');
 $preset_href = function (string $pf, string $pt) use ($extra_q, $status) {
     $qp = $extra_q;
     $qp['from'] = $pf;
     $qp['to'] = $pt;
     if ($status !== '') $qp['status'] = $status;
-    return '/geprek-geh/admin/orders?' . http_build_query($qp);
+    return '/admin/orders?' . http_build_query($qp);
 };
 $page_window = [];
 if ($total_pages <= 7) {
@@ -64,7 +64,7 @@ if ($from !== '') $qp['from'] = $from;
 if ($to !== '') $qp['to'] = $to;
 if ($status !== '') $qp['status'] = $status;
 $page_href = function (int $p) use ($qp) {
-    return '/geprek-geh/admin/orders?' . http_build_query(['page' => $p] + $qp);
+    return '/admin/orders?' . http_build_query(['page' => $p] + $qp);
 };
 ?>
 
@@ -73,7 +73,7 @@ $page_href = function (int $p) use ($qp) {
         <h1>Pesanan</h1>
         <p class="page-sub"><?= $kpis['total'] ?> pesanan &middot; <?= rupiah($kpis['revenue']) ?> pembayaran lunas</p>
     </div>
-    <a href="/geprek-geh/admin" class="btn btn-ghost btn-sm">
+    <a href="/admin" class="btn btn-ghost btn-sm">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
         Dashboard
     </a>
@@ -111,7 +111,7 @@ $page_href = function (int $p) use ($qp) {
 </div>
 
 <div class="menu-filters admin-orders-filters">
-    <form method="GET" action="/geprek-geh/admin/orders" class="menu-toolbar">
+    <form method="GET" action="/admin/orders" class="menu-toolbar">
         <div class="menu-filter-row">
 <?php if ($status !== ''): ?><input type="hidden" name="status" value="<?= e($status) ?>"><?php endif; ?>
             <?php if ($per !== 15): ?><input type="hidden" name="per" value="<?= e($per) ?>"><?php endif; ?>
@@ -178,7 +178,7 @@ $page_href = function (int $p) use ($qp) {
                         if ($from !== '') $pill_params['from'] = $from;
                         if ($to !== '') $pill_params['to'] = $to;
                         if ($key !== '') $pill_params['status'] = $key;
-                        $pill_href = '/geprek-geh/admin/orders' . ($pill_params ? '?' . http_build_query($pill_params) : '');
+                        $pill_href = '/admin/orders' . ($pill_params ? '?' . http_build_query($pill_params) : '');
                     ?>
                         <a href="<?= e($pill_href) ?>"
                            class="menu-pill menu-pill--<?= $tone ?: 'all' ?> <?= $status === $key ? 'active' : '' ?>">
@@ -196,7 +196,7 @@ $page_href = function (int $p) use ($qp) {
                         <?php if ($q !== ''): ?> untuk "<strong><?= e($q) ?></strong>"<?php endif; ?>
                         <?php if ($status !== ''): ?> di <strong><?= e($status_label_map[$status]) ?></strong><?php endif; ?>
                         <?php if ($date_active): ?> periode <strong><?= e($period_display) ?></strong><?php endif; ?>
-                        — <a href="/geprek-geh/admin/orders" class="menu-results-reset">Reset</a>
+                        — <a href="/admin/orders" class="menu-results-reset">Reset</a>
                     <?php else: ?>
                         Menampilkan <?= $total ?> pesanan terbaru
                     <?php endif; ?>
@@ -269,7 +269,7 @@ $page_href = function (int $p) use ($qp) {
                     <span class="badge <?= $bc ?>"><?= $sl ?></span>
                 </td>
                 <td>
-                    <a href="/geprek-geh/admin/orders/<?= $o['id'] ?>" class="btn btn-sm btn-outline order-open">
+                    <a href="/admin/orders/<?= $o['id'] ?>" class="btn btn-sm btn-outline order-open">
                         Detail
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </a>
@@ -300,7 +300,7 @@ $page_href = function (int $p) use ($qp) {
             <?php endif; ?>
         </div>
     <?php endif; ?>
-    <form method="GET" action="/geprek-geh/admin/orders" class="menu-perpage">
+    <form method="GET" action="/admin/orders" class="menu-perpage">
         <?php if ($status !== ''): ?><input type="hidden" name="status" value="<?= e($status) ?>"><?php endif; ?>
         <?php if ($q !== ''): ?><input type="hidden" name="q" value="<?= e($q) ?>"><?php endif; ?>
         <?php if ($sort !== 'terbaru'): ?><input type="hidden" name="sort" value="<?= e($sort) ?>"><?php endif; ?>

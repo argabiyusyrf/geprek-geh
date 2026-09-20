@@ -18,7 +18,7 @@ $typeIcon = [
 ?>
 
 <div class="breadcrumb">
-    <a href="/geprek-geh/admin">Dashboard</a>
+    <a href="/admin">Dashboard</a>
     <span>/</span>
     <span>Metode Pembayaran</span>
 </div>
@@ -62,7 +62,7 @@ $typeIcon = [
         <h3>Tambah Metode Pembayaran</h3>
         <button type="button" class="btn btn-sm btn-ghost" data-pm-add-close>Tutup</button>
     </header>
-    <form method="POST" action="/geprek-geh/admin/payments" class="pm-form">
+    <form method="POST" action="/admin/payments" class="pm-form">
         <?= csrf_field() ?>
         <div class="form-row">
             <div class="form-group">
@@ -149,17 +149,17 @@ $typeIcon = [
                 </div>
                 <div class="table-actions">
                     <button type="button" class="btn btn-sm btn-outline" data-pm-edit="<?= (int) $m['id'] ?>">Edit</button>
-                    <form method="POST" action="/geprek-geh/admin/payments/<?= (int) $m['id'] ?>/toggle" class="inline-form">
+                    <form method="POST" action="/admin/payments/<?= (int) $m['id'] ?>/toggle" class="inline-form">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-sm <?= $m['is_active'] ? 'btn-ghost' : 'btn-primary' ?>"><?= $m['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?></button>
                     </form>
-                    <form method="POST" action="/geprek-geh/admin/payments/<?= (int) $m['id'] ?>/delete" class="inline-form" data-confirm="Hapus metode &ldquo;<?= e($m['name']) ?>&rdquo;? Pesanan lama tetap bisa dilihat, metode tidak lagi tersedia di checkout.">
+                    <form method="POST" action="/admin/payments/<?= (int) $m['id'] ?>/delete" class="inline-form" data-confirm="Hapus metode &ldquo;<?= e($m['name']) ?>&rdquo;? Pesanan lama tetap bisa dilihat, metode tidak lagi tersedia di checkout.">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-sm btn-danger-ghost">Hapus</button>
                     </form>
                 </div>
             </div>
-            <form method="POST" action="/geprek-geh/admin/payments/<?= (int) $m['id'] ?>" class="pm-edit-form" data-pm-editform="<?= (int) $m['id'] ?>" hidden>
+            <form method="POST" action="/admin/payments/<?= (int) $m['id'] ?>" class="pm-edit-form" data-pm-editform="<?= (int) $m['id'] ?>" hidden>
                 <?= csrf_field() ?>
                 <div class="form-row">
                     <div class="form-group">

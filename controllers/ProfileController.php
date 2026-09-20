@@ -88,7 +88,7 @@ class ProfileController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account');
+            redirect('/account');
         }
         $db = Database::getInstance();
         $user = Auth::user();
@@ -116,20 +116,20 @@ class ProfileController {
         if ($errors) {
             $_SESSION['profile_old'] = ['name' => $name, 'phone' => $phone];
             $_SESSION['profile_errors'] = $errors;
-            redirect('/geprek-geh/account?tab=profil');
+            redirect('/account?tab=profil');
         }
 
         $db->update('users', ['name' => $name, 'phone' => $phone], 'id = ?', [$user['id']]);
         $_SESSION['user_name'] = $name;
         flash_set('success', 'Profil berhasil diperbarui.');
-        redirect('/geprek-geh/account?tab=profil');
+        redirect('/account?tab=profil');
     }
 
     public function changePassword() {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account');
+            redirect('/account');
         }
         $db = Database::getInstance();
         $user = Auth::user();
@@ -150,7 +150,7 @@ class ProfileController {
         }
         if ($errors) {
             $_SESSION['profile_pwd_errors'] = $errors;
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
 
         $db->update('users', ['password' => password_hash($new, PASSWORD_DEFAULT)], 'id = ?', [$user['id']]);
@@ -160,14 +160,14 @@ class ProfileController {
         Auth::clearRememberCookie();
 
         flash_set('success', 'Password berhasil diubah.');
-        redirect('/geprek-geh/account?tab=security');
+        redirect('/account?tab=security');
     }
 
     public function changeKeyword() {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
         $db = Database::getInstance();
         $user = Auth::user();
@@ -188,21 +188,21 @@ class ProfileController {
         }
         if ($errors) {
             $_SESSION['profile_kw_errors'] = $errors;
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
 
         Auth::setRecoveryKeyword((int) $user['id'], $kw);
         unset($_SESSION['skip_setup']);
 
         flash_set('success', 'Kata kunci akun berhasil disimpan.');
-        redirect('/geprek-geh/account?tab=security');
+        redirect('/account?tab=security');
     }
 
     public function changeEmail() {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account');
+            redirect('/account');
         }
         $db = Database::getInstance();
         $user = Auth::user();
@@ -227,14 +227,14 @@ class ProfileController {
         if ($errors) {
             $_SESSION['email_old'] = $email;
             $_SESSION['email_errors'] = $errors;
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
 
         $db->update('users', ['email' => $email], 'id = ?', [$user['id']]);
         $_SESSION['user_email'] = $email;
         if (isset($_SESSION['user_info'])) $_SESSION['user_info']['email'] = $email;
         flash_set('success', 'Email berhasil diubah.');
-        redirect('/geprek-geh/account?tab=security');
+        redirect('/account?tab=security');
     }
 
     // ─────────────────────────── 2FA (Autentikasi 2 Langkah) ───────────────────────────
@@ -244,17 +244,17 @@ class ProfileController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
         $user = Auth::user();
         if ((int) $user['totp_enabled'] === 1) {
             flash_set('error', '2FA sudah aktif.');
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
         unset($_SESSION['twofa_error']);
         $_SESSION['twofa_setup_secret'] = Totp::generateSecret();
         flash_set('info', 'Pindai QR atau masukkan kunci rahasia berikut ke aplikasi authenticator, lalu verifikasi dengan kode 6 digit.');
-        redirect('/geprek-geh/account?tab=security');
+        redirect('/account?tab=security');
     }
 
     /** Batalkan proses aktivasi yang belum selesai. */
@@ -262,11 +262,11 @@ class ProfileController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
         unset($_SESSION['twofa_setup_secret']);
         flash_set('success', 'Aktivasi 2FA dibatalkan.');
-        redirect('/geprek-geh/account?tab=security');
+        redirect('/account?tab=security');
     }
 
     /** Verifikasi kode dari authenticator untuk benar-benar mengaktifkan 2FA. */
@@ -274,7 +274,7 @@ class ProfileController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
         $db = Database::getInstance();
         $user = Auth::user();
@@ -283,13 +283,13 @@ class ProfileController {
         if ((int) $user['totp_enabled'] === 1 || !$secret) {
             unset($_SESSION['twofa_setup_secret']);
             flash_set('error', 'Sesi aktivasi 2FA tidak valid.');
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
 
         $code = trim($_POST['code'] ?? '');
         if (!Totp::verify($secret, $code)) {
             $_SESSION['twofa_error'] = 'Kode salah. Periksa kembali input kode dari aplikasi authenticator.';
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
 
         $codes = Totp::recoveryCodes();
@@ -304,7 +304,7 @@ class ProfileController {
         unset($_SESSION['twofa_setup_secret']);
         $_SESSION['twofa_recovery_codes'] = $codes;
         flash_set('success', 'Autentikasi 2 langkah berhasil diaktifkan. Simpan kode pemulihan di tempat aman!');
-        redirect('/geprek-geh/account?tab=security');
+        redirect('/account?tab=security');
     }
 
     /** Nonaktifkan 2FA — wajib konfirmasi dengan kode TOTP atau recovery code. */
@@ -312,13 +312,13 @@ class ProfileController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
         $db = Database::getInstance();
         $user = Auth::user();
         if ((int) $user['totp_enabled'] !== 1) {
             flash_set('error', '2FA sedang nonaktif.');
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
 
         $code = trim($_POST['code'] ?? '');
@@ -335,12 +335,12 @@ class ProfileController {
 
         if (!$ok) {
             $_SESSION['twofa_error'] = 'Kode verifikasi salah. Gunakan kode dari aplikasi authenticator atau recovery code.';
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
 
         $db->update('users', ['totp_secret' => null, 'totp_enabled' => 0, 'totp_recovery' => null], 'id = ?', [$user['id']]);
         flash_set('success', 'Autentikasi 2 langkah dinonaktifkan.');
-        redirect('/geprek-geh/account?tab=security');
+        redirect('/account?tab=security');
     }
 
     /** Ganti recovery code (kode lama tidak berlaku). */
@@ -348,13 +348,13 @@ class ProfileController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
         $db = Database::getInstance();
         $user = Auth::user();
         if ((int) $user['totp_enabled'] !== 1) {
             flash_set('error', '2FA sedang nonaktif.');
-            redirect('/geprek-geh/account?tab=security');
+            redirect('/account?tab=security');
         }
 
         $codes = Totp::recoveryCodes();
@@ -363,7 +363,7 @@ class ProfileController {
 
         $_SESSION['twofa_recovery_codes'] = $codes;
         flash_set('success', 'Recovery code baru dibuat. Kode lama tidak berlaku lagi.');
-        redirect('/geprek-geh/account?tab=security');
+        redirect('/account?tab=security');
     }
 
     // ─────────────────────────── Session Management ───────────────────────────
@@ -398,7 +398,7 @@ class ProfileController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account?tab=settings');
+            redirect('/account?tab=settings');
         }
         $db = Database::getInstance();
         $uid = Auth::id();
@@ -407,16 +407,16 @@ class ProfileController {
         $target = $db->fetchOne("SELECT * FROM sessions WHERE id = ? AND user_id = ?", [$id, $uid]);
         if (!$target) {
             flash_set('error', 'Sesi tidak ditemukan.');
-            redirect('/geprek-geh/account?tab=settings');
+            redirect('/account?tab=settings');
         }
         if ($target['session_id'] === session_id()) {
             flash_set('error', 'Tidak bisa revoke sesi yang sedang aktif.');
-            redirect('/geprek-geh/account?tab=settings');
+            redirect('/account?tab=settings');
         }
 
         $db->delete('sessions', 'id = ?', [$id]);
         flash_set('success', 'Sesi perangkat berhasil dihapus.');
-        redirect('/geprek-geh/account?tab=settings');
+        redirect('/account?tab=settings');
     }
 
     /** Revoke semua sesi kecuali sesi saat ini. */
@@ -424,7 +424,7 @@ class ProfileController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account?tab=settings');
+            redirect('/account?tab=settings');
         }
         $db = Database::getInstance();
         $uid = Auth::id();
@@ -435,7 +435,7 @@ class ProfileController {
             [$uid, $currentSid]
         );
         flash_set('success', 'Semua sesi lain berhasil dihapus.');
-        redirect('/geprek-geh/account?tab=settings');
+        redirect('/account?tab=settings');
     }
 
     // ─────────────────────────── Address CRUD ───────────────────────────
@@ -470,7 +470,7 @@ class ProfileController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account?tab=addresses');
+            redirect('/account?tab=addresses');
         }
 
         $db = Database::getInstance();
@@ -482,7 +482,7 @@ class ProfileController {
             $_SESSION['address_old'] = $in;
             $_SESSION['address_edit_id'] = null;
             $_SESSION['address_errors'] = $errors;
-            redirect('/geprek-geh/account?tab=addresses');
+            redirect('/account?tab=addresses');
         }
 
         $isFirst = (int) $db->count('addresses', 'user_id = ?', [$uid]) === 0;
@@ -494,7 +494,7 @@ class ProfileController {
 
         $id = $db->insert('addresses', array_merge($in, ['user_id' => $uid]));
         flash_set('success', 'Alamat berhasil ditambahkan.');
-        redirect('/geprek-geh/account?tab=addresses');
+        redirect('/account?tab=addresses');
         return $id;
     }
 
@@ -511,18 +511,18 @@ class ProfileController {
         $exists = $db->fetchOne("SELECT id FROM addresses WHERE id = ? AND user_id = ?", [$id, $uid]);
         if (!$exists) {
             flash_set('error', 'Alamat tidak ditemukan.');
-            redirect('/geprek-geh/account?tab=addresses');
+            redirect('/account?tab=addresses');
         }
         $_SESSION['address_edit_id'] = $id;
         unset($_SESSION['address_old'], $_SESSION['address_errors']);
-        redirect('/geprek-geh/account?tab=addresses');
+        redirect('/account?tab=addresses');
     }
 
     public function edit($id) {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account?tab=addresses');
+            redirect('/account?tab=addresses');
         }
         $db = Database::getInstance();
         $uid = Auth::id();
@@ -531,7 +531,7 @@ class ProfileController {
         $exists = $db->fetchOne("SELECT id FROM addresses WHERE id = ? AND user_id = ?", [$id, $uid]);
         if (!$exists) {
             flash_set('error', 'Alamat tidak ditemukan.');
-            redirect('/geprek-geh/account?tab=addresses');
+            redirect('/account?tab=addresses');
         }
 
         $in = $this->addressInputs();
@@ -541,7 +541,7 @@ class ProfileController {
             $_SESSION['address_old'] = $in;
             $_SESSION['address_edit_id'] = $id;
             $_SESSION['address_errors'] = $errors;
-            redirect('/geprek-geh/account?tab=addresses');
+            redirect('/account?tab=addresses');
         }
 
         if ($in['is_default']) {
@@ -551,14 +551,14 @@ class ProfileController {
 
         $db->update('addresses', $in, 'id = ?', [$id]);
         flash_set('success', 'Alamat berhasil diperbarui.');
-        redirect('/geprek-geh/account?tab=addresses');
+        redirect('/account?tab=addresses');
     }
 
     public function setDefault($id) {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account?tab=addresses');
+            redirect('/account?tab=addresses');
         }
         $db = Database::getInstance();
         $uid = Auth::id();
@@ -567,20 +567,20 @@ class ProfileController {
         $exists = $db->fetchOne("SELECT id FROM addresses WHERE id = ? AND user_id = ?", [$id, $uid]);
         if (!$exists) {
             flash_set('error', 'Alamat tidak ditemukan.');
-            redirect('/geprek-geh/account?tab=addresses');
+            redirect('/account?tab=addresses');
         }
 
         $db->update('addresses', ['is_default' => 0], 'user_id = ?', [$uid]);
         $db->update('addresses', ['is_default' => 1], 'id = ?', [$id]);
         flash_set('success', 'Alamat utama diperbarui.');
-        redirect('/geprek-geh/account?tab=addresses');
+        redirect('/account?tab=addresses');
     }
 
     public function delete($id) {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account?tab=addresses');
+            redirect('/account?tab=addresses');
         }
         $db = Database::getInstance();
         $uid = Auth::id();
@@ -589,7 +589,7 @@ class ProfileController {
         $target = $db->fetchOne("SELECT * FROM addresses WHERE id = ? AND user_id = ?", [$id, $uid]);
         if (!$target) {
             flash_set('error', 'Alamat tidak ditemukan.');
-            redirect('/geprek-geh/account?tab=addresses');
+            redirect('/account?tab=addresses');
         }
 
         $db->delete('addresses', 'id = ?', [$id]);
@@ -603,14 +603,14 @@ class ProfileController {
         }
 
         flash_set('success', 'Alamat berhasil dihapus.');
-        redirect('/geprek-geh/account?tab=addresses');
+        redirect('/account?tab=addresses');
     }
 
     public function toggleNotifications() {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account?tab=settings');
+            redirect('/account?tab=settings');
         }
         $db = Database::getInstance();
         $uid = Auth::id();
@@ -619,14 +619,14 @@ class ProfileController {
         $db->update('users', ['notify_email' => $new_val], 'id = ?', [$uid]);
         if (isset($_SESSION['user_info'])) $_SESSION['user_info']['notify_email'] = $new_val;
         flash_set('success', $new_val ? 'Notifikasi email diaktifkan.' : 'Notifikasi email dinonaktifkan.');
-        redirect('/geprek-geh/account?tab=settings');
+        redirect('/account?tab=settings');
     }
 
     public function deleteAccount() {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/account');
+            redirect('/account');
         }
         $db = Database::getInstance();
         $uid = Auth::id();
@@ -647,6 +647,6 @@ class ProfileController {
 
         Auth::logout();
         flash_set('success', 'Akunmu telah dihapus. Semua data pribadi telah dihapus.');
-        redirect('/geprek-geh/auth/login');
+        redirect('/auth/login');
     }
 }

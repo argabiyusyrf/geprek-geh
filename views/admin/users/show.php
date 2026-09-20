@@ -12,14 +12,14 @@ $status_meta = [
 ];
 ?>
 
-<a href="/geprek-geh/admin/users" class="back-link">
+<a href="/admin/users" class="back-link">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     Kembali ke Pengguna
 </a>
 <div class="breadcrumb">
-    <a href="/geprek-geh/admin">Dashboard</a>
+    <a href="/admin">Dashboard</a>
     <span>/</span>
-    <a href="/geprek-geh/admin/users">Pengguna</a>
+    <a href="/admin/users">Pengguna</a>
     <span>/</span>
     <span><?= e($user['name']) ?></span>
 </div>
@@ -34,13 +34,13 @@ $status_meta = [
         <p class="page-sub"><?= e($user['email']) ?> &middot; terdaftar <?= date('d M Y', strtotime($user['created_at'])) ?></p>
     </div>
     <div class="order-head-actions">
-        <a href="/geprek-geh/admin/users?edit=<?= $user['id'] ?>" class="btn btn-sm btn-outline">Edit</a>
+        <a href="/admin/users?edit=<?= $user['id'] ?>" class="btn btn-sm btn-outline">Edit</a>
         <?php if (!$isSelf): ?>
-<form method="POST" action="/geprek-geh/admin/users/<?= $user['id'] ?>/block" class="inline-form" data-confirm="<?= $isBlocked ? 'Buka blokir akun ' . e($user['name']) . '?' : 'Blokir akun ' . e($user['name']) . '? Pengguna tidak bisa login.' ?>">
+<form method="POST" action="/admin/users/<?= $user['id'] ?>/block" class="inline-form" data-confirm="<?= $isBlocked ? 'Buka blokir akun ' . e($user['name']) . '?' : 'Blokir akun ' . e($user['name']) . '? Pengguna tidak bisa login.' ?>">
     <?= csrf_field() ?>
     <button type="submit" class="btn <?= $isBlocked ? 'btn-outline' : 'btn-primary' ?>"><?= $isBlocked ? 'Buka Blokir' : 'Blokir' ?></button>
 </form>
-            <form method="POST" action="/geprek-geh/admin/users/<?= $user['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus akun <?= e($user['name']) ?>? Seluruh pesanan, alamat, dan notifikasinya ikut terhapus. Tindakan ini tidak bisa dibatalkan.">
+            <form method="POST" action="/admin/users/<?= $user['id'] ?>/delete" class="inline-form inline-form--compact" data-confirm="Hapus akun <?= e($user['name']) ?>? Seluruh pesanan, alamat, dan notifikasinya ikut terhapus. Tindakan ini tidak bisa dibatalkan.">
                 <?= csrf_field() ?>
                 <button type="submit" class="btn btn-danger">Hapus Akun</button>
             </form>
@@ -154,7 +154,7 @@ $status_meta = [
                 ?>
                 <tr>
                     <td>
-                        <a href="/geprek-geh/admin/orders/<?= $o['id'] ?>" class="ocell-invoice">
+                        <a href="/admin/orders/<?= $o['id'] ?>" class="ocell-invoice">
                             <span class="ocell-no"><?= e($o['invoice_no']) ?></span>
                             <span class="ocell-sub"><?= e(\payment_method_label($o['payment_method'])) ?></span>
                         </a>

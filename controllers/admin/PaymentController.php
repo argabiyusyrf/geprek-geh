@@ -50,14 +50,14 @@ class PaymentController {
         \Auth::requireAdmin();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
-            header('Location: /geprek-geh/admin/payments');
+            header('Location: /admin/payments');
             exit;
         }
         $db = \Database::getInstance();
         [$type, $name, $number, $holder, $description, $errors] = $this->validate($_POST);
         if ($errors) {
             \flash_set('error', implode(' ', $errors));
-            header('Location: /geprek-geh/admin/payments');
+            header('Location: /admin/payments');
             exit;
         }
         $code = $this->codeFrom($type, $name, $number);
@@ -76,7 +76,7 @@ class PaymentController {
             'sort_order'  => $next,
         ]);
         \flash_set('success', "Metode {$name} berhasil ditambahkan.");
-        header('Location: /geprek-geh/admin/payments');
+        header('Location: /admin/payments');
         exit;
     }
 
@@ -84,20 +84,20 @@ class PaymentController {
         \Auth::requireAdmin();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
-            header('Location: /geprek-geh/admin/payments');
+            header('Location: /admin/payments');
             exit;
         }
         $db = \Database::getInstance();
         $method = $db->fetchOne("SELECT * FROM payment_methods WHERE id = ?", [(int) $id]);
         if (!$method) {
             \flash_set('error', 'Metode tidak ditemukan.');
-            header('Location: /geprek-geh/admin/payments');
+            header('Location: /admin/payments');
             exit;
         }
         [$type, $name, $number, $holder, $description, $errors] = $this->validate($_POST);
         if ($errors) {
             \flash_set('error', implode(' ', $errors));
-            header('Location: /geprek-geh/admin/payments#m-' . (int) $id);
+            header('Location: /admin/payments#m-' . (int) $id);
             exit;
         }
         $code = $this->codeFrom($type, $name, $number);
@@ -119,7 +119,7 @@ class PaymentController {
         ], 'id = ?', [(int) $id]);
 
         \flash_set('success', "Metode {$name} berhasil diperbarui.");
-        header('Location: /geprek-geh/admin/payments#m-' . (int) $id);
+        header('Location: /admin/payments#m-' . (int) $id);
         exit;
     }
 
@@ -127,19 +127,19 @@ class PaymentController {
         \Auth::requireAdmin();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
-            header('Location: /geprek-geh/admin/payments');
+            header('Location: /admin/payments');
             exit;
         }
         $db = \Database::getInstance();
         $method = $db->fetchOne("SELECT * FROM payment_methods WHERE id = ?", [(int) $id]);
         if (!$method) {
             \flash_set('error', 'Metode tidak ditemukan.');
-            header('Location: /geprek-geh/admin/payments');
+            header('Location: /admin/payments');
             exit;
         }
         $db->update('payment_methods', ['is_active' => (int) $method['is_active'] ? 0 : 1], 'id = ?', [(int) $id]);
         \flash_set('success', 'Status metode diperbarui.');
-        header('Location: /geprek-geh/admin/payments');
+        header('Location: /admin/payments');
         exit;
     }
 
@@ -147,19 +147,19 @@ class PaymentController {
         \Auth::requireAdmin();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
-            header('Location: /geprek-geh/admin/payments');
+            header('Location: /admin/payments');
             exit;
         }
         $db = \Database::getInstance();
         $method = $db->fetchOne("SELECT * FROM payment_methods WHERE id = ?", [(int) $id]);
         if (!$method) {
             \flash_set('error', 'Metode tidak ditemukan.');
-            header('Location: /geprek-geh/admin/payments');
+            header('Location: /admin/payments');
             exit;
         }
         $db->delete('payment_methods', 'id = ?', [(int) $id]);
         \flash_set('success', "Metode {$method['name']} dihapus. Pesanan lama tetap memakai datanya lewat kode lama.");
-        header('Location: /geprek-geh/admin/payments');
+        header('Location: /admin/payments');
         exit;
     }
 }

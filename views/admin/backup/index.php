@@ -9,7 +9,7 @@
         </p>
     </div>
     <div class="admin-hero-actions">
-        <form method="POST" action="/geprek-geh/admin/backup/run" style="display:inline">
+        <form method="POST" action="/admin/backup/run" style="display:inline">
             <?= csrf_field() ?>
             <button type="submit" class="btn btn-primary btn-sm">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
@@ -47,10 +47,10 @@
                     <td><?= date('d M Y, H:i', $b['time']) ?></td>
                     <td><?= e(number_format((float) $b['size'], 1, ',', '.') . ' KB') ?></td>
                     <td class="td-actions">
-                        <a class="btn btn-ghost btn-sm" href="/geprek-geh/admin/backup/<?= e($b['name']) ?>/download" title="Unduh">
+                        <a class="btn btn-ghost btn-sm" href="/admin/backup/<?= e($b['name']) ?>/download" title="Unduh">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                         </a>
-                        <form method="POST" action="/geprek-geh/admin/backup/<?= e($b['name']) ?>/delete" class="inline-form" data-confirm="Hapus backup ini?">
+                        <form method="POST" action="/admin/backup/<?= e($b['name']) ?>/delete" class="inline-form" data-confirm="Hapus backup ini?">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn btn-danger-ghost btn-sm" title="Hapus">
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
@@ -71,6 +71,6 @@
     </div>
     <p class="text-muted" style="margin-top:10px;">
         Untuk backup otomatis rutin, pasang cron harian:
-        <code>0 3 * * * cd /var/www/html/geprek-geh && php scripts/backup.php &gt;&gt; logs/backup.log 2&gt;&amp;1</code>
+        <code>0 3 * * * cd /var/www/html && php scripts/backup.php &gt;&gt; logs/backup.log 2&gt;&amp;1</code>
     </p>
 </div>

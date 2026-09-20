@@ -4,13 +4,13 @@ class PromoController {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/cart');
+            redirect('/cart');
         }
 
         $code = strtoupper(trim($_POST['promo_code'] ?? ''));
         if ($code === '') {
             flash_set('error', 'Masukkan kode promo.');
-            redirect('/geprek-geh/cart');
+            redirect('/cart');
         }
 
         $db = Database::getInstance();
@@ -21,26 +21,26 @@ class PromoController {
 
         if (!$promo) {
             flash_set('error', 'Kode promo tidak valid.');
-            redirect('/geprek-geh/cart');
+            redirect('/cart');
         }
 
         if ($promo['starts_at'] && strtotime($promo['starts_at']) > time()) {
             flash_set('error', 'Kode promo belum berlaku.');
-            redirect('/geprek-geh/cart');
+            redirect('/cart');
         }
         if ($promo['expires_at'] && strtotime($promo['expires_at']) < time()) {
             flash_set('error', 'Kode promo sudah kedaluwarsa.');
-            redirect('/geprek-geh/cart');
+            redirect('/cart');
         }
         if ($promo['max_uses'] !== null && $promo['used_count'] >= $promo['max_uses']) {
             flash_set('error', 'Kode promo sudah mencapai batas penggunaan.');
-            redirect('/geprek-geh/cart');
+            redirect('/cart');
         }
 
         $cart = cart_summary();
         if ($cart['subtotal'] < $promo['min_order']) {
             flash_set('error', 'Minimal belanja ' . rupiah($promo['min_order']) . ' untuk kode ini.');
-            redirect('/geprek-geh/cart');
+            redirect('/cart');
         }
 
         $_SESSION['promo'] = [
@@ -51,18 +51,18 @@ class PromoController {
         ];
 
         flash_set('success', 'Kode promo "' . $promo['code'] . '" berhasil diterapkan!');
-        redirect('/geprek-geh/cart');
+        redirect('/cart');
     }
 
     public function remove() {
         Auth::requireLogin();
         if (!verify_csrf()) {
             flash_set('error', 'Token tidak valid.');
-            redirect('/geprek-geh/cart');
+            redirect('/cart');
         }
         unset($_SESSION['promo']);
         flash_set('success', 'Kode promo dihapus.');
-        redirect('/geprek-geh/cart');
+        redirect('/cart');
     }
 
     /** Calculate discount from session promo. Returns ['discount' => int, 'label' => string]. */

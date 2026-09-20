@@ -1,7 +1,7 @@
 <?php
 /**
  * Backup database Geprek Geh ke logs/backups/ (misal + cron harian):
- *   0 3 * * * cd /var/www/html/geprek-geh && php scripts/backup.php >> logs/backup.log 2>&1
+ *   0 3 * * * cd /var/www/html && php scripts/backup.php >> logs/backup.log 2>&1
  */
 
 if (PHP_SAPI !== 'cli') {
@@ -18,7 +18,7 @@ if (!is_dir($dir)) {
 @chmod($dir, 0777);
 
 $stamp = date('Ymd-His');
-$file = $dir . '/geprek-geh-' . $stamp . '.sql.gz';
+$file = $dir . '-' . $stamp . '.sql.gz';
 
 $cmd = sprintf(
     'mysqldump --no-tablespaces --single-transaction --quick -h %s -P %d -u %s %s %s 2>&1 | gzip > %s',
@@ -40,7 +40,7 @@ if ($code !== 0 || !is_file($file) || filesize($file) < 100) {
 
 // Hapus backup lama (tetap 7 file terakhir)
 $keep = 7;
-$files = glob($dir . '/geprek-geh-*.sql.gz');
+$files = glob($dir . '-*.sql.gz');
 if (is_array($files) && count($files) > $keep) {
     usort($files, fn($a, $b) => filemtime($a) <=> filemtime($b));
     foreach (array_slice($files, 0, count($files) - $keep) as $old) {

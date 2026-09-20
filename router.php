@@ -5,7 +5,7 @@
 // File statis asli disajikan langsung; yang lain diteruskan ke index.php.
 
 $uri = urldecode(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/');
-$base = '/geprek-geh';
+$base = '';
 
 $path = (str_starts_with($uri, $base)) ? substr($uri, strlen($base)) : $uri;
 if ($path === '') $path = '/';

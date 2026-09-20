@@ -4,7 +4,7 @@
     <div class="auth-shell">
         <div class="auth-brand">
             <div class="auth-brand-inner">
-                <a href="/geprek-geh/" class="brand auth-logo">
+                <a href="/" class="brand auth-logo">
                     <span class="brand-mark">G</span>
                     <span class="brand-word">Geprek Geh</span>
                 </a>
@@ -21,7 +21,7 @@
         </div>
 
         <div class="auth-panel">
-            <a href="/geprek-geh/" class="auth-back" aria-label="Kembali ke beranda">
+            <a href="/" class="auth-back" aria-label="Kembali ke beranda">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             </a>
             <div class="auth-card">
@@ -30,7 +30,7 @@
                     <h1>Masuk ke <em>akunmu</em></h1>
                     <p class="auth-sub">Pesan lebih cepat, lacak pesanan, dan simpan favoritmu.</p>
 
-                    <form method="POST" action="/geprek-geh/auth/login" id="loginForm">
+                    <form method="POST" action="/auth/login" id="loginForm">
                         <?= csrf_field() ?>
 
                         <div class="reg-fields">
@@ -63,7 +63,7 @@
                                 </span>
                                 <span class="reg-terms-text">Ingat saya</span>
                             </label>
-                            <a href="/geprek-geh/auth/forgot" class="login-forgot">Lupa password?</a>
+                            <a href="/auth/forgot" class="login-forgot">Lupa password?</a>
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-block btn-lg reg-submit" id="loginSubmit">
@@ -81,7 +81,7 @@
                         <span>atau</span>
                     </div>
 
-                    <a href="/geprek-geh/auth/register" class="btn btn-outline btn-block btn-lg reg-login-alt">
+                    <a href="/auth/register" class="btn btn-outline btn-block btn-lg reg-login-alt">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
                         Belum punya akun? Daftar
                     </a>

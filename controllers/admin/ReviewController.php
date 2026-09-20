@@ -61,19 +61,19 @@ class ReviewController {
         $id = (int) $id;
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
-            header('Location: /geprek-geh/admin/reviews');
+            header('Location: /admin/reviews');
             exit;
         }
         $review = $db->fetchOne("SELECT * FROM product_reviews WHERE id = ?", [$id]);
         if (!$review) {
             \flash_set('error', 'Ulasan tidak ditemukan.');
-            header('Location: /geprek-geh/admin/reviews');
+            header('Location: /admin/reviews');
             exit;
         }
         $new = $review['is_visible'] ? 0 : 1;
         $db->update('product_reviews', ['is_visible' => $new], 'id = ?', [$id]);
         \flash_set('success', $new ? 'Ulasan ditampilkan kembali.' : 'Ulasan disembunyikan dari halaman publik.');
-        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?: '/geprek-geh/admin/reviews'));
+        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?: '/admin/reviews'));
         exit;
     }
 
@@ -83,7 +83,7 @@ class ReviewController {
         $id = (int) $id;
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
-            header('Location: /geprek-geh/admin/reviews');
+            header('Location: /admin/reviews');
             exit;
         }
         $review = $db->fetchOne("SELECT image FROM product_reviews WHERE id = ?", [$id]);
@@ -93,7 +93,7 @@ class ReviewController {
         }
         $db->delete('product_reviews', 'id = ?', [$id]);
         \flash_set('success', 'Ulasan dihapus.');
-        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?: '/geprek-geh/admin/reviews'));
+        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?: '/admin/reviews'));
         exit;
     }
 }

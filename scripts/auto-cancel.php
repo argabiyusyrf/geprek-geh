@@ -4,7 +4,7 @@
  * lewat batas waktu yang ditentukan di pengaturan toko (auto_cancel_hours).
  *
  * Jalankan via cron, setiap 30 menit (lihat contoh di AGENTS / crontab):
- *   cd /var/www/html/geprek-geh && php scripts/auto-cancel.php >> logs/auto-cancel.log 2>&1
+ *   cd /var/www/html && php scripts/auto-cancel.php >> logs/auto-cancel.log 2>&1
  */
 
 if (PHP_SAPI !== 'cli') {
@@ -96,7 +96,7 @@ try {
         $notifStmt->execute([
             $o['user_id'],
             "Pesanan kamu {$o['invoice_no']} dibatalkan karena pembayaran belum selesai dalam {$hours} jam. Stok sudah dikembalikan.",
-            '/geprek-geh/orders/' . $o['id'],
+            '/orders/' . $o['id'],
         ]);
         $count++;
         echo "[auto-cancel] #{$o['invoice_no']} (id={$o['id']}, {$o['customer_name']}) dibatalkan otomatis.\n";

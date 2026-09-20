@@ -4,7 +4,7 @@
     <div class="auth-shell">
         <div class="auth-brand">
             <div class="auth-brand-inner">
-                <a href="/geprek-geh/" class="brand auth-logo">
+                <a href="/" class="brand auth-logo">
                     <span class="brand-mark">G</span>
                     <span class="brand-word">Geprek Geh</span>
                 </a>
@@ -21,7 +21,7 @@
         </div>
 
         <div class="auth-panel">
-            <a href="/geprek-geh/" class="auth-back" aria-label="Kembali ke beranda">
+            <a href="/" class="auth-back" aria-label="Kembali ke beranda">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             </a>
             <div class="auth-card">
@@ -33,7 +33,7 @@
                     <h1>Masukkan <em>kode</em></h1>
                     <p class="auth-sub">6 digit dari aplikasi authenticator<?= $twofa_name ? ' milik <strong>' . e($twofa_name) . '</strong>' : '' ?>.</p>
 
-                    <form method="POST" action="/geprek-geh/auth/2fa" id="twofa-form">
+                    <form method="POST" action="/auth/2fa" id="twofa-form">
                         <?= csrf_field() ?>
                         <div class="form-group">
                             <label for="twofa-code">Kode Verifikasi</label>
@@ -47,8 +47,8 @@
                         </button>
                     </form>
 
-                    <p class="auth-link">Kode tidak berhasil? Gunakan <a href="/geprek-geh/auth/login">recovery code</a> yang disimpan saat aktivasi.</p>
-                    <p class="auth-link"><a href="/geprek-geh/auth/login">Kembali ke halaman login</a></p>
+                    <p class="auth-link">Kode tidak berhasil? Gunakan <a href="/auth/login">recovery code</a> yang disimpan saat aktivasi.</p>
+                    <p class="auth-link"><a href="/auth/login">Kembali ke halaman login</a></p>
                 </div>
             </div>
         </div>

@@ -103,7 +103,7 @@ class UserController {
         $user = $db->fetchOne("SELECT * FROM users WHERE id = ?", [$id]);
         if (!$user) {
             \flash_set('error', 'Pengguna tidak ditemukan.');
-            header('Location: /geprek-geh/admin/users');
+            header('Location: /admin/users');
             exit;
         }
 
@@ -134,14 +134,14 @@ class UserController {
 
     public function store() {
         \Auth::requireAdmin();
-        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/users'); exit; }
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /admin/users'); exit; }
         $db  = \Database::getInstance();
         $in  = $this->collectInput();
         $err = $this->validate($in, null, true);
         if ($err) {
             \form_stash($err, $in);
             \flash_set('error', 'Mohon periksa kembali isian form pengguna.');
-            header('Location: /geprek-geh/admin/users?create=1&error=1'); exit;
+            header('Location: /admin/users?create=1&error=1'); exit;
         }
         $db->insert('users', [
             'name'         => $in['name'],
@@ -152,26 +152,26 @@ class UserController {
             'notify_email' => $in['notify_email'],
         ]);
         \flash_set('success', 'Pengguna "' . $in['name'] . '" berhasil ditambahkan.');
-        header('Location: /geprek-geh/admin/users');
+        header('Location: /admin/users');
         exit;
     }
 
     public function update($id) {
         \Auth::requireAdmin();
         $id = (int) $id;
-        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/users'); exit; }
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /admin/users'); exit; }
         $db  = \Database::getInstance();
         $user = $db->fetchOne("SELECT * FROM users WHERE id = ?", [$id]);
         if (!$user) {
             \flash_set('error', 'Pengguna tidak ditemukan.');
-            header('Location: /geprek-geh/admin/users'); exit;
+            header('Location: /admin/users'); exit;
         }
         $in  = $this->collectInput();
         $err = $this->validate($in, $id);
         if ($err) {
             \form_stash($err, $in);
             \flash_set('error', 'Mohon periksa kembali isian form pengguna.');
-            header('Location: /geprek-geh/admin/users?edit=' . $id . '&error=1'); exit;
+            header('Location: /admin/users?edit=' . $id . '&error=1'); exit;
         }
         $data = [
             'name'         => $in['name'],
@@ -185,24 +185,24 @@ class UserController {
         }
         $db->update('users', $data, 'id = ?', [$id]);
         \flash_set('success', 'Data pengguna berhasil diupdate.');
-        header('Location: /geprek-geh/admin/users');
+        header('Location: /admin/users');
         exit;
     }
 
     public function block($id) {
         \Auth::requireAdmin();
         $id = (int) $id;
-        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/users'); exit; }
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /admin/users'); exit; }
         if ($id === \Auth::id()) {
             \flash_set('error', 'Tidak bisa memblokir akun sendiri.');
-            header('Location: /geprek-geh/admin/users');
+            header('Location: /admin/users');
             exit;
         }
         $db   = \Database::getInstance();
         $user = $db->fetchOne("SELECT * FROM users WHERE id = ?", [$id]);
         if (!$user) {
             \flash_set('error', 'Pengguna tidak ditemukan.');
-            header('Location: /geprek-geh/admin/users');
+            header('Location: /admin/users');
             exit;
         }
 
@@ -217,10 +217,10 @@ class UserController {
         }
 
         $referer = $_SERVER['HTTP_REFERER'] ?? '';
-        if (strpos($referer, '/geprek-geh/admin/users/' . $id) !== false) {
-            header('Location: /geprek-geh/admin/users/' . $id);
+        if (strpos($referer, '/admin/users/' . $id) !== false) {
+            header('Location: /admin/users/' . $id);
         } else {
-            header('Location: /geprek-geh/admin/users');
+            header('Location: /admin/users');
         }
         exit;
     }
@@ -228,17 +228,17 @@ class UserController {
     public function destroy($id) {
         \Auth::requireAdmin();
         $id = (int) $id;
-        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /geprek-geh/admin/users'); exit; }
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /admin/users'); exit; }
         if ($id === \Auth::id()) {
             \flash_set('error', 'Tidak bisa menghapus akun sendiri.');
-            header('Location: /geprek-geh/admin/users');
+            header('Location: /admin/users');
             exit;
         }
         $db   = \Database::getInstance();
         $user = $db->fetchOne("SELECT * FROM users WHERE id = ?", [$id]);
         if (!$user) {
             \flash_set('error', 'Pengguna tidak ditemukan.');
-            header('Location: /geprek-geh/admin/users');
+            header('Location: /admin/users');
             exit;
         }
 
@@ -247,7 +247,7 @@ class UserController {
         $db->delete('users', 'id = ?', [$id]);
 
         \flash_set('success', 'Akun "' . $user['name'] . '" beserta seluruh datanya telah dihapus.');
-        header('Location: /geprek-geh/admin/users');
+        header('Location: /admin/users');
         exit;
     }
 

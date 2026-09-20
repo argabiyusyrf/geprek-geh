@@ -3,7 +3,7 @@ $status_label = ['visible' => 'Ditampilkan', 'hidden' => 'Disembunyikan', '' => 
 ?>
 
 <div class="breadcrumb">
-    <a href="/geprek-geh/admin">Dashboard</a>
+    <a href="/admin">Dashboard</a>
     <span>/</span>
     <span>Moderasi Ulasan</span>
 </div>
@@ -40,14 +40,14 @@ $status_label = ['visible' => 'Ditampilkan', 'hidden' => 'Disembunyikan', '' => 
 </div>
 
 <div class="menu-filters admin-orders-filters">
-    <form method="GET" action="/geprek-geh/admin/reviews" class="menu-toolbar">
+    <form method="GET" action="/admin/reviews" class="menu-toolbar">
         <div class="menu-filter-row">
             <div class="menu-toolbar-top">
                 <div class="menu-search">
                     <svg class="menu-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
                     <input type="search" name="q" placeholder="Cari pelanggan, produk, atau isi…" value="<?= e($q) ?>" class="menu-search-input" autocomplete="off" aria-label="Cari ulasan">
                     <?php if ($q !== ''): ?>
-                        <a href="/geprek-geh/admin/reviews<?= $status !== '' ? '?status=' . e($status) : '' ?>" class="menu-search-clear" aria-label="Bersihkan pencarian">&times;</a>
+                        <a href="/admin/reviews<?= $status !== '' ? '?status=' . e($status) : '' ?>" class="menu-search-clear" aria-label="Bersihkan pencarian">&times;</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -103,11 +103,11 @@ $status_label = ['visible' => 'Ditampilkan', 'hidden' => 'Disembunyikan', '' => 
                     </div>
                 </div>
                 <div class="table-actions">
-                    <form method="POST" action="/geprek-geh/admin/reviews/<?= (int) $r['id'] ?>/toggle">
+                    <form method="POST" action="/admin/reviews/<?= (int) $r['id'] ?>/toggle">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-sm <?= $r['is_visible'] ? 'btn-outline' : 'btn-primary' ?>"><?= $r['is_visible'] ? 'Sembunyikan' : 'Tampilkan' ?></button>
                     </form>
-                    <form method="POST" action="/geprek-geh/admin/reviews/<?= (int) $r['id'] ?>/delete" onsubmit="return confirm('Hapus ulasan ini? Tindakan tidak dapat dibatalkan.');">
+                    <form method="POST" action="/admin/reviews/<?= (int) $r['id'] ?>/delete" onsubmit="return confirm('Hapus ulasan ini? Tindakan tidak dapat dibatalkan.');">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-sm btn-danger-ghost">Hapus</button>
                     </form>
@@ -117,8 +117,8 @@ $status_label = ['visible' => 'Ditampilkan', 'hidden' => 'Disembunyikan', '' => 
                 <p class="review-mod-comment"><?= e($r['comment']) ?></p>
             <?php endif; ?>
             <?php if (!empty($r['image'])): ?>
-                <a href="/geprek-geh/assets/uploads/reviews/<?= e($r['image']) ?>" target="_blank" rel="noopener" class="review-mod-photo">
-                    <img src="/geprek-geh/assets/uploads/reviews/<?= e($r['image']) ?>" alt="Foto ulasan" loading="lazy">
+                <a href="/assets/uploads/reviews/<?= e($r['image']) ?>" target="_blank" rel="noopener" class="review-mod-photo">
+                    <img src="/assets/uploads/reviews/<?= e($r['image']) ?>" alt="Foto ulasan" loading="lazy">
                 </a>
             <?php endif; ?>
             <p class="review-mod-date"><?= e(date('d M Y H:i', strtotime($r['created_at']))) ?></p>
@@ -130,13 +130,13 @@ $status_label = ['visible' => 'Ditampilkan', 'hidden' => 'Disembunyikan', '' => 
     <?php if ($total_pages > 1): ?>
         <div class="menu-pagination-pages review-pagination">
             <?php if ($page > 1): ?>
-                <a href="/geprek-geh/admin/reviews?page=<?= $page - 1 ?><?= $status !== '' ? '&status=' . e($status) : '' ?><?= $q !== '' ? '&q=' . e(urlencode($q)) : '' ?>" class="menu-page-btn">&laquo;</a>
+                <a href="/admin/reviews?page=<?= $page - 1 ?><?= $status !== '' ? '&status=' . e($status) : '' ?><?= $q !== '' ? '&q=' . e(urlencode($q)) : '' ?>" class="menu-page-btn">&laquo;</a>
             <?php endif; ?>
             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <a href="/geprek-geh/admin/reviews?page=<?= $i ?><?= $status !== '' ? '&status=' . e($status) : '' ?><?= $q !== '' ? '&q=' . e(urlencode($q)) : '' ?>" class="menu-page-btn <?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
+                <a href="/admin/reviews?page=<?= $i ?><?= $status !== '' ? '&status=' . e($status) : '' ?><?= $q !== '' ? '&q=' . e(urlencode($q)) : '' ?>" class="menu-page-btn <?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
             <?php endfor; ?>
             <?php if ($page < $total_pages): ?>
-                <a href="/geprek-geh/admin/reviews?page=<?= $page + 1 ?><?= $status !== '' ? '&status=' . e($status) : '' ?><?= $q !== '' ? '&q=' . e(urlencode($q)) : '' ?>" class="menu-page-btn">&raquo;</a>
+                <a href="/admin/reviews?page=<?= $page + 1 ?><?= $status !== '' ? '&status=' . e($status) : '' ?><?= $q !== '' ? '&q=' . e(urlencode($q)) : '' ?>" class="menu-page-btn">&raquo;</a>
             <?php endif; ?>
         </div>
     <?php endif; ?>

@@ -18,7 +18,7 @@ $hero_level = $categories[1] ?? null;
             Pesan online dalam hitungan detik — kami siapkan panas, antar ke depan pintu.
         </p>
         <div class="hero-cta" data-reveal>
-            <a href="/geprek-geh/products" class="btn btn-primary btn-lg magnetic">
+            <a href="/products" class="btn btn-primary btn-lg magnetic">
                 Pesan Sekarang
                 <span class="btn-icon">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
@@ -39,7 +39,7 @@ $hero_level = $categories[1] ?? null;
             <div class="hero-plate-core">
                 <div class="hero-dish">
                     <?php if ($hero_product && !empty($hero_product['image'])): ?>
-                        <img class="hero-dish-img" src="/geprek-geh/assets/uploads/products/<?= e($hero_product['image']) ?>" alt="<?= e($hero_product['name']) ?>">
+                        <img class="hero-dish-img" src="/assets/uploads/products/<?= e($hero_product['image']) ?>" alt="<?= e($hero_product['name']) ?>">
                     <?php else: ?>
                         <span class="hero-dish-label">GG</span>
                         <span class="product-img-placeholder"><svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 11.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0z"/><path d="M11 7V3M13.5 4.5L8.5 6.5M15 7.5l-6 1.5"/><path d="M6 1l-1 3M9 2L7.5 4"/></svg></span>
@@ -83,7 +83,7 @@ $hero_level = $categories[1] ?? null;
             <span class="eyebrow" data-reveal>Kategori</span>
             <h2 class="section-title" data-reveal>Cari sesuai<br>selera &amp; levelmu</h2>
         </div>
-        <a href="/geprek-geh/products" class="section-link" data-reveal>Semua menu
+        <a href="/products" class="section-link" data-reveal>Semua menu
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
         </a>
     </div>
@@ -99,7 +99,7 @@ $hero_level = $categories[1] ?? null;
         ];
         ?>
         <?php foreach ($categories as $cat): ?>
-            <a href="/geprek-geh/products?category=<?= e($cat['slug']) ?>" class="category-card" data-reveal>
+            <a href="/products?category=<?= e($cat['slug']) ?>" class="category-card" data-reveal>
                 <div class="category-card-core">
                     <span class="category-emoji"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><?= $cat_icons[$cat['name']] ?? '<path d="M12 3v10M8 8l4 4 4-4"/>' ?></svg></span>
                     <h3><?= e($cat['name']) ?></h3>
@@ -118,7 +118,7 @@ $hero_level = $categories[1] ?? null;
             <span class="eyebrow" data-reveal>Paling Laris</span>
             <h2 class="section-title" data-reveal>Favorit<br>pelanggan</h2>
         </div>
-        <a href="/geprek-geh/products" class="section-link" data-reveal>Lihat semua
+        <a href="/products" class="section-link" data-reveal>Lihat semua
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
         </a>
     </div>
@@ -129,9 +129,9 @@ $hero_level = $categories[1] ?? null;
         ?>
             <article class="product-card <?= $i < 2 ? 'feat-a' : '' ?>" data-reveal>
                 <div class="product-card-core">
-                    <a href="/geprek-geh/products/<?= e($p['slug']) ?>" class="product-img">
+                    <a href="/products/<?= e($p['slug']) ?>" class="product-img">
                         <?php if ($p['image']): ?>
-                            <img src="/geprek-geh/assets/uploads/products/<?= e($p['image']) ?>" alt="<?= e($p['name']) ?>" loading="lazy">
+                            <img src="/assets/uploads/products/<?= e($p['image']) ?>" alt="<?= e($p['name']) ?>" loading="lazy">
                         <?php else: ?>
                             <?= product_art($p['name'], $p['category_name'], '', 240) ?>
                         <?php endif; ?>
@@ -153,7 +153,7 @@ $hero_level = $categories[1] ?? null;
                     <?php require __DIR__ . '/../partials/wish-heart.php'; ?>
                     <div class="product-body">
                         <span class="product-cat"><?= e($p['category_name']) ?></span>
-                        <h3 class="product-title"><a href="/geprek-geh/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a></h3>
+                        <h3 class="product-title"><a href="/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a></h3>
                         <?php if ($p['review_count'] > 0): ?>
                         <div class="product-rating">
                             <?php for ($s = 1; $s <= 5; $s++): ?>
@@ -168,7 +168,7 @@ $hero_level = $categories[1] ?? null;
                         <div class="product-foot">
                             <b class="product-price"><?= rupiah($p['price']) ?></b>
                             <?php if (!$out_stock): ?>
-                                <form method="POST" action="/geprek-geh/cart/add" class="product-add-form">
+                                <form method="POST" action="/cart/add" class="product-add-form">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
                                     <input type="hidden" name="quantity" value="1">
@@ -226,9 +226,9 @@ $hero_level = $categories[1] ?? null;
         ?>
             <article class="product-card" data-reveal>
                 <div class="product-card-core">
-                    <a href="/geprek-geh/products/<?= e($p['slug']) ?>" class="product-img">
+                    <a href="/products/<?= e($p['slug']) ?>" class="product-img">
                         <?php if ($p['image']): ?>
-                            <img src="/geprek-geh/assets/uploads/products/<?= e($p['image']) ?>" alt="<?= e($p['name']) ?>" loading="lazy">
+                            <img src="/assets/uploads/products/<?= e($p['image']) ?>" alt="<?= e($p['name']) ?>" loading="lazy">
                         <?php else: ?>
                             <?= product_art($p['name'], $p['category_name'], '', 240) ?>
                         <?php endif; ?>
@@ -240,7 +240,7 @@ $hero_level = $categories[1] ?? null;
                     <?php require __DIR__ . '/../partials/wish-heart.php'; ?>
                     <div class="product-body">
                         <span class="product-cat"><?= e($p['category_name']) ?></span>
-                        <h3 class="product-title"><a href="/geprek-geh/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a></h3>
+                        <h3 class="product-title"><a href="/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a></h3>
                         <?php if ($p['review_count'] > 0): ?>
                         <div class="product-rating">
                             <?php for ($s = 1; $s <= 5; $s++): ?>
@@ -255,7 +255,7 @@ $hero_level = $categories[1] ?? null;
                         <div class="product-foot">
                             <b class="product-price"><?= rupiah($p['price']) ?></b>
                             <?php if (!$out_stock): ?>
-                                <form method="POST" action="/geprek-geh/cart/add" class="product-add-form">
+                                <form method="POST" action="/cart/add" class="product-add-form">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
                                     <input type="hidden" name="quantity" value="1">

@@ -23,8 +23,8 @@
         ?>
             <div class="notif-page-date"><?= date('d M Y', strtotime($d)) ?></div>
         <?php endif; ?>
-        <a href="<?= e($n['link'] ?? '/geprek-geh/account') ?>" class="notif-page-item<?= $n['is_read'] ? '' : ' unread' ?>"
-           data-page-read-url="<?= $n['is_read'] ? '' : '/geprek-geh/account/notifications/' . (int)$n['id'] . '/read' ?>">
+        <a href="<?= e($n['link'] ?? '/account') ?>" class="notif-page-item<?= $n['is_read'] ? '' : ' unread' ?>"
+           data-page-read-url="<?= $n['is_read'] ? '' : '/account/notifications/' . (int)$n['id'] . '/read' ?>">
             <span class="notif-pip"></span>
             <span class="notif-body">
                 <span class="notif-title"><?= e($n['title']) ?></span>
@@ -39,13 +39,13 @@
 <?php if ($pages > 1): ?>
 <nav class="pagination" data-reveal aria-label="Navigasi halaman">
     <?php if ($page > 1): ?>
-        <a class="pagination-link" href="/geprek-geh/account/notifications?page=<?= $page - 1 ?>">Sebelumnya</a>
+        <a class="pagination-link" href="/account/notifications?page=<?= $page - 1 ?>">Sebelumnya</a>
     <?php else: ?>
         <span class="pagination-link is-disabled">Sebelumnya</span>
     <?php endif; ?>
     <span class="pagination-info">Halaman <?= $page ?> dari <?= $pages ?></span>
     <?php if ($page < $pages): ?>
-        <a class="pagination-link" href="/geprek-geh/account/notifications?page=<?= $page + 1 ?>">Berikutnya</a>
+        <a class="pagination-link" href="/account/notifications?page=<?= $page + 1 ?>">Berikutnya</a>
     <?php else: ?>
         <span class="pagination-link is-disabled">Berikutnya</span>
     <?php endif; ?>

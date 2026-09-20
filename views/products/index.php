@@ -4,7 +4,7 @@ $sort = $_GET['sort'] ?? 'populer';
 $menu_qs_common = ['sort' => $sort];
 if (!empty($_GET['q'])) $menu_qs_common['q'] = $_GET['q'];
 $menu_qs = http_build_query($menu_qs_common);
-$menu_href_all = '/geprek-geh/products' . ($menu_qs !== '' ? '?' . $menu_qs : '');
+$menu_href_all = '/products' . ($menu_qs !== '' ? '?' . $menu_qs : '');
 $open_time = '';
 if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(\d{2}:\d{2})/', $app['contacts']['hours'], $mh)) {
     $open_time = $mh[1] . '–' . $mh[2];
@@ -40,7 +40,7 @@ if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(
 
 <section class="menu-filters">
     <div class="menu-toolbar">
-        <form method="GET" action="/geprek-geh/products" class="menu-filter-row">
+        <form method="GET" action="/products" class="menu-filter-row">
             <?php if ($active_cat_slug): ?><input type="hidden" name="category" value="<?= e($active_cat_slug) ?>"><?php endif; ?>
             <div class="menu-toolbar-top">
                 <div class="menu-search">
@@ -82,7 +82,7 @@ if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(
                         Semua
                     </a>
                     <?php foreach ($categories as $cat): ?>
-                        <a href="/geprek-geh/products?category=<?= e($cat['slug']) ?>&<?= $menu_qs ?>"
+                        <a href="/products?category=<?= e($cat['slug']) ?>&<?= $menu_qs ?>"
                            class="menu-pill <?= ($_GET['category'] ?? '') === $cat['slug'] ? 'active' : '' ?>">
                             <?= e($cat['name']) ?>
                             <span class="menu-pill-count"><?= $cat['product_count'] ?></span>
@@ -104,7 +104,7 @@ if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(
                     <?= $total ?> hasil
                     <?php if (!empty($_GET['q'])): ?> untuk "<strong><?= e($_GET['q']) ?></strong>"<?php endif; ?>
                     <?php if ($active_cat_name): ?> dalam <strong><?= e($active_cat_name) ?></strong><?php endif; ?>
-                    — <a href="/geprek-geh/products" class="menu-results-reset">Reset</a>
+                    — <a href="/products" class="menu-results-reset">Reset</a>
                 <?php else: ?>
                     Menampilkan semua <?= $total ?> menu
                 <?php endif; ?>
@@ -120,7 +120,7 @@ if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(
         </div>
         <h3>Tidak ada menu ditemukan</h3>
         <p>Coba kata kategori lain, atau reset pencarianmu.</p>
-        <a href="/geprek-geh/products" class="btn btn-primary">Lihat Semua Menu</a>
+        <a href="/products" class="btn btn-primary">Lihat Semua Menu</a>
     </div>
 <?php else: ?>
     <div class="menu-bento">
@@ -132,9 +132,9 @@ if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(
         ?>
             <article class="product-card <?= $is_feat ? 'product-card--feat' : '' ?>" data-reveal>
                 <div class="product-card-core">
-                    <a class="product-img" href="/geprek-geh/products/<?= e($p['slug']) ?>">
+                    <a class="product-img" href="/products/<?= e($p['slug']) ?>">
                         <?php if ($p['image']): ?>
-                            <img src="/geprek-geh/assets/uploads/products/<?= e($p['image']) ?>" alt="<?= e($p['name']) ?>" loading="lazy">
+                            <img src="/assets/uploads/products/<?= e($p['image']) ?>" alt="<?= e($p['name']) ?>" loading="lazy">
                         <?php else: ?>
                             <?= product_art($p['name'], $p['category_name'], '', 240) ?>
                         <?php endif; ?>
@@ -159,7 +159,7 @@ if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(
                     <div class="product-body">
                         <span class="product-cat"><?= e($p['category_name']) ?></span>
                         <h3 class="product-title">
-                            <a href="/geprek-geh/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a>
+                            <a href="/products/<?= e($p['slug']) ?>"><?= e($p['name']) ?></a>
                         </h3>
                         <?php if ($p['review_count'] > 0): ?>
                         <div class="product-rating">
@@ -175,7 +175,7 @@ if (!empty($app['contacts']['hours']) && preg_match('/(\d{2}:\d{2})\s*[–-]\s*(
                         <div class="product-foot">
                             <b class="product-price"><?= rupiah($p['price']) ?></b>
                             <?php if (!$out_stock): ?>
-                                <form method="POST" action="/geprek-geh/cart/add" class="product-add-form">
+                                <form method="POST" action="/cart/add" class="product-add-form">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
                                     <input type="hidden" name="quantity" value="1">

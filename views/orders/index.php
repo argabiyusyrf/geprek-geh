@@ -24,12 +24,12 @@
     $orders_qs_extra = [];
     if ($q !== '') $orders_qs_extra['q'] = $q;
     if ($sort !== 'terbaru') $orders_qs_extra['sort'] = $sort;
-    $orders_href = '/geprek-geh/orders' . ($orders_qs_extra ? '?' . http_build_query($orders_qs_extra) : '');
+    $orders_href = '/orders' . ($orders_qs_extra ? '?' . http_build_query($orders_qs_extra) : '');
 ?>
 
 <div class="menu-filters" data-reveal>
     <div class="menu-toolbar">
-        <form method="GET" action="/geprek-geh/orders" class="menu-filter-row">
+        <form method="GET" action="/orders" class="menu-filter-row">
             <?php if ($status !== ''): ?><input type="hidden" name="status" value="<?= e($status) ?>"><?php endif; ?>
             <div class="menu-toolbar-top">
                 <div class="menu-search">
@@ -71,7 +71,7 @@
                             $count = $key === '' ? $all_count : ($status_counts[$key] ?? 0);
                             $pill_params = $orders_qs_extra;
                             if ($key !== '') $pill_params['status'] = $key;
-                            $pill_href = '/geprek-geh/orders' . ($pill_params ? '?' . http_build_query($pill_params) : '');
+                            $pill_href = '/orders' . ($pill_params ? '?' . http_build_query($pill_params) : '');
                         ?>
                         <a href="<?= e($pill_href) ?>"
                            class="menu-pill <?= $status === $key ? 'active' : '' ?>">
@@ -89,7 +89,7 @@
                     <?= $total ?> pesanan
                     <?php if ($q !== ''): ?> untuk "<strong><?= e($q) ?></strong>"<?php endif; ?>
                     <?php if ($active_status_label !== ''): ?> di <strong><?= e($active_status_label) ?></strong><?php endif; ?>
-                    — <a href="/geprek-geh/orders" class="menu-results-reset">Reset</a>
+                    — <a href="/orders" class="menu-results-reset">Reset</a>
                 <?php else: ?>
                     Menampilkan semua <?= $total ?> pesananmu
                 <?php endif; ?>
@@ -106,9 +106,9 @@
         <h3><?= $q !== '' ? 'Tidak ada pesanan ditemukan' : ($status !== '' ? 'Belum ada pesanan di kategori ini.' : 'Belum ada cerita pedas di sini.') ?></h3>
         <p><?= $q !== '' ? 'Coba kata kunci berbeda, atau lihat kembali filtermu.' : ($status !== '' ? 'Coba pilih kategori lain, atau mulai pesan menu favoritmu sekarang.' : 'Saatnya menulis cerita pertama — pesan geprek andalanmu, kami antar panas.') ?></p>
         <?php if ($q !== '' || $status !== ''): ?>
-            <a href="/geprek-geh/orders" class="btn btn-ghost">Reset Pencarian</a>
+            <a href="/orders" class="btn btn-ghost">Reset Pencarian</a>
         <?php else: ?>
-        <a href="/geprek-geh/products" class="btn btn-primary">Mulai Pesan
+        <a href="/products" class="btn btn-primary">Mulai Pesan
             <span class="btn-icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </span>
@@ -126,7 +126,7 @@
             $more = count($items) - count($shown);
         ?>
             <div class="order-card-row">
-                <a href="/geprek-geh/orders/<?= $o['id'] ?>" class="order-card" data-reveal>
+                <a href="/orders/<?= $o['id'] ?>" class="order-card" data-reveal>
                     <div class="order-card-header">
                         <span class="invoice"><?= e($o['invoice_no']) ?></span>
                         <span class="badge <?= $badge_class ?>"><?= $status_label ?></span>
@@ -135,7 +135,7 @@
                     <div class="order-card-items">
                         <?php foreach ($shown as $i): ?>
                             <?php if ($i['image']): ?>
-                                <img class="order-thumb" src="/geprek-geh/assets/uploads/products/<?= e($i['image']) ?>" alt="<?= e($i['name']) ?>" loading="lazy">
+                                <img class="order-thumb" src="/assets/uploads/products/<?= e($i['image']) ?>" alt="<?= e($i['name']) ?>" loading="lazy">
                             <?php else: ?>
                                 <span class="order-thumb order-thumb-art"><?= product_art($i['name'], $i['category_name'] ?? '', '', 56) ?></span>
                             <?php endif; ?>
@@ -154,7 +154,7 @@
                     </div>
                 </a>
                 <?php if ($can_reorder): ?>
-                    <form method="POST" action="/geprek-geh/orders/<?= $o['id'] ?>/reorder" class="order-card-action">
+                    <form method="POST" action="/orders/<?= $o['id'] ?>/reorder" class="order-card-action">
                         <?= csrf_field() ?>
                         <button type="submit" class="btn btn-ghost btn-sm" title="Pesan ulang">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.64-6.36M3 3v6h6"/></svg>
