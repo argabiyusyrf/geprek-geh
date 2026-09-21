@@ -24,7 +24,7 @@ public function requestForm() {
     public function request() {
         if (!verify_csrf()) {
             flash_set('error', 'Sesi tidak valid, silakan coba lagi.');
-            header('Location: /auth/forgot'); exit;
+            gg_redirect('/auth/forgot'); exit;
         }
         $step  = $_POST['step'] ?? 'email';
         $ip    = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
@@ -36,22 +36,22 @@ public function requestForm() {
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $_SESSION['forgot_old'] = $email;
                 $_SESSION['forgot_error'] = 'Format email tidak valid.';
-                header('Location: /auth/forgot'); exit;
+                gg_redirect('/auth/forgot'); exit;
             }
             if (!RateLimiter::attempt('forgot-check:' . $ip, 15, 300)) {
                 $_SESSION['forgot_old'] = $email;
                 $_SESSION['forgot_error'] = 'Terlalu banyak percobaan. Coba lagi dalam 5 menit.';
-                header('Location: /auth/forgot'); exit;
+                gg_redirect('/auth/forgot'); exit;
             }
             $user = $db->fetchOne("SELECT id, name, email FROM users WHERE email = ?", [$email]);
             if (!$user) {
                 $_SESSION['forgot_old'] = $email;
                 $_SESSION['forgot_error'] = "Email {$email} belum terdaftar. Silakan daftar dulu.";
                 unset($_SESSION['forgot_flow']);
-                header('Location: /auth/forgot'); exit;
+                gg_redirect('/auth/forgot'); exit;
             }
             $_SESSION['forgot_flow'] = ['step' => 'method', 'uid' => (int) $user['id'], 'email' => $user['email'], 'name' => $user['name']];
-            header('Location: /auth/forgot'); exit;
+            gg_redirect('/auth/forgot'); exit;
         }
 
         // ── LANGKAH 2: pilih metode (link email / kata kunci) ──
@@ -59,7 +59,7 @@ public function requestForm() {
         if (!$flow || ($flow['step'] ?? '') !== 'method' || empty($flow['email'])) {
             unset($_SESSION['forgot_flow']);
             flash_set('error', 'Mulai lagi dari email terdaftar.');
-            header('Location: /auth/forgot'); exit;
+            gg_redirect('/auth/forgot'); exit;
         }
         $email = $flow['email'];
         $method = $_POST['method'] ?? 'email';
@@ -67,18 +67,18 @@ public function requestForm() {
         if ($method === 'keyword') {
             if (!RateLimiter::attempt('keyword:' . $email, 5, 300)) {
                 $_SESSION['forgot_error'] = 'Terlalu banyak percobaan. Coba lagi dalam 5 menit.';
-                header('Location: /auth/forgot'); exit;
+                gg_redirect('/auth/forgot'); exit;
             }
             if (!RateLimiter::attempt('keyword-ip:' . $ip, 10, 600)) {
                 $_SESSION['forgot_error'] = 'Terlalu banyak percobaan dari perangkat ini. Coba lagi nanti.';
-                header('Location: /auth/forgot'); exit;
+                gg_redirect('/auth/forgot'); exit;
             }
 
             $phrase = $_POST['keyword'] ?? '';
             if ($phrase === '' || !Auth::verifyRecoveryKeyword((int) $flow['uid'], $phrase)) {
                 // uid diketahui dari langkah 1; hanya verifikasi kata kunci, tanpa query ulang.
                 $_SESSION['forgot_error'] = 'Kata kunci salah. Coba lagi, atau pilih jalur link email.';
-                header('Location: /auth/forgot'); exit;
+                gg_redirect('/auth/forgot'); exit;
             }
 
             $_SESSION['recovery_uid']   = (int) $flow['uid'];
@@ -86,17 +86,17 @@ public function requestForm() {
             $_SESSION['recovery_email'] = $flow['email'];
             $_SESSION['recovery_exp']   = time() + 600; // 10 menit
             unset($_SESSION['forgot_flow']);
-            header('Location: /auth/recovery'); exit;
+            gg_redirect('/auth/recovery'); exit;
         }
 
         // ── LANGKAH 2 jalur email: link reset terkirim ──
         if (!RateLimiter::attempt('reset-ip:' . $ip, 5, 3600)) {
             $_SESSION['forgot_error'] = 'Terlalu banyak permintaan reset dari perangkat ini. Coba lagi dalam 1 jam.';
-            header('Location: /auth/forgot'); exit;
+            gg_redirect('/auth/forgot'); exit;
         }
         if (!RateLimiter::attempt('reset:' . $email, 3, 3600)) {
             $_SESSION['forgot_error'] = 'Terlalu banyak permintaan reset. Coba lagi dalam 1 jam.';
-            header('Location: /auth/forgot'); exit;
+            gg_redirect('/auth/forgot'); exit;
         }
 
         $user = $db->fetchOne("SELECT * FROM users WHERE email = ?", [$email]);
@@ -132,7 +132,7 @@ public function requestForm() {
 
         // Tetap stop terlepas dari keberhasilan kirim (tidak bocori status ke pesan flash).
         $_SESSION['forgot_flow'] = ['step' => 'sent', 'email' => $email, 'name' => $flow['name'] ?? ''];
-        header('Location: /auth/forgot'); exit;
+        gg_redirect('/auth/forgot'); exit;
     }
 
     public function resetForm() {
@@ -151,7 +151,7 @@ public function requestForm() {
     public function reset() {
         if (!verify_csrf()) {
             flash_set('error', 'Sesi tidak valid.');
-            header('Location: /auth/login'); exit;
+            gg_redirect('/auth/login'); exit;
         }
         $selector = $_POST['selector'] ?? '';
         $token    = $_POST['token'] ?? '';
@@ -160,21 +160,21 @@ public function requestForm() {
 
         if (strlen($password) < 6) {
             flash_set('error', 'Password minimal 6 karakter.');
-            header('Location: /auth/reset?selector=' . urlencode($selector) . '&token=' . urlencode($token)); exit;
+            gg_redirect('/auth/reset?selector=' . urlencode($selector) . '&token=' . urlencode($token)); exit;
         }
         if (strlen($password) > 72) {
             flash_set('error', 'Password maksimal 72 karakter.');
-            header('Location: /auth/reset?selector=' . urlencode($selector) . '&token=' . urlencode($token)); exit;
+            gg_redirect('/auth/reset?selector=' . urlencode($selector) . '&token=' . urlencode($token)); exit;
         }
         if ($password !== $confirm) {
             flash_set('error', 'Konfirmasi password tidak cocok.');
-            header('Location: /auth/reset?selector=' . urlencode($selector) . '&token=' . urlencode($token)); exit;
+            gg_redirect('/auth/reset?selector=' . urlencode($selector) . '&token=' . urlencode($token)); exit;
         }
 
         $row = self::validateToken($selector, $token);
         if (!$row) {
             flash_set('error', 'Link reset sudah tidak valid atau kedaluwarsa. Minta link baru.');
-            header('Location: /auth/forgot'); exit;
+            gg_redirect('/auth/forgot'); exit;
         }
 
         $db = Database::getInstance();
@@ -189,7 +189,7 @@ public function requestForm() {
         $db->delete('sessions', 'user_id = ?', [(int) $row['user_id']]);
 
         flash_set('success', 'Password berhasil diperbarui. Silakan login dengan password baru.');
-        header('Location: /auth/login'); exit;
+        gg_redirect('/auth/login'); exit;
     }
 
     /** Returns the matching row if selector+token valid and unused; else false. */

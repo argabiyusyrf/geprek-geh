@@ -15,6 +15,66 @@ function slug($text) {
 }
 
 function redirect($url) {
+    gg_redirect($url);
+}
+
+/**
+ * Base path mount app (mis. "/geprek-geh"), atau "" saat di root.
+ * Didefinisikan di config/bootstrap.php dari env GG_BASE_PATH.
+ */
+function gg_base(): string {
+    return defined('GG_BASE_PATH') && GG_BASE_PATH !== '' ? '/' . GG_BASE_PATH : '';
+}
+
+/**
+ * Token URL root-absolute milik aplikasi (rute + aset statis).
+ * Dipakai gg_url_rewrite() agar aman: hanya literal quote+path yang diganti,
+ * jadi markup seperti "/><circle" tidak pernah tersentuh.
+ */
+function gg_base_root_tokens(): array {
+    return [
+        '/account', '/admin', '/auth', '/cart', '/checkout', '/orders',
+        '/pages', '/products', '/promo', '/reviews', '/wishlist',
+        '/sitemap.xml', '/robots.txt', '/favicon.ico',
+        '/public', '/vendor', '/assets',
+        '/nama-produk', '/nama-kategori',
+    ];
+}
+
+/**
+ * Tulis ulang URL root-absolute ("/x" → "/base/x") di output HTML/JS
+ * saat app di-mount di sub-path. Tanpa base (GG_BASE_PATH kosong):
+ * fungsi no-op dan tidak mengubah apa pun.
+ */
+function gg_url_rewrite(string $html): string {
+    $base = gg_base();
+    if ($base === '') return $html;
+
+    $html = strtr($html, [
+        'href="/"'    => 'href="' . $base . '/"',
+        "href='/'"    => "href='" . $base . "/'",
+        'action="/"'  => 'action="' . $base . '/"',
+        "action='/'"  => "action='" . $base . "/'",
+        'fetch("/")'  => 'fetch("' . $base . '/")',
+        "fetch('/')"  => "fetch('" . $base . "/')",
+    ]);
+
+    foreach (gg_base_root_tokens() as $token) {
+        $with = $base . $token;
+        $html = str_replace('"' . $token, '"' . $with, $html);
+        $html = str_replace("'" . $token, "'" . $with, $html);
+    }
+
+    return $html;
+}
+
+/** redirect() dengan kesadaran base path: prefix "/" → base + "/". */
+function gg_redirect($url) {
+    $base = gg_base();
+    if ($base !== '' && is_string($url)
+        && str_starts_with($url, '/') && !str_starts_with($url, '//')) {
+        $url = $base . $url;
+    }
     header("Location: {$url}");
     exit;
 }

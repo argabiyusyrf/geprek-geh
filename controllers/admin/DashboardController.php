@@ -19,19 +19,28 @@ class DashboardController {
         $hari  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
         $admin_welcome_date = $hari[(int)date('w')] . ', ' . (int)date('d') . ' ' . $bulan[(int)date('n') - 1] . ' ' . date('Y');
 
-        // Penjualan 7 hari terakhir (area chart)
+        // Penjualan 7 hari terakhir (area chart) — satu query GROUP BY untuk
+        // seluruh rentang, bukan 7 query terpisah. Skalabel ke 30/90 hari.
+        $grouped = [];
+        foreach ($db->fetchAll(
+            "SELECT DATE(created_at) AS day,
+                    COALESCE(SUM(total - discount + shipping_cost + tax),0) AS rev,
+                    COUNT(*) AS ordr
+               FROM orders
+              WHERE status != 'cancelled' AND created_at >= ?
+              GROUP BY DATE(created_at)",
+            [date('Y-m-d', strtotime('-6 days'))]
+        ) as $r) {
+            $grouped[$r['day']] = ['revenue' => (int) $r['rev'], 'orders' => (int) $r['ordr']];
+        }
         $sales7 = [];
         for ($i = 6; $i >= 0; $i--) {
-            $day  = date('Y-m-d', strtotime("-$i days"));
-            $row  = $db->fetchOne(
-                "SELECT COALESCE(SUM(total - discount + shipping_cost + tax),0) AS rev, COUNT(*) AS ordr
-                   FROM orders WHERE status != 'cancelled' AND DATE(created_at) = ?",
-                [$day]
-            );
+            $day = date('Y-m-d', strtotime("-$i days"));
+            $g   = $grouped[$day] ?? ['revenue' => 0, 'orders' => 0];
             $sales7[] = [
                 'day'     => date('d/m', strtotime($day)),
-                'revenue' => (int)($row['rev'] ?? 0),
-                'orders'  => (int)($row['ordr'] ?? 0),
+                'revenue' => $g['revenue'],
+                'orders'  => $g['orders'],
             ];
         }
 

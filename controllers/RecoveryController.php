@@ -30,7 +30,7 @@ class RecoveryController {
         $user = $this->recoveryUser();
         if (!$user) {
             flash_set('error', 'Sesi pemulihan tidak valid atau kedaluwarsa.');
-            header('Location: /auth/forgot'); exit;
+            gg_redirect('/auth/forgot'); exit;
         }
         $rc_name = $_SESSION['recovery_name'] ?? $user['name'];
         $page_title = 'Ubah Password';
@@ -41,20 +41,20 @@ class RecoveryController {
     public function change() {
         if (!verify_csrf()) {
             flash_set('error', 'Sesi tidak valid, silakan coba lagi.');
-            header('Location: /auth/recovery'); exit;
+            gg_redirect('/auth/recovery'); exit;
         }
         $user = $this->recoveryUser();
         if (!$user) {
             flash_set('error', 'Sesi pemulihan tidak valid atau kedaluwarsa.');
-            header('Location: /auth/forgot'); exit;
+            gg_redirect('/auth/forgot'); exit;
         }
 
         $password = $_POST['password'] ?? '';
         $confirm  = $_POST['password_confirm'] ?? '';
 
-        if (strlen($password) < 6)      { flash_set('error', 'Password minimal 6 karakter.');  header('Location: /auth/recovery'); exit; }
-        if (strlen($password) > 72)     { flash_set('error', 'Password maksimal 72 karakter.'); header('Location: /auth/recovery'); exit; }
-        if ($password !== $confirm)     { flash_set('error', 'Konfirmasi password tidak cocok.'); header('Location: /auth/recovery'); exit; }
+        if (strlen($password) < 6)      { flash_set('error', 'Password minimal 6 karakter.');  gg_redirect('/auth/recovery'); exit; }
+        if (strlen($password) > 72)     { flash_set('error', 'Password maksimal 72 karakter.'); gg_redirect('/auth/recovery'); exit; }
+        if ($password !== $confirm)     { flash_set('error', 'Konfirmasi password tidak cocok.'); gg_redirect('/auth/recovery'); exit; }
 
         $db = Database::getInstance();
         $uid = (int) $user['id'];
@@ -67,6 +67,6 @@ class RecoveryController {
         $this->forgetRecovery();
 
         flash_set('success', 'Password berhasil diperbarui.');
-        header('Location: /auth/login'); exit;
+        gg_redirect('/auth/login'); exit;
     }
 }

@@ -10,7 +10,7 @@ class AuthController {
     public function login() {
         if (!verify_csrf()) {
             flash_set('error', 'Sesi tidak valid, silakan coba lagi.');
-            header('Location: /auth/login');
+            gg_redirect('/auth/login');
             exit;
         }
         $email    = strtolower(trim($_POST['email'] ?? ''));
@@ -20,14 +20,14 @@ class AuthController {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 190) {
             $_SESSION['login_old'] = ['email' => $email];
             flash_set('error', 'Format email tidak valid.');
-            header('Location: /auth/login');
+            gg_redirect('/auth/login');
             exit;
         }
 
         if (!RateLimiter::attempt('login:' . $email, 5, 300)) {
             $_SESSION['login_old'] = ['email' => $email];
             flash_set('error', 'Terlalu banyak percobaan. Coba lagi dalam 5 menit.');
-            header('Location: /auth/login');
+            gg_redirect('/auth/login');
             exit;
         }
 
@@ -35,14 +35,14 @@ class AuthController {
         if (!$user) {
             $_SESSION['login_old'] = ['email' => $email];
             flash_set('error', 'Email atau password salah.');
-            header('Location: /auth/login');
+            gg_redirect('/auth/login');
             exit;
         }
 
         if ((int) ($user['is_blocked'] ?? 0) === 1) {
             $_SESSION['login_old'] = ['email' => $email];
             flash_set('error', 'Akun ini diblokir oleh admin. Hubungi admin untuk info lebih lanjut.');
-            header('Location: /auth/login');
+            gg_redirect('/auth/login');
             exit;
         }
 
@@ -53,7 +53,7 @@ class AuthController {
             $_SESSION['twofa_role']     = $user['role'];
             $_SESSION['twofa_remember'] = $remember ? 1 : 0;
             flash_set('info', 'Masukkan kode verifikasi 2FA untuk melanjutkan.');
-            header('Location: /auth/2fa');
+            gg_redirect('/auth/2fa');
             exit;
         }
 
@@ -73,7 +73,7 @@ class AuthController {
         if (empty($_SESSION['twofa_uid'])) redirect('/auth/login');
         if (!verify_csrf()) {
             flash_set('error', 'Sesi tidak valid, silakan coba lagi.');
-            header('Location: /auth/2fa');
+            gg_redirect('/auth/2fa');
             exit;
         }
 
@@ -83,14 +83,14 @@ class AuthController {
         if (!$user || (int) $user['totp_enabled'] !== 1) {
             unset($_SESSION['twofa_uid'], $_SESSION['twofa_name'], $_SESSION['twofa_role']);
             flash_set('error', 'Sesi tidak valid, silakan login kembali.');
-            header('Location: /auth/login');
+            gg_redirect('/auth/login');
             exit;
         }
 
         if ((int) ($user['is_blocked'] ?? 0) === 1) {
             unset($_SESSION['twofa_uid'], $_SESSION['twofa_name'], $_SESSION['twofa_role']);
             flash_set('error', 'Akun ini diblokir oleh admin. Hubungi admin untuk info lebih lanjut.');
-            header('Location: /auth/login');
+            gg_redirect('/auth/login');
             exit;
         }
 
@@ -98,7 +98,7 @@ class AuthController {
 
         if (!RateLimiter::attempt('2fa:' . ($_SESSION['twofa_uid'] ?? 'x'), 5, 300)) {
             flash_set('error', 'Terlalu banyak percobaan 2FA. Coba lagi dalam 5 menit.');
-            header('Location: /auth/2fa');
+            gg_redirect('/auth/2fa');
             exit;
         }
 
@@ -115,7 +115,7 @@ class AuthController {
         }
 
         flash_set('error', 'Kode 2FA salah atau sudah kedaluwarsa.');
-        header('Location: /auth/2fa');
+        gg_redirect('/auth/2fa');
         exit;
     }
 
@@ -131,7 +131,7 @@ class AuthController {
         if (!verify_csrf()) {
             $_SESSION['login_old'] = ['email' => $_POST['email'] ?? '', 'name' => $_POST['name'] ?? ''];
             flash_set('error', 'Sesi tidak valid, silakan coba lagi.');
-            header('Location: /auth/register');
+            gg_redirect('/auth/register');
             exit;
         }
         $name     = trim($_POST['name'] ?? '');
@@ -154,7 +154,7 @@ class AuthController {
         if ($fatal) {
             $_SESSION['reg_old'] = ['name' => $name, 'email' => $email, 'phone' => $phone, 'terms' => $terms === '1' ? '1' : ''];
             $_SESSION['reg_errors'] = $errors;
-            header('Location: /auth/register');
+            gg_redirect('/auth/register');
             exit;
         }
 
@@ -193,18 +193,18 @@ class AuthController {
         if ($errors) {
             $_SESSION['reg_old']     = ['name' => $name, 'email' => $email, 'phone' => $phone, 'terms' => $terms === '1' ? '1' : ''];
             $_SESSION['reg_errors']  = $errors;
-            header('Location: /auth/register');
+            gg_redirect('/auth/register');
             exit;
         }
 
         if (Auth::register($name, $email, $password, $phone)) {
             flash_set('success', 'Registrasi berhasil! Selamat datang, ' . $name . '!');
-            header('Location: /account/setup');
+            gg_redirect('/account/setup');
         } else {
             $errors['email'] = 'Email sudah terdaftar. Gunakan email lain atau silakan login.';
             $_SESSION['reg_old']     = ['name' => $name, 'email' => $email, 'phone' => $phone, 'terms' => $terms === '1' ? '1' : ''];
             $_SESSION['reg_errors']  = $errors;
-            header('Location: /auth/register');
+            gg_redirect('/auth/register');
         }
         exit;
     }

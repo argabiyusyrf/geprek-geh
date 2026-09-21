@@ -118,7 +118,7 @@ class PromoController {
 
     public function store() {
         \Auth::requireStaff();
-        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /admin/promos'); exit; }
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); gg_redirect('/admin/promos'); exit; }
         $db = \Database::getInstance();
         $in = $this->collectInput();
 
@@ -126,7 +126,7 @@ class PromoController {
         if ($errors) {
             \form_stash($errors, $in);
             \flash_set('error', 'Mohon periksa kembali isian form promo.');
-            header('Location: /admin/promos?create=1&error=1'); exit;
+            gg_redirect('/admin/promos?create=1&error=1'); exit;
         }
 
         $db->insert('promo_codes', [
@@ -142,19 +142,19 @@ class PromoController {
         ]);
 
         \flash_set('success', 'Kode promo "' . $in['code'] . '" berhasil dibuat.');
-        header('Location: /admin/promos');
+        gg_redirect('/admin/promos');
         exit;
     }
 
     public function update($id) {
         \Auth::requireStaff();
         $id = (int) $id;
-        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /admin/promos'); exit; }
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); gg_redirect('/admin/promos'); exit; }
         $db = \Database::getInstance();
         $promo = $db->fetchOne("SELECT * FROM promo_codes WHERE id = ?", [$id]);
         if (!$promo) {
             \flash_set('error', 'Kode promo tidak ditemukan.');
-            header('Location: /admin/promos'); exit;
+            gg_redirect('/admin/promos'); exit;
         }
         $in = $this->collectInput();
 
@@ -162,7 +162,7 @@ class PromoController {
         if ($errors) {
             \form_stash($errors, $in);
             \flash_set('error', 'Mohon periksa kembali isian form promo.');
-            header('Location: /admin/promos?edit=' . $id . '&error=1'); exit;
+            gg_redirect('/admin/promos?edit=' . $id . '&error=1'); exit;
         }
 
         $db->update('promo_codes', [
@@ -177,7 +177,7 @@ class PromoController {
         ], 'id = ?', [$id]);
 
         \flash_set('success', 'Kode promo "' . $in['code'] . '" berhasil diupdate.');
-        header('Location: /admin/promos');
+        gg_redirect('/admin/promos');
         exit;
     }
 
@@ -187,12 +187,12 @@ class PromoController {
         $promo = $db->fetchOne("SELECT * FROM promo_codes WHERE id = ?", [$id]);
         if (!$promo) {
             \flash_set('error', 'Kode promo tidak ditemukan.');
-            header('Location: /admin/promos');
+            gg_redirect('/admin/promos');
             exit;
         }
         $db->update('promo_codes', ['is_active' => $promo['is_active'] ? 0 : 1], 'id = ?', [$id]);
         \flash_set('success', 'Status kode promo "' . $promo['code'] . '" diperbarui.');
-        header('Location: /admin/promos');
+        gg_redirect('/admin/promos');
         exit;
     }
 
@@ -201,7 +201,7 @@ class PromoController {
         $db = \Database::getInstance();
         $db->delete('promo_codes', 'id = ?', [(int) $id]);
         \flash_set('success', 'Kode promo dihapus.');
-        header('Location: /admin/promos');
+        gg_redirect('/admin/promos');
         exit;
     }
 }

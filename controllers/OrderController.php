@@ -362,4 +362,47 @@ class OrderController {
         }
         redirect('/cart');
     }
+
+    /**
+     * Sajikan bukti pembayaran via endpoint berizin (pemilik order / admin-staff),
+     * bukan file publik langsung. Nama file tak pernah dibocorkan; gambar dikirim
+     * dengan header yang aman.
+     */
+    public function paymentProof($id) {
+        Auth::requireLogin();
+        $isStaff = Auth::staff();
+        $row = $isStaff
+            ? Database::getInstance()->fetchOne(
+                "SELECT id, payment_proof FROM orders WHERE id = ?",
+                [(int) $id]
+            )
+            : Database::getInstance()->fetchOne(
+                "SELECT id, payment_proof FROM orders WHERE id = ? AND user_id = ?",
+                [(int) $id, Auth::id()]
+            );
+
+        if (!$row || empty($row['payment_proof'])) {
+            http_response_code(404);
+            exit('Bukti pembayaran tidak ditemukan.');
+        }
+
+        $file = dirname(__DIR__) . '/assets/uploads/payments/' . basename((string) $row['payment_proof']);
+        if (!is_file($file) || !is_readable($file)) {
+            http_response_code(404);
+            exit('File bukti pembayaran tidak tersedia.');
+        }
+
+        $mime = mime_content_type($file) ?: 'application/octet-stream';
+        if (!str_starts_with($mime, 'image/')) {
+            $mime = 'application/octet-stream';
+        }
+
+        header('Content-Type: ' . $mime);
+        header('Content-Length: ' . filesize($file));
+        header('Content-Disposition: inline; filename="proof"');
+        header('X-Content-Type-Options: nosniff');
+        header('Cache-Control: private, max-age=300');
+        readfile($file);
+        exit;
+    }
 }

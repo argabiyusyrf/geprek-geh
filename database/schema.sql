@@ -236,6 +236,8 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   CONSTRAINT `sessions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabel settings adalah legasi yang tidak dipakai kode aplikasi
+-- tabel konfigurasi resmi adalah toko_settings (skey/svalue)
 CREATE TABLE IF NOT EXISTS `settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `key_name` varchar(100) NOT NULL,

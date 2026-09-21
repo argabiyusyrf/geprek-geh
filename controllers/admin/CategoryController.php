@@ -36,7 +36,7 @@ class CategoryController {
 
     public function store() {
         \Auth::requireStaff();
-        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /admin/categories'); exit; }
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); gg_redirect('/admin/categories'); exit; }
         $db = \Database::getInstance();
         $name = trim($_POST['name'] ?? '');
         $description = trim($_POST['description'] ?? '');
@@ -46,7 +46,7 @@ class CategoryController {
         if ($errors) {
             \form_stash($errors, ['name' => $name, 'description' => $description, 'sort_order' => $sortOrder]);
             \flash_set('error', 'Mohon periksa kembali isian form kategori.');
-            header('Location: /admin/categories?create=1&error=1'); exit;
+            gg_redirect('/admin/categories?create=1&error=1'); exit;
         }
 
         $db->insert('categories', [
@@ -57,18 +57,18 @@ class CategoryController {
         ]);
 
         \flash_set('success', 'Kategori "' . $name . '" berhasil ditambahkan.');
-        header('Location: /admin/categories');
+        gg_redirect('/admin/categories');
         exit;
     }
 
     public function update($id) {
         \Auth::requireStaff();
         $id = (int) $id;
-        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /admin/categories'); exit; }
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); gg_redirect('/admin/categories'); exit; }
         $db = \Database::getInstance();
         if (!$db->fetchOne("SELECT id FROM categories WHERE id = ?", [$id])) {
             \flash_set('error', 'Kategori tidak ditemukan.');
-            header('Location: /admin/categories'); exit;
+            gg_redirect('/admin/categories'); exit;
         }
         $name = trim($_POST['name'] ?? '');
         $description = trim($_POST['description'] ?? '');
@@ -78,7 +78,7 @@ class CategoryController {
         if ($errors) {
             \form_stash($errors, ['name' => $name, 'description' => $description, 'sort_order' => $sortOrder]);
             \flash_set('error', 'Mohon periksa kembali isian form kategori.');
-            header('Location: /admin/categories?edit=' . $id . '&error=1'); exit;
+            gg_redirect('/admin/categories?edit=' . $id . '&error=1'); exit;
         }
 
         $db->update('categories', [
@@ -89,22 +89,22 @@ class CategoryController {
         ], 'id = ?', [$id]);
 
         \flash_set('success', 'Kategori berhasil diupdate.');
-        header('Location: /admin/categories');
+        gg_redirect('/admin/categories');
         exit;
     }
 
     public function delete($id) {
         \Auth::requireStaff();
-        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); header('Location: /admin/categories'); exit; }
+        if (!\verify_csrf()) { \flash_set('error', 'Token tidak valid.'); gg_redirect('/admin/categories'); exit; }
         $db = \Database::getInstance();
         $cat = $db->fetchOne("SELECT id FROM categories WHERE id = ?", [$id]);
         if (!$cat) {
             \flash_set('error', 'Kategori tidak ditemukan.');
-            header('Location: /admin/categories'); exit;
+            gg_redirect('/admin/categories'); exit;
         }
         $db->delete('categories', 'id = ?', [$id]);
         \flash_set('success', 'Kategori berhasil dihapus.');
-        header('Location: /admin/categories');
+        gg_redirect('/admin/categories');
         exit;
     }
 }

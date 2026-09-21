@@ -49,7 +49,7 @@ class NotificationController {
         }
         Database::getInstance()->update('notifications', ['is_read' => 1], 'user_id = ?', [Auth::id()]);
         $back = $_SERVER['HTTP_REFERER'] ?? '/';
-        header('Location: ' . $back);
+        gg_redirect('' . $back);
         exit;
     }
 

@@ -296,8 +296,8 @@ $weekly_out = $weekly_remaining <= 0;
             <?php if ($proof_exists): ?>
             <div class="proof-box">
                 <span class="meta-label">Bukti Pembayaran</span>
-                <a href="/assets/uploads/payments/<?= e($order['payment_proof']) ?>" target="_blank" rel="noopener" class="proof-preview">
-                    <img src="/assets/uploads/payments/<?= e($order['payment_proof']) ?>" alt="Bukti pembayaran" loading="lazy">
+                <a href="<?= e(gg_base() . '/orders/' . $order['id'] . '/payment-proof') ?>" target="_blank" rel="noopener" class="proof-preview">
+                    <img src="<?= e(gg_base() . '/orders/' . $order['id'] . '/payment-proof') ?>" alt="Bukti pembayaran" loading="lazy">
                     <span class="proof-zoom">Perbesar bukti</span>
                 </a>
             </div>

@@ -6,4 +6,6 @@ $router = require __DIR__ . '/config/bootstrap.php';
 
 require __DIR__ . '/config/routes.php';
 
+ob_start();
 $router->dispatch();
+echo gg_url_rewrite((string) ob_get_clean());

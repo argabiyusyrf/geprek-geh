@@ -13,6 +13,7 @@ class Router {
     public function dispatch() {
         $url = trim($_GET['url'] ?? '', '/');
         $method = $_SERVER['REQUEST_METHOD'];
+        if ($method === 'HEAD') $method = 'GET';
 
         // exact match
         if (isset($this->routes[$method]['/' . $url])) {

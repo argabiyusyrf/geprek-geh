@@ -17,7 +17,7 @@ class SettingsController {
         \Auth::requireAdmin();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
-            header('Location: /admin/settings');
+            gg_redirect('/admin/settings');
             exit;
         }
 
@@ -62,7 +62,7 @@ class SettingsController {
         }
 
         \flash_set('success', 'Pengaturan toko berhasil disimpan.');
-        header('Location: /admin/settings');
+        gg_redirect('/admin/settings');
         exit;
     }
 }

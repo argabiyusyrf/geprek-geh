@@ -56,13 +56,13 @@ class CartController {
         $product = $db->fetchOne("SELECT * FROM products WHERE id = ? AND is_active = 1", [$product_id]);
         if (!$product) {
             $respond(false, 'Produk tidak ditemukan.');
-            header('Location: /products');
+            gg_redirect('/products');
             exit;
         }
 
         if ($product['stock'] < $qty) {
             $respond(false, 'Stok tidak cukup.');
-            header("Location: /products/{$product['slug']}");
+            gg_redirect("/products/{$product['slug']}");
             exit;
         }
 
@@ -97,7 +97,7 @@ class CartController {
         }
 
         $respond(true, 'Produk ditambahkan ke keranjang.', ['count' => CartController::count()]);
-        header('Location: /cart');
+        gg_redirect('/cart');
         exit;
     }
 
@@ -123,7 +123,7 @@ class CartController {
                 flash_set('success', 'Keranjang diperbarui.');
             }
         }
-        header('Location: /cart');
+        gg_redirect('/cart');
         exit;
     }
 
@@ -137,7 +137,7 @@ class CartController {
         [$whereCol, $whereVal] = cart_where();
         $db->delete('cart', 'id = ? AND ' . $whereCol . ' = ?', [$cart_id, $whereVal]);
         flash_set('success', 'Produk dihapus dari keranjang.');
-        header('Location: /cart');
+        gg_redirect('/cart');
         exit;
     }
 
@@ -150,7 +150,7 @@ class CartController {
         [$whereCol, $whereVal] = cart_where();
         $db->delete('cart', $whereCol . ' = ?', [$whereVal]);
         flash_set('success', 'Keranjang telah dikosongkan.');
-        header('Location: /cart');
+        gg_redirect('/cart');
         exit;
     }
 

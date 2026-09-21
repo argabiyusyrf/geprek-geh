@@ -11,7 +11,7 @@ class OrderController {
     }
 
     private function redirectBack($id) {
-        header("Location: /admin/orders/{$id}");
+        gg_redirect("/admin/orders/{$id}");
         exit;
     }
 
@@ -118,7 +118,7 @@ class OrderController {
         $order = $this->order($id);
         if (!$order) {
             \flash_set('error', 'Pesanan tidak ditemukan.');
-            header('Location: /admin/orders');
+            gg_redirect('/admin/orders');
             exit;
         }
         $items = \order_items($id);
@@ -182,7 +182,7 @@ class OrderController {
         $order = $this->order($id);
         if (!$order) {
             \flash_set('error', 'Pesanan tidak ditemukan.');
-            header('Location: /admin/orders');
+            gg_redirect('/admin/orders');
             exit;
         }
 
@@ -261,7 +261,7 @@ class OrderController {
         $order = $this->order($id);
         if (!$order) {
             \flash_set('error', 'Pesanan tidak ditemukan.');
-            header('Location: /admin/orders');
+            gg_redirect('/admin/orders');
             exit;
         }
 

@@ -50,7 +50,7 @@ Toko online ayam geprek berbasis **PHP 8.4 MVC** murni (tanpa Composer, tanpa fr
 
 ## Deployment production (InfinityFree)
 
-1. Deploy semua file ke webroot via FTP (`.htaccess` aktif sebagai garda keamanan).
+1. Deploy semua file ke webroot via FTP (`.htaccess` aktif sebagai garda keamanan). Ada skrip deploy satu-tombol: `cp scripts/.deploy.env.example scripts/.deploy.env` → isi kredensial FTP+DB → `bash scripts/deploy.sh` (build paket bersih + generate `.env` production + upload otomatis).
 2. Upload `.env` berisi `GG_DB_HOST=sql102.infinityfree.com`, `GG_DB_USER=if0_...`, `GG_DB_PASS=...`, `GG_DB_NAME=if0_..._geprekgeh` (lihat bagian "PRODUCTION" di `.env.example`).
 3. Seed DB — salah satu:
    - Jika hosting menyediakan CLI/terminal: `php install.php --empty`

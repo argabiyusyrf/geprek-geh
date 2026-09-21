@@ -21,7 +21,7 @@ class Auth {
     public static function requireLogin() {
         if (!self::check()) {
             $_SESSION['flash'] = ['type' => 'error', 'msg' => 'Silakan login terlebih dahulu.'];
-            header('Location: /auth/login');
+            gg_redirect('/auth/login');
             exit;
         }
         $row = Database::getInstance()->fetchOne("SELECT is_blocked FROM users WHERE id = ?", [self::id()]);
@@ -33,7 +33,7 @@ class Auth {
             session_start();
             session_regenerate_id(true);
             $_SESSION['flash'] = ['type' => 'error', 'msg' => $row ? 'Akun Anda telah diblokir oleh admin.' : 'Sesi tidak valid, silakan login kembali.'];
-            header('Location: /auth/login');
+            gg_redirect('/auth/login');
             exit;
         }
     }
@@ -42,7 +42,7 @@ class Auth {
         self::requireLogin();
         if (!self::admin()) {
             $_SESSION['flash'] = ['type' => 'error', 'msg' => 'Akses ditolak.'];
-            header('Location: /');
+            gg_redirect('/');
             exit;
         }
     }
@@ -57,7 +57,7 @@ class Auth {
         self::requireLogin();
         if (!self::staff()) {
             $_SESSION['flash'] = ['type' => 'error', 'msg' => 'Akses ditolak.'];
-            header('Location: /');
+            gg_redirect('/');
             exit;
         }
     }
@@ -333,7 +333,7 @@ class Auth {
         }
         flash_set('success', 'Selamat datang, ' . $user['name'] . '!');
         $redirect = ($user['role'] ?? '') === 'admin' ? '/admin' : '/';
-        header("Location: {$redirect}");
+        gg_redirect("{$redirect}");
         exit;
     }
 
@@ -344,7 +344,7 @@ class Auth {
         }
         self::clearRememberTokenByCookie();
         session_destroy();
-        header('Location: /');
+        gg_redirect('/');
         exit;
     }
 }

@@ -6,10 +6,32 @@
 
 $__root = dirname(__DIR__);
 
-// Passthrough file statis untuk built-in server (php -S host:port index.php).
-// Di Apache ini sudah ditangani .htaccess (!-f / !-d), blok ini dormant.
+// Base path mount (mis. "geprek-geh" → app berjalan di /geprek-geh).
+// Di set via env GG_BASE_PATH (bisa juga di .env). Kosong = app di root (default).
+$__ggEnv = [];
+if (is_file($__root . '/.env')) {
+    foreach (file($__root . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $__ggLine) {
+        $__ggLine = trim($__ggLine);
+        if ($__ggLine === '' || str_starts_with($__ggLine, '#') || !str_contains($__ggLine, '=')) continue;
+        [$__ggK, $__ggV] = explode('=', $__ggLine, 2);
+        $__ggEnv[trim($__ggK)] = trim($__ggV);
+    }
+}
+$__ggBase = trim((string) (getenv('GG_BASE_PATH') ?: ($__ggEnv['GG_BASE_PATH'] ?? '')), '/');
+define('GG_BASE_PATH', $__ggBase);
+unset($__ggEnv, $__ggLine, $__ggK, $__ggV, $__ggBase);
+
+// Load helpers lebih awal: gg_url_rewrite dipakai passthrough statis di bawah.
+require_once $__root . '/core/helpers.php';
+
+// Passthrough file statis. File .js/.mjs ditulis-ulang (rewrite token URL root)
+// agar AJAX tetap bekerja saat app di-mount di sub-path (GG_BASE_PATH).
 $_zp = rawurldecode(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '');
-if (str_starts_with($_zp, '/') && strpos($_zp, '..') === false) {
+if (GG_BASE_PATH !== '' && str_starts_with($_zp, '/' . GG_BASE_PATH)) {
+    $_zp = substr($_zp, strlen('/' . GG_BASE_PATH));
+    if ($_zp === '') $_zp = '/';
+}
+if (str_starts_with($_zp, '/') && strpos($_zp, '..') === false && !str_starts_with(basename($_zp), '.')) {
     $_zf = $__root . $_zp;
     if (is_file($_zf)) {
         $_zm = [
@@ -24,13 +46,20 @@ if (str_starts_with($_zp, '/') && strpos($_zp, '..') === false) {
         $_ze = strtolower(pathinfo($_zf, PATHINFO_EXTENSION));
         if (isset($_zm[$_ze])) {
             header('Content-Type: ' . $_zm[$_ze]);
-            header('Content-Length: ' . filesize($_zf));
-            readfile($_zf);
+            if ($_ze === 'js' || $_ze === 'mjs') {
+                $_body = gg_url_rewrite((string) file_get_contents($_zf));
+                header('Content-Length: ' . strlen($_body));
+                echo $_body;
+            } else {
+                header('Content-Length: ' . filesize($_zf));
+                readfile($_zf);
+            }
+            unset($_body);
             exit;
         }
     }
 }
-unset($_zp, $_zf, $_zm, $_ze);
+unset($_zp, $_zf, $_zm, $_ze, $_body);
 
 // Workaround HTTP server tertentu: jika fastcgi/rewrite fallback memotong
 // query string (REQUEST_URI masih memuat "?", tapi QUERY_STRING kosong),
@@ -46,6 +75,9 @@ unset($__q);
 // Di Apache, .htaccess sudah mengirim ?url=, jadi blok ini hanya mengisi bila kosong.
 if (empty($_GET['url']) && isset($_SERVER['REQUEST_URI'])) {
     $__u = rawurldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '');
+    if (GG_BASE_PATH !== '' && str_starts_with($__u, '/' . GG_BASE_PATH)) {
+        $__u = substr($__u, strlen('/' . GG_BASE_PATH));
+    }
     $_GET['url'] = trim($__u, '/');
 }
 unset($__u);

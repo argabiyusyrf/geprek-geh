@@ -1,4 +1,10 @@
 <?php
+class CheckoutStockException extends RuntimeException {
+    public function __construct(public readonly string $productName) {
+        parent::__construct('Stock habis saat checkout: ' . $productName);
+    }
+}
+
 class CheckoutController {
     public function index() {
         Auth::requireLogin();
@@ -213,62 +219,86 @@ class CheckoutController {
         ], fn($v) => !empty($v));
         $order_address = implode(', ', $full_address);
 
-        $order_id = $db->insert('orders', [
-            'user_id'               => Auth::id(),
-            'shipping_address_id'   => $address_id ?: null,
-            'invoice_no'            => $invoice,
-            'total'                 => $subtotal,
-            'discount'              => $discount,
-            'promo_code'            => $promo['code'] ?? null,
-            'promo_code_id'         => $promo['id'] ?? null,
-            'shipping_cost'         => $shipping,
-            'tax'                   => $tax,
-            'status'                => 'pending',
-            'payment_method'        => $payment_method,
-            'payment_method_id'     => $payment_method_id,
-            'shipping_address'      => $order_address,
-            'notes'                 => $notes,
-        ]);
+        // Semua penulisan (order, item, stok, promo, cart, log) jadi SATU unit
+        // transaksi. Rollback manual yang lama dihapus — jika satu langkah gagal,
+        // seluruh perubahan dibatalkan MySQL secara otomatis.
+        $pdo = $db->getConnection();
+        $pdo->beginTransaction();
 
-        // Increment promo usage
-        if ($promo && $discount > 0) {
-            $db->query("UPDATE promo_codes SET used_count = used_count + 1 WHERE id = ?", [$promo['id']]);
-        }
-        unset($_SESSION['promo']);
-
-        $db->update('users', ['phone' => $phone], 'id = ?', [Auth::id()]);
-        unset($_SESSION['checkout_old']);
-
-$reserved = [];
-        foreach ($items as $item) {
-            $db->insert('order_items', [
-                'order_id'   => $order_id,
-                'product_id' => $item['product_id'],
-                'quantity'   => $item['quantity'],
-                'price'      => $item['price'],
-            ]);
-            $result = $db->query(
-                "UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?",
-                [$item['quantity'], $item['product_id'], $item['quantity']]
+        try {
+            // Re-read cart dalam transaksi dengan FOR UPDATE: dua checkout bersamaan
+            // akan mengunci baris yang sama, jadi stok terakhir tidak bisa diambil dua kali.
+            $items = $db->fetchAll(
+                "SELECT ct.*, p.name, p.price, p.stock
+                 FROM cart ct JOIN products p ON ct.product_id = p.id
+                 WHERE ct.user_id = ? ORDER BY ct.created_at FOR UPDATE",
+                [Auth::id()]
             );
-            if ($result->rowCount() === 0) {
-                // Stok habis saat checkout: batalkan order yang baru dibuat agar
-                // tidak ada order/item yatim, dan kembalikan stok yang terreservasi.
-                $db->delete('order_items', 'order_id = ?', [$order_id]);
-                $db->delete('orders', 'id = ?', [$order_id]);
-                foreach ($reserved as $r) {
-                    $db->query("UPDATE products SET stock = stock + ? WHERE id = ?", [$r['qty'], $r['product_id']]);
-                    stock_log($r['product_id'], (int) $r['qty'], "Pembatalan {$invoice} (stok habis saat checkout)");
-                }
-                flash_set('error', "Stok {$item['name']} habis saat checkout. Silakan periksa kembali.");
-                redirect('/cart');
+            if (empty($items)) {
+                throw new RuntimeException('Keranjang kosong saat checkout.');
             }
-            stock_log($item['product_id'], -$item['quantity'], "Pesanan {$invoice} dibuat", Auth::id());
-            $reserved[] = ['product_id' => $item['product_id'], 'qty' => $item['quantity']];
+
+            $order_id = $db->insert('orders', [
+                'user_id'               => Auth::id(),
+                'shipping_address_id'   => $address_id ?: null,
+                'invoice_no'            => $invoice,
+                'total'                 => $subtotal,
+                'discount'              => $discount,
+                'promo_code'            => $promo['code'] ?? null,
+                'promo_code_id'         => $promo['id'] ?? null,
+                'shipping_cost'         => $shipping,
+                'tax'                   => $tax,
+                'status'                => 'pending',
+                'payment_method'        => $payment_method,
+                'payment_method_id'     => $payment_method_id,
+                'shipping_address'      => $order_address,
+                'notes'                 => $notes,
+            ]);
+
+            // Increment promo usage — dalam transaksi, jadi tidak bertambah
+            // jika order gagal / dibatalkan.
+            if ($promo && $discount > 0) {
+                $db->query("UPDATE promo_codes SET used_count = used_count + 1 WHERE id = ?", [$promo['id']]);
+            }
+
+            foreach ($items as $item) {
+                $db->insert('order_items', [
+                    'order_id'   => $order_id,
+                    'product_id' => $item['product_id'],
+                    'quantity'   => $item['quantity'],
+                    'price'      => $item['price'],
+                ]);
+                // Kurangi stok secara atomik: hanya jika cukup. rowCount 0 = stok
+                // sudah diambil checkout lain → batalkan seluruh transaksi.
+                $result = $db->query(
+                    "UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?",
+                    [$item['quantity'], $item['product_id'], $item['quantity']]
+                );
+                if ($result->rowCount() === 0) {
+                    throw new CheckoutStockException($item['name']);
+                }
+                stock_log($item['product_id'], -$item['quantity'], "Pesanan {$invoice} dibuat", Auth::id());
+            }
+
+            $db->delete('cart', 'user_id = ?', [Auth::id()]);
+            order_log($db, $order_id, 'customer', 'Pesanan dibuat');
+
+            $pdo->commit();
+        } catch (Throwable $e) {
+            $pdo->rollBack();
+            if ($e instanceof CheckoutStockException) {
+                flash_set('error', "Stok {$e->productName} habis saat checkout. Silakan periksa kembali.");
+                redirect('/cart');
+                exit;
+            }
+            error_log('[Checkout] transaksi gagal: ' . $e->getMessage());
+            flash_set('error', 'Terjadi kesalahan saat memproses pesanan. Silakan coba lagi.');
+            redirect('/checkout');
+            exit;
         }
 
-        $db->delete('cart', 'user_id = ?', [Auth::id()]);
-        order_log($db, $order_id, 'customer', 'Pesanan dibuat');
+        unset($_SESSION['promo'], $_SESSION['checkout_old']);
+        $db->update('users', ['phone' => $phone], 'id = ?', [Auth::id()]);
 
         NotificationController::push(
             Auth::id(),
@@ -299,7 +329,7 @@ $reserved = [];
         }
 
         flash_set('success', "Pesanan {$invoice} berhasil dibuat!");
-        header("Location: /orders/{$order_id}");
+        gg_redirect("/orders/{$order_id}");
         exit;
     }
 }

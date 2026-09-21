@@ -193,7 +193,7 @@ $unpaid_flow = $need_proof && $order['payment_status'] === 'unpaid' && in_array(
                         <?php if ($order['payment_account_no']): ?><span class="proof-saved-item"><strong>No. Rekening:</strong> <?= e($order['payment_account_no']) ?></span><?php endif; ?>
                         <?php if ($order['payment_account_name']): ?><span class="proof-saved-item"><strong>Nama:</strong> <?= e($order['payment_account_name']) ?></span><?php endif; ?>
                     </div>
-                    <img src="/assets/uploads/payments/<?= e($order['payment_proof']) ?>" alt="Bukti" class="proof-img">
+                    <img src="<?= e(gg_base() . '/orders/' . $order['id'] . '/payment-proof') ?>" alt="Bukti" class="proof-img">
                 <?php else: ?>
                     <p class="proof-hint">Lengkapi data pembayaran lalu unggah buktinya agar verifikasi lebih cepat.</p>
                 <form method="POST" action="/orders/<?= $order['id'] ?>/upload-proof" enctype="multipart/form-data" class="proof-form">

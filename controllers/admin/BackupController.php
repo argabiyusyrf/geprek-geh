@@ -35,7 +35,7 @@ class BackupController {
         \Auth::requireAdmin();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
-            header('Location: /admin/backup');
+            gg_redirect('/admin/backup');
             exit;
         }
         $config = require __DIR__ . '/../../config/database.php';
@@ -56,12 +56,12 @@ class BackupController {
             @unlink($file);
             $detail = is_array($out) ? mb_substr(implode("\n", $out), 0, 400) : '';
             \flash_set('error', 'Backup gagal dibuat.' . ($detail !== '' ? ' Keterangan: ' . $detail : ''));
-            header('Location: /admin/backup');
+            gg_redirect('/admin/backup');
             exit;
         }
         @chmod($file, 0664);
         \flash_set('success', 'Backup berhasil dibuat: ' . basename($file));
-        header('Location: /admin/backup');
+        gg_redirect('/admin/backup');
         exit;
     }
 
@@ -88,19 +88,19 @@ class BackupController {
         \Auth::requireAdmin();
         if (!\verify_csrf()) {
             \flash_set('error', 'Token tidak valid.');
-            header('Location: /admin/backup');
+            gg_redirect('/admin/backup');
             exit;
         }
         $name = basename((string) $name);
         if (!preg_match('/^geprek-geh-[0-9]{8}-[0-9]{6}\.sql\.gz$/', $name)) {
             \flash_set('error', 'Nama backup tidak valid.');
-            header('Location: /admin/backup');
+            gg_redirect('/admin/backup');
             exit;
         }
         $file = $this->dir() . '/' . $name;
         if (is_file($file)) @unlink($file);
         \flash_set('success', 'Backup ' . $name . ' dihapus.');
-        header('Location: /admin/backup');
+        gg_redirect('/admin/backup');
         exit;
     }
 }
