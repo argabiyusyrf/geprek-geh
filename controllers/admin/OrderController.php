@@ -2,6 +2,13 @@
 namespace Admin;
 class OrderController {
 
+    public static function pendingCount() {
+        if (!\Auth::staff()) return 0;
+        return (int) \Database::getInstance()->fetchColumn(
+            "SELECT COUNT(*) FROM orders WHERE status = 'pending'"
+        );
+    }
+
     private function order($id) {
         return \Database::getInstance()->fetchOne(
             "SELECT o.*, u.name AS customer_name, u.email AS customer_email, u.phone AS customer_phone

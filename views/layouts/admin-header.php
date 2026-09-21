@@ -20,6 +20,8 @@
             <?php if (!Auth::admin()): ?><span class="staff-badge">Staff</span><?php endif; ?>
         </a>
     </div>
+    <?php $adminNavPending = \Admin\OrderController::pendingCount();
+          $adminUnread = NotificationController::unreadCount(); ?>
     <nav class="sidebar-nav">
         <a href="/admin" class="<?= basename($_SERVER['REQUEST_URI']) === 'admin' ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
@@ -44,6 +46,7 @@
         <a href="/admin/orders" class="<?= strpos($_SERVER['REQUEST_URI'], 'orders') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             Pesanan
+            <?php if ($adminNavPending > 0): ?><span class="sidebar-badge"><?= $adminNavPending ?></span><?php endif; ?>
         </a>
         <a href="/admin/promos" class="<?= strpos($_SERVER['REQUEST_URI'], 'promos') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .5-4.5 4 1.3 6L12 16.7 6.2 19.5l1.3-6L3 9.5 9 9z"/></svg>
@@ -62,6 +65,7 @@
         <a href="/admin/notifications" class="<?= strpos($_SERVER['REQUEST_URI'], 'notifications') !== false ? 'active' : '' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
             Notifikasi
+            <?php if ($adminUnread > 0): ?><span class="sidebar-badge sidebar-badge--warn"><?= $adminUnread ?></span><?php endif; ?>
         </a>
 
         <?php if (Auth::admin()): ?>
@@ -106,12 +110,12 @@
     <a href="/admin/categories" class="<?= strpos($_SERVER['REQUEST_URI'], 'categories') !== false ? 'active' : '' ?>">Kategori</a>
     <a href="/admin/stock" class="<?= strpos($_SERVER['REQUEST_URI'], 'stock') !== false ? 'active' : '' ?>">Stok</a>
     <span class="nav-label">Transaksi</span>
-    <a href="/admin/orders" class="<?= strpos($_SERVER['REQUEST_URI'], 'orders') !== false ? 'active' : '' ?>">Pesanan</a>
+    <a href="/admin/orders" class="<?= strpos($_SERVER['REQUEST_URI'], 'orders') !== false ? 'active' : '' ?>">Pesanan<?php if ($adminNavPending > 0): ?><span class="sidebar-badge"><?= $adminNavPending ?></span><?php endif; ?></a>
     <a href="/admin/promos" class="<?= strpos($_SERVER['REQUEST_URI'], 'promos') !== false ? 'active' : '' ?>">Promo</a>
     <a href="/admin/reports" class="<?= strpos($_SERVER['REQUEST_URI'], 'reports') !== false ? 'active' : '' ?>">Laporan</a>
     <span class="nav-label">Komunitas</span>
     <a href="/admin/reviews" class="<?= strpos($_SERVER['REQUEST_URI'], 'reviews') !== false ? 'active' : '' ?>">Ulasan</a>
-    <a href="/admin/notifications" class="<?= strpos($_SERVER['REQUEST_URI'], 'notifications') !== false ? 'active' : '' ?>">Notifikasi</a>
+    <a href="/admin/notifications" class="<?= strpos($_SERVER['REQUEST_URI'], 'notifications') !== false ? 'active' : '' ?>">Notifikasi<?php if ($adminUnread > 0): ?><span class="sidebar-badge sidebar-badge--warn"><?= $adminUnread ?></span><?php endif; ?></a>
     <?php if (Auth::admin()): ?>
     <span class="nav-label">Sistem</span>
     <a href="/admin/payments" class="<?= strpos($_SERVER['REQUEST_URI'], 'payments') !== false ? 'active' : '' ?>">Metode Bayar</a>
@@ -164,7 +168,7 @@
                 </div>
             </div>
 
-            <?php $adminNotifs = NotificationController::fetchAll(6); $adminUnread = NotificationController::unreadCount(); ?>
+            <?php $adminNotifs = NotificationController::fetchAll(6); ?>
             <div class="account admin-notif" data-account>
                 <button class="account-trigger icon-trigger" type="button" aria-expanded="false" aria-haspopup="true" title="Notifikasi">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
